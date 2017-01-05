@@ -12,25 +12,28 @@
 #include <vector>
 
 // forward declarations
-namespace clang {
+namespace clang
+{
 class SourceManager;
 
-namespace tooling {
+namespace tooling
+{
 class Replacement;
 }  // tooling::
 }  // clang::
 
-namespace corct {
+namespace corct
+{
 using callback_t = clang::ast_matchers::MatchFinder::MatchCallback;
 using finder_t = clang::ast_matchers::MatchFinder;
 using result_t = clang::ast_matchers::MatchFinder::MatchResult;
 using replacement_t = clang::tooling::Replacement;
 using string_t = std::string;
-using str_t_cr = string_t const&;
+using str_t_cr = string_t const &;
 using vec_str = std::vector<string_t>;
 using vec_repl = std::vector<replacement_t>;
-using sm_ptr_t = clang::SourceManager*;
-using sm_cc_ptr_t = clang::SourceManager const* const;
+using sm_ptr_t = clang::SourceManager *;
+using sm_cc_ptr_t = clang::SourceManager const * const;
 }  // corct::
 
 #endif  // include guard

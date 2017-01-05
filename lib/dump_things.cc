@@ -4,26 +4,26 @@
 // (c) Copyright 2016 LANSLLC, all rights reserved
 
 #include "dump_things.h"
-#include "utilities.h"
 #include "types.h"
+#include "utilities.h"
 #include <iostream>
 #include <sstream>
 
 namespace corct
 {
-
-namespace{
+namespace
+{
 /* These maintain state across calls to dump */
 string_t last_fname = "";
 uint32_t last_lineno = 0xFFFFFFF;
-} // anonymous::
+}  // anonymous::
 
-void  dumpLocation(
-  clang::SourceLocation loc,
-  clang::SourceManager const * sm,
-  string_t const tabs)
+void
+dumpLocation(clang::SourceLocation loc,
+             clang::SourceManager const * sm,
+             string_t const tabs)
 {
-  if (!sm){
+  if(!sm) {
     HERE("Invalid SourceManager, cannot dumpLocation\n");
     return;
   }
@@ -42,32 +42,28 @@ void  dumpLocation(
     std::cout << tabs << fname << ':' << lineno << ':' << colno;
     last_fname = fname;
     last_lineno = lineno;
-  }
-  else if (lineno != last_lineno) {
-    std::cout << tabs << "line" << ':' << lineno
-       << ':' << colno;
+  } else if(lineno != last_lineno) {
+    std::cout << tabs << "line" << ':' << lineno << ':' << colno;
     last_lineno = lineno;
-  }
-  else {
+  } else {
     std::cout << tabs << "col" << ':' << colno;
   }
   return;
-} // dumpLocation
+}  // dumpLocation
 
 // dumpLocation, but to a string
 string_t
-locationAsString(
-  clang::SourceLocation loc,
-  clang::SourceManager const * const sm)
+locationAsString(clang::SourceLocation loc,
+                 clang::SourceManager const * const sm)
 {
   std::stringstream s;
-  if (!sm){
+  if(!sm) {
     s << "Invalid SourceManager, cannot dump Location\n";
     return s.str();
   }
   clang::SourceLocation SpellingLoc = sm->getSpellingLoc(loc);
   clang::PresumedLoc ploc = sm->getPresumedLoc(SpellingLoc);
-  if (ploc.isInvalid()) {
+  if(ploc.isInvalid()) {
     s << "<invalid sloc>";
     return s.str();
   }
@@ -79,61 +75,55 @@ locationAsString(
     s << fname << ':' << lineno << ':' << colno;
     last_fname = fname;
     last_lineno = lineno;
-  }
-  else if (lineno != last_lineno) {
-    s << "line" << ':' << lineno
-       << ':' << colno;
+  } else if(lineno != last_lineno) {
+    s << "line" << ':' << lineno << ':' << colno;
     last_lineno = lineno;
-  }
-  else {
+  } else {
     s << "col" << ':' << colno;
   }
   return s.str();
-} // locationAsString
+}  // locationAsString
 
-void dumpSourceRange(
-  clang::SourceRange R,
-  clang::SourceManager const * const sm,
-  string_t const tabs)
+void
+dumpSourceRange(clang::SourceRange R,
+                clang::SourceManager const * const sm,
+                string_t const tabs)
 {
-  if (!sm)
-  {
+  if(!sm) {
     HERE("Invalid SourceManager, cannot dump SourceRange\n");
     return;
   }
   std::cout << tabs << " <";
-  dumpLocation(R.getBegin(),sm);
-  if (R.getBegin() != R.getEnd()) {
+  dumpLocation(R.getBegin(), sm);
+  if(R.getBegin() != R.getEnd()) {
     std::cout << ", ";
-    dumpLocation(R.getEnd(),sm);
+    dumpLocation(R.getEnd(), sm);
   }
   std::cout << ">";
   return;
-} // dumpSourceRange
+}  // dumpSourceRange
 
 // dumpSourceRange, but to a string
 string_t
-sourceRangeAsString(
-  clang::SourceRange r,
-  clang::SourceManager const * sm)
+sourceRangeAsString(clang::SourceRange r, clang::SourceManager const * sm)
 {
-  if (!sm){
+  if(!sm) {
     return "";
   }
   std::stringstream s;
-  s << "<" << locationAsString(r.getBegin(),sm);
-  if (r.getBegin() != r.getEnd()) {
-    s << ", " <<locationAsString(r.getEnd(),sm);
+  s << "<" << locationAsString(r.getBegin(), sm);
+  if(r.getBegin() != r.getEnd()) {
+    s << ", " << locationAsString(r.getEnd(), sm);
   }
   s << ">";
   return s.str();
-} // sourceRangeAsString
+}  // sourceRangeAsString
 
 // from clang's ASTDumper:
-void dumpDecl(
-  clang::Decl const * const D,
-  clang::SourceManager const * const sm,
-  string_t const tabs)
+void
+dumpDecl(clang::Decl const * const D,
+         clang::SourceManager const * const sm,
+         string_t const tabs)
 {
   using clang::Decl;
   using clang::NamedDecl;
@@ -142,13 +132,12 @@ void dumpDecl(
   using clang::dyn_cast;
   using clang::FunctionDecl;
   // dumpChild([=] {
-  if (!D) {
+  if(!D) {
     // ColorScope Color(*this, NullColor);
     std::cout << tabs << "<<<NULL>>>";
     return;
   }
-  if(!sm)
-  {
+  if(!sm) {
     HERE("Invalid SourceManager, cannot dumpDecl\n");
     return;
   }
@@ -156,37 +145,33 @@ void dumpDecl(
   {
     std::cout << tabs << D->getDeclKindName() << "Decl";
   }
-  std::cout << tabs << ' ' << (void *) D;
-  if (D->getLexicalDeclContext() != D->getDeclContext())
+  std::cout << tabs << ' ' << (void *)D;
+  if(D->getLexicalDeclContext() != D->getDeclContext())
     std::cout << tabs << " parent " << cast<Decl>(D->getDeclContext());
-  dumpSourceRange(D->getSourceRange(),sm);
+  dumpSourceRange(D->getSourceRange(), sm);
   std::cout << tabs << " <location>";
-  dumpLocation(D->getLocation(),sm);
+  dumpLocation(D->getLocation(), sm);
   std::cout << tabs << "</location>";
-  if (Module *M = D->getImportedOwningModule())
+  if(Module * M = D->getImportedOwningModule())
     std::cout << tabs << " in " << M->getFullModuleName();
-  else if (Module *M = D->getLocalOwningModule())
+  else if(Module * M = D->getLocalOwningModule())
     std::cout << tabs << " in (local) " << M->getFullModuleName();
 
-  if (const NamedDecl *ND = dyn_cast<NamedDecl>(D))
-    if (ND->isHidden())
-      std::cout << tabs << " hidden";
-  if (D->isImplicit())
-    std::cout << tabs << " implicit";
-  if (D->isUsed())
+  if(const NamedDecl * ND = dyn_cast<NamedDecl>(D))
+    if(ND->isHidden()) std::cout << tabs << " hidden";
+  if(D->isImplicit()) std::cout << tabs << " implicit";
+  if(D->isUsed())
     std::cout << tabs << " used";
-  else if (D->isThisDeclarationReferenced())
+  else if(D->isThisDeclarationReferenced())
     std::cout << tabs << " referenced";
-  if (D->isInvalidDecl())
-    std::cout << tabs << " invalid";
-  if (const clang::FunctionDecl *FD = dyn_cast<FunctionDecl>(D))
-    if (FD->isConstexpr())
-      std::cout << tabs << " constexpr";
+  if(D->isInvalidDecl()) std::cout << tabs << " invalid";
+  if(const clang::FunctionDecl * FD = dyn_cast<FunctionDecl>(D))
+    if(FD->isConstexpr()) std::cout << tabs << " constexpr";
 
   std::cout << "\n";
   return;
-} // dumpDecl
+}  // dumpDecl
 
-} // corct::
+}  // corct::
 
 // End of file
