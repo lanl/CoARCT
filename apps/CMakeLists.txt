@@ -1,16 +1,16 @@
 include_directories ("${PROJECT_SOURCE_DIR}/lib")
 
 
-##add_executable(struct-field-use
-##  StructFieldUser.cc
-##  )
-##target_link_libraries(struct-field-use
-##  corct
-##  ${CLANG_LIBRARIES}
-##  ${LLVM_LIBRARIES}
-##  ${TINFO_LIB}
-##  z
-## )
+add_executable(struct-field-use
+  StructFieldUser.cc
+  )
+target_link_libraries(struct-field-use
+  corct
+  ${CLANG_LIBRARIES}
+  ${LLVM_LIBRARIES}
+  ${TINFO_LIB}
+  z
+ )
 
 ##add_executable(while-loop-detect
 ##  WhileLoopFinder.cc
