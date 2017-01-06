@@ -8,10 +8,10 @@
 #define MAKE_REPLACEMENT_H
 
 #include "types.h"
-// #include "clang/Tooling/Core/Replacement.h"
+#include "clang/Tooling/Core/Replacement.h"
 #include "clang/Basic/LangOptions.h"
 // #include "clang/Basic/SourceManager.h"
-// #include "clang/Lex/Lexer.h"
+#include "clang/Lex/Lexer.h"
 
 namespace corct{
 /** \brief Replace indicated source range with given text.
