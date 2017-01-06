@@ -47,8 +47,6 @@ main(int argc, const char ** argv)
                  OptionsParser.getSourcePathList());
 
   Global_Printer printer(std::cout);
-  clang::ast_matchers::MatchFinder finder;
-
   StatementMatcher global_var_matcher =
       (old_var_string == "")
           ? all_global_var_matcher()
@@ -58,6 +56,7 @@ main(int argc, const char ** argv)
           ? all_global_fn_matcher()
           : mk_global_fn_matcher(old_var_string);
 
+  clang::ast_matchers::MatchFinder finder;
   if(report_functions) {
     finder.addMatcher(global_func_matcher, &printer);
   }
@@ -65,6 +64,6 @@ main(int argc, const char ** argv)
     finder.addMatcher(global_var_matcher, &printer);
   }
   return Tool.run(newFrontendActionFactory(&finder).get());
-}
+} // main
 
 // End of file
