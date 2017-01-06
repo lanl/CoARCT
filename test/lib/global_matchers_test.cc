@@ -2,12 +2,9 @@
 // T. M. Kelley
 // Jan 06, 2017
 // (c) Copyright 2017 LANSLLC, all rights reserved
+
 #include "global_matchers.h"
-#include "clang/Frontend/FrontendActions.h"
-#include "clang/Tooling/Refactoring.h"
-#include "clang/Tooling/Tooling.h"
 #include "gtest/gtest.h"
-#include "utilities.h"
 #include <tuple>
 
 using namespace corct;

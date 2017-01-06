@@ -10,10 +10,7 @@
 #include "dump_things.h"
 #include "types.h"
 #include "utilities.h"
-#include "clang/ASTMatchers/ASTMatchers.h"
-#include "clang/ASTMatchers/ASTMatchFinder.h"
 #include "clang/Tooling/Tooling.h"
-#include "clang/Tooling/Core/Replacement.h"
 #include <iostream>
 
 namespace corct{
