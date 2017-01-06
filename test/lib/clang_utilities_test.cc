@@ -48,9 +48,7 @@ struct Tests_On_LHS : public callback_t {
 };
 
 bool run_case_is_on_lhs(str_t_cr code) {
-  ASTUPtr ast;
-  ASTContext* pctx;
-  TranslationUnitDecl* decl;
+  ASTUPtr ast; ASTContext* pctx; TranslationUnitDecl* decl;
   std::tie(ast, pctx, decl) = prep_code(code);
   Tests_On_LHS tol;
   finder_t finder;
