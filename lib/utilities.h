@@ -110,7 +110,8 @@ infer_indent_level(clang::SourceLocation & loc, clang::SourceManager const & sm)
   PresumedLoc ploc = sm.getPresumedLoc(spellingLoc);
   if(ploc.isInvalid()) {
     HERE("<invalid sloc>\n\n");
-  } else {
+  }
+  else {
     uint32_t const col = ploc.getColumn();
     if(col > 0) {
       for(uint32_t i = 0; i < (col - 1); ++i) {
