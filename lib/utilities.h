@@ -26,6 +26,7 @@ inline void here_func(int line,
 
 namespace corct
 {
+
 inline string_t
 add_tab(string_t const s)
 {
