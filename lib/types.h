@@ -33,6 +33,8 @@ using str_t_cr = string_t const &;
 using vec_str = std::vector<string_t>;
 using vec_repl = std::vector<replacement_t>;
 using sm_ptr_t = clang::SourceManager *;
+using sm_ref_t = clang::SourceManager &;
+using sm_cref_t = clang::SourceManager const &;
 using sm_cc_ptr_t = clang::SourceManager const * const;
 }  // corct::
 
