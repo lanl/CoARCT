@@ -59,6 +59,9 @@ sourceRangeAsString(clang::SourceRange r, clang::SourceManager const * sm);
 string_t
 locationAsString(clang::SourceLocation loc, clang::SourceManager const * SM);
 
+void
+clearLocation();
+
 }  // corct::
 #endif  // include guard
 

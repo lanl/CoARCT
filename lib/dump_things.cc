@@ -18,6 +18,12 @@ string_t last_fname = "";
 uint32_t last_lineno = 0xFFFFFFF;
 }  // anonymous::
 
+void clearLocation(){
+  last_fname = "";
+  last_lineno = 0xFFFFFFFl;
+  return;
+}
+
 void
 dumpLocation(clang::SourceLocation loc,
              clang::SourceManager const * sm,

@@ -64,10 +64,11 @@ split(std::string const & s, char const delim)
   \return none */
 template <typename T>
 inline void
-check_ptr(T * p, string_t const name, string_t const tabs = "")
+check_ptr(T * p, string_t const name, string_t const tabs = "",
+  std::ostream & s = std::cout)
 {
   if(!p) {
-    std::cout << tabs << "Invalid pointer " << name << "\n";
+    s << tabs << "Invalid pointer " << name << "\n";
   }
 }
 
