@@ -119,7 +119,7 @@ auto mk_global_fn_matcher(std::string const & g_var_name = ""){
     )
   ).bind("function")
   ;
-} // mk_decl_matcher
+} // mk_global_fn_matcher
 
 /**\brief Matches functions that use any globabl variable.
 
@@ -152,6 +152,7 @@ public:
   run(result_t const & result) override
   {
     using namespace clang;
+    n_matches_++;
     FunctionDecl const * func_decl =
         result.Nodes.getNodeAs<FunctionDecl>("function");
     Expr const * g_var = result.Nodes.getNodeAs<Expr>("globalReference");
@@ -159,19 +160,27 @@ public:
     clang::SourceManager & src_manager(
         const_cast<clang::SourceManager &>(result.Context->getSourceManager()));
     if(func_decl && g_var && var) {
-      std::cout << "In function '" << func_decl->getNameAsString() << "' ";
-      std::cout << "'" << var->getNameAsString() << "' referred to at ";
-      corct::dumpSourceRange(g_var->getSourceRange(), &src_manager);
-      std::cout << "\n";
+      s_ << "In function '" << func_decl->getNameAsString() << "' ";
+      s_ << "'" << var->getNameAsString() << "' referred to at ";
+      string_t sr(sourceRangeAsString(g_var->getSourceRange(), &src_manager));
+      s_ << sr;
+      s_ << "\n";
     }
     else {
-      check_ptr(func_decl,"func_decl");
-      check_ptr(g_var,"g_var");
-      check_ptr(var,"var");
+      check_ptr(func_decl,"func_decl","",s_);
+      check_ptr(g_var,"g_var","",s_);
+      check_ptr(var,"var","",s_);
     }
     return;
   }  // run
 
+  explicit Global_Printer(std::ostream & s)
+      : s_(s),
+        n_matches_(0)
+  {}
+
+  std::ostream & s_;
+  uint32_t n_matches_;
 };  // class Global_Printer
 
 } // corct::

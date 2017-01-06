@@ -148,5 +148,89 @@ TEST(global_fn_matcher,case5_HitsOneLocalAll){
   EXPECT_EQ(run_case<Testr2>(code,tst),exp_matches);
 }
 
+TEST(Global_Printer,instantiate){
+  string_t g_var_name("");
+  Global_Printer gp(std::cout);
+  EXPECT_TRUE(true);
+}
+
+template <typename Match_Maker_t>
+inline uint32_t
+run_GP_case(str_t_cr code, Global_Printer & tst,Match_Maker_t mkr){
+  ASTUPtr ast; ASTContext* pctx; TranslationUnitDecl* decl;
+  std::tie(ast, pctx, decl) = prep_code(code);
+  // decl->dump(); // uncomment for debugging
+  auto m(mkr());
+  finder_t finder;
+  finder.addMatcher(m, &tst);
+  finder.matchAST(*pctx);
+  return tst.n_matches_;
+}
+
+TEST(Global_Printer,case1_HitFunction){
+  std::stringstream s;
+  Global_Printer gp(s);
+  string_t const code = "int global_i;void f(){  global_i = 1;}";
+  string_t exp_str = "In function 'f' 'global_i' referred to at <input.cc:1:25>\n";
+  uint32_t const n_matches =
+    run_GP_case(code,gp,
+      [](){return mk_global_fn_matcher("");}
+      );
+  uint32_t const exp_matches(1u);
+  EXPECT_EQ(s.str(),exp_str);
+  EXPECT_EQ(n_matches,exp_matches);
+}
+TEST(Global_Printer,case2_HitAllGlobals){
+  clearLocation();
+  std::stringstream s;
+  Global_Printer gp(s);
+  string_t const code =
+    "int global_i; double g_f;void f(){  global_i = 1;g_f = 3.14;}";
+  string_t exp_str =
+    "In function 'f' 'global_i' referred to at <input.cc:1:37>\n"
+    "In function 'f' 'g_f' referred to at <col:50>\n"
+    ;
+  uint32_t const n_matches =
+    run_GP_case(code,gp,
+      [](){return mk_global_var_matcher("");}
+      );
+  uint32_t const exp_matches(2u);
+  EXPECT_EQ(exp_str,s.str());
+  EXPECT_EQ(n_matches,exp_matches);
+}
+TEST(Global_Printer,case3_HitOnlySpecdVar){
+  clearLocation();
+  std::stringstream s;
+  Global_Printer gp(s);
+  string_t const code =
+    "int global_i; double g_f;void f(){  global_i = 1;g_f = 3.14;}";
+  string_t exp_str =
+    // "In function 'f' 'global_i' referred to at <input.cc:1:37>\n"
+    "In function 'f' 'g_f' referred to at <input.cc:1:50>\n"
+    ;
+  uint32_t const n_matches =
+    run_GP_case(code,gp,
+      [](){return mk_global_var_matcher("g_f");}
+      );
+  uint32_t const exp_matches(1u);
+  EXPECT_EQ(exp_str,s.str());
+  EXPECT_EQ(n_matches,exp_matches);
+}
+
+TEST(Global_Printer,case4_MissLocalShadow){
+  clearLocation();
+  std::stringstream s;
+  Global_Printer gp(s);
+  string_t const code =
+    "int global_i; double g_f;void f(){  global_i = 1; float g_f = 3.14;}";
+  string_t exp_str = "";
+  uint32_t const n_matches =
+    run_GP_case(code,gp,
+      [](){return mk_global_var_matcher("g_f");}
+      );
+  uint32_t const exp_matches(0u);
+  EXPECT_EQ(exp_str,s.str());
+  EXPECT_EQ(n_matches,exp_matches);
+}
 
 // End of file
