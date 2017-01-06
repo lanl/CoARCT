@@ -9,13 +9,9 @@
 
 #include "types.h"
 #include "clang/ASTMatchers/ASTMatchers.h"
-#include "clang/ASTMatchers/ASTMatchFinder.h"
-#include "clang/Tooling/Tooling.h"
-#include "clang/Tooling/Core/Replacement.h"
 
 namespace corct
 {
-
 /** \brief Match a reference to a pointer, binding variable name bd_var_name
   to the pointer declaration and bd_ref_nm to the reference to the pointer.
 
