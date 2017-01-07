@@ -1,15 +1,15 @@
 # CoARCT
 Code Analysis and Refactoring with Clang Tools
 
-CoARCT (pronounced like the word "corked") is a set of small tools built on the Clang tools. It is a chance to show some more sustained examples of refactoring and analyzing code with AST Matchers and the clang Refactoring Tool.
+CoARCT (pronounced like the word "corked") is a small set of tools built on the Clang tools. It is a chance to show some more sustained examples of refactoring and analyzing code with AST Matchers and the clang Refactoring Tool.
 
-It includes library code and command line drivers that go beyond some of the (excellent!) tutorials. These examples are drawn from refactoring legacy codes:
+It includes library code and command line drivers that go beyond some of the (excellent!) tutorials that are available. The CoARCT examples are drawn from refactoring legacy codes:
 * Reporting which functions use which global variables;
 * Replacing global variables with local variables, including threading variables through a call chain;
 * Detecting which functions use which fields of a struct: this data can be used to analyze how to break up large structs.
 * Finding code associated with a classic C-style linked list.
 
-Our hope is that CoARCT will help demystify these tools for more developers; if the tools are useful, so much the better! Either way, let us know.
+Our hope is that CoARCT will help demystify the Clang AST tools to users. If the CoARCT tools are directly useful in your work, let us know!
 
 It also demonstrates a few useful things that were not immediately clear from the tutorials and examples I saw, such as unit testing matchers and callbacks, and building out of the Clang/LLVM tree.
 
@@ -17,6 +17,7 @@ It also demonstrates a few useful things that were not immediately clear from th
 1. CMake, probably at least version 3.
 2. Clang and LLVM libraries and headers.
 3. libtinfo
+
 Currently known to work with Clang 3.9.0 and Clang 3.8.0.
 
 ## Build
@@ -46,3 +47,5 @@ CoARCT/build-clang-3.9.0 $ ./test/corct-unittests
 [==========] 36 tests from 7 test cases ran. (44 ms total)
 [  PASSED  ] 36 tests.
 ```
+
+Los Alamos National Security, LLC (LANS) owns the copyright to CoARCT, which it identifies internally as LA-CC-17-039. The license is BSD 3-Clause.
