@@ -139,7 +139,7 @@ auto all_global_fn_matcher(){
     )
   ).bind("function")
   ;
-} // mk_decl_matcher
+} // all_global_fn_matcher
 
 // clang-format on
 
