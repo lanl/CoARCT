@@ -15,6 +15,29 @@
 
 namespace corct{
 // clang-format off
+
+/**\brief Matches references to any global variable within any function.
+
+  Bindings: globalReference to the reference
+            varName to the VarDecl
+            function: to the FunctionDecl
+  */
+auto all_global_var_matcher(){
+  using namespace clang::ast_matchers;
+  return
+  declRefExpr(
+    to(
+      varDecl(
+        hasGlobalStorage()
+      ).bind("gvarName")
+    ) // to
+   ,hasAncestor(
+      functionDecl().bind("function")
+    )
+  ).bind("globalReference")
+  ;
+} // mk_decl_matcher
+
 /**\brief Matches references to global variable with g_var_name within any
 function. If no name given, matches each use of global variables in functions.
 
@@ -31,7 +54,7 @@ auto mk_global_var_matcher(std::string const & g_var_name = ""){
         varDecl(
           hasGlobalStorage()
          ,hasName(g_var_name)
-        ).bind("varName")
+        ).bind("gvarName")
       )
      ,hasAncestor(
         functionDecl().bind("function")
@@ -39,44 +62,31 @@ auto mk_global_var_matcher(std::string const & g_var_name = ""){
     ).bind("globalReference")
     ;
   }
-  return
-  declRefExpr(
-    to(
-      varDecl(
-        hasGlobalStorage()
-      ).bind("varName")
-    ) // to
-   ,hasAncestor(
-      functionDecl().bind("function")
-    )
-  ).bind("globalReference")
-  ;
-
+  return all_global_var_matcher();
 } // mk_decl_matcherExpression E
 
-//declRefExpr(to(varDecl(hasGlobalStorage(),hasName("global_i"))),hasAncestor(functionDecl()))
-
-/**\brief Matches references to any global variable within any function.
+/**\brief Matches functions that use any globabl variable.
 
   Bindings: globalReference to the reference
             varName to the VarDecl
             function: to the FunctionDecl
   */
-auto all_global_var_matcher(){
+auto all_global_fn_matcher(){
   using namespace clang::ast_matchers;
   return
-  declRefExpr(
-    to(
-      varDecl(
-        hasGlobalStorage()
-      ).bind("varName")
-    ) // to
-   ,hasAncestor(
-      functionDecl().bind("function")
+  functionDecl(
+    hasDescendant(
+      declRefExpr(
+        to(
+          varDecl(
+              hasGlobalStorage()
+          ).bind("gvarName")
+        )
+      ).bind("globalReference")
     )
-  ).bind("globalReference")
+  ).bind("function")
   ;
-} // mk_decl_matcher
+} // all_global_fn_matcher
 
 /**\brief Matches functions that uses specified global variable. If no name
  given, matches each function that uses any global variables.
@@ -96,50 +106,15 @@ auto mk_global_fn_matcher(std::string const & g_var_name = ""){
             varDecl(
               hasGlobalStorage(),
               hasName(g_var_name)
-            ).bind("varName") // varDecl
+            ).bind("gvarName") // varDecl
           ) // to
         ).bind("globalReference") // declRefExpr
       ) // hasDescendant
     ).bind("function")
     ;
   }
-  return
-  functionDecl(
-    hasDescendant(
-      declRefExpr(
-        to(
-          varDecl(
-              hasGlobalStorage()
-          ).bind("varName")
-        )
-      ).bind("globalReference")
-    )
-  ).bind("function")
-  ;
+  return all_global_fn_matcher();
 } // mk_global_fn_matcher
-
-/**\brief Matches functions that use any globabl variable.
-
-  Bindings: globalReference to the reference
-            varName to the VarDecl
-            function: to the FunctionDecl
-  */
-auto all_global_fn_matcher(){
-  using namespace clang::ast_matchers;
-  return
-  functionDecl(
-    hasDescendant(
-      declRefExpr(
-        to(
-          varDecl(
-              hasGlobalStorage()
-          ).bind("varName")
-        )
-      ).bind("globalReference")
-    )
-  ).bind("function")
-  ;
-} // all_global_fn_matcher
 
 // clang-format on
 
@@ -153,7 +128,7 @@ public:
     FunctionDecl const * func_decl =
         result.Nodes.getNodeAs<FunctionDecl>("function");
     Expr const * g_var = result.Nodes.getNodeAs<Expr>("globalReference");
-    VarDecl const * var = result.Nodes.getNodeAs<VarDecl>("varName");
+    VarDecl const * var = result.Nodes.getNodeAs<VarDecl>("gvarName");
     clang::SourceManager & src_manager(
         const_cast<clang::SourceManager &>(result.Context->getSourceManager()));
     if(func_decl && g_var && var) {

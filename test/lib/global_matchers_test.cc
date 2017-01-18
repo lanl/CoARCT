@@ -33,7 +33,7 @@ struct Tests_global : public callback_t {
   {
     FunctionDecl const * fdecl =
         result.Nodes.getNodeAs<FunctionDecl>("function");
-    VarDecl const * var = result.Nodes.getNodeAs<VarDecl>("varName");
+    VarDecl const * var = result.Nodes.getNodeAs<VarDecl>("gvarName");
     Expr const * g_var = result.Nodes.getNodeAs<Expr>("globalReference");
     if(fdecl && g_var && var)
       matched_++;
@@ -47,7 +47,8 @@ struct Tests_global : public callback_t {
 
   explicit Tests_global(Match_Maker_t & mkr)
       : mk_matcher_(mkr), bd_var_name_(""), matched_(0)
-  {}
+  {
+  }
 
   Match_Maker_t & mk_matcher_;
   string_t bd_var_name_ = "";
