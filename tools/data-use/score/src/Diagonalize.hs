@@ -69,11 +69,12 @@ w d tfld = fst <$> filter (\(fnc,fld)-> fld == tfld) d
 score :: Data -> FncMap -> RevFldMap -> Int
 score d nm rlm = foldl' go 0 [1..(nfld - 1)]
   where nfld = M.size nm
-        go i acc = acc + scoreFldIdx d nm rlm i
+        go acc i = acc + scoreFldIdx d nm rlm i
+
 -- | Score a field index by summing over all field indices less than i
 scoreFldIdx :: Data -> FncMap -> RevFldMap -> Int -> Int
 scoreFldIdx d nm rlm i = foldl' go 0 [0..(i-1)]
-  where go j acc = acc + scorePair d nm rlm i j
+  where go acc j = acc + scorePair d nm rlm i j
 
 {-| Scoring idea: for every pair of fields numbered i,j, with j < i,
   add 1 for each function that sits higher than the maximum field of i.
@@ -113,6 +114,14 @@ repositionAfter m f g
           go fm fld i = if i >= insV && i < oldfv
                         then M.insert fld (i+1) fm
                         else fm
+
+-- | Find each field with a non-zero score--these are fields that could
+-- move left.
+positiveFields :: Data -> FncMap -> RevFldMap -> [Fld]
+positiveFields d nm rlm = foldl' go [] [1..(nfld - 1)]
+  where nfld = M.size nm
+        go fs i = if scoreFldIdx d nm rlm i > 0 then fld:fs else fs
+                    where fld = rlm M.! i
 
 -- | Swap the integer values, i.e.
 -- if m ! f = i and

@@ -25,7 +25,14 @@ tests = testGroup "Diagonalize tests" [qcgroup,hugroup]
 qcgroup = testGroup "Diagonalize properties" qcTests
 hugroup = testGroup "Diagonalize cases" huTests
 
-tc = testCase
+{-
+Scenario 1:
+Fnc |
+    |
+n1  | x   x
+n0  | x x x
+    --------- Fld
+-}
 c0 =HU.assertBool "reverse funcs_s1 == revFuncs_s1"
   (reverseMap funcs_s1 == revFuncs_s1)
 c1 =HU.assertBool "reverse flds_s1 == revFlds_s1"
@@ -40,21 +47,61 @@ c5 = HU.assertEqual "scoreFldIdx scenario 1 fld 0 == 0" 0 $
   scoreFldIdx data_s1 funcs_s1 revFlds_s1 0
 c6 = HU.assertEqual "scoreFldIdx scenario 1 fld 1 == 1" 1 $
   scoreFldIdx data_s1 funcs_s1 revFlds_s1 1
-c7 = HU.assertEqual "scoreFldIdx scenario 1 fld 2 == 1" 1 $
+c7 = HU.assertEqual "scoreFldIdx scenario 1 fld 2 == 0" 0 $
   scoreFldIdx data_s1 funcs_s1 revFlds_s1 2
 c8 = HU.assertEqual "score scenario 1 == 1" 1 $
   score data_s1 funcs_s1 revFlds_s1
+{-
+Scenario 2:
+Fnc |
+n3  |   x
+n2  |   x   x
+n1  | x   x x
+n0  | x x x
+    ----------- Fld
+-}
+c9  = HU.assertEqual "scorePair scenario 2 pair 1,0 == 0" 0 $ scorePair data_s2 funcs_s2 revFlds_s2 1 0
+c10 = HU.assertEqual "scorePair scenario 2 pair 2,0 == 0" 0 $ scorePair data_s2 funcs_s2 revFlds_s2 2 0
+c11 = HU.assertEqual "scorePair scenario 2 pair 2,1 == 2" 2 $ scorePair data_s2 funcs_s2 revFlds_s2 2 1
+c12 = HU.assertEqual "scorePair scenario 2 pair 3,0 == 0" 0 $ scorePair data_s2 funcs_s2 revFlds_s2 3 0
+c13 = HU.assertEqual "scorePair scenario 2 pair 3,1 == 1" 1 $ scorePair data_s2 funcs_s2 revFlds_s2 3 1
+c14 = HU.assertEqual "scorePair scenario 2 pair 3,2 == 0" 0 $ scorePair data_s2 funcs_s2 revFlds_s2 3 2
+c15 = HU.assertEqual "scoreFldIdx scenario 2 fld 0 == 0" 0 $ scoreFldIdx data_s2 funcs_s2 revFlds_s2 0
+c16 = HU.assertEqual "scoreFldIdx scenario 2 fld 1 == 0" 0 $ scoreFldIdx data_s2 funcs_s2 revFlds_s2 1
+c17 = HU.assertEqual "scoreFldIdx scenario 2 fld 2 == 2" 2 $ scoreFldIdx data_s2 funcs_s2 revFlds_s2 2
+c18 = HU.assertEqual "scoreFldIdx scenario 2 fld 3 == 1" 1 $ scoreFldIdx data_s2 funcs_s2 revFlds_s2 3
+c19 = HU.assertEqual "score scenario 2 == 3" 3 $ score data_s2 funcs_s2 revFlds_s2
+-- consistency checks for scenario 2
+c20 = HU.assertEqual "getFlds scenario 2 == flds_s2" flds_s2 (getFlds data_s2)
+c21 = HU.assertEqual "getFuncs scenario 2 == funcs_s2" funcs_s2 (getFuncs data_s2)
 
-tc0 = tc "reverse correct Scenario 1 funcs" c0
-tc1 = tc "reverse correct Scenario 1 fields" c1
-tc2 = tc "scorePair scenario 1 pair 1,0" c2
-tc3 = tc "scorePair scenario 1 pair 2,0" c3
-tc4 = tc "scorePair scenario 1 pair 2,1" c4
-tc5 = tc "scoreFldIdx scenario 1 fld 0" c5
-tc6 = tc "scoreFldIdx scenario 1 fld 1" c6
-tc7 = tc "scoreFldIdx scenario 1 fld 2" c7
-tc8 = tc "score scenario 1" c8
-huTests = [tc0,tc1,tc2,tc3,tc4,tc5,tc6,tc7,tc8]
+tc = testCase
+tc0  = tc "reverse correct Scenario 1 funcs" c0
+tc1  = tc "reverse correct Scenario 1 fields" c1
+tc2  = tc "scorePair scenario 1 pair 1,0" c2
+tc3  = tc "scorePair scenario 1 pair 2,0" c3
+tc4  = tc "scorePair scenario 1 pair 2,1" c4
+tc5  = tc "scoreFldIdx scenario 1 fld 0" c5
+tc6  = tc "scoreFldIdx scenario 1 fld 1" c6
+tc7  = tc "scoreFldIdx scenario 1 fld 2" c7
+tc8  = tc "score scenario 1" c8
+tc9  = tc "scorePair scenario 2 pair 1,0" c9
+tc10 = tc "scorePair scenario 2 pair 2,0" c10
+tc11 = tc "scorePair scenario 2 pair 2,1" c11
+tc12 = tc "scorePair scenario 2 pair 3,0" c12
+tc13 = tc "scorePair scenario 2 pair 3,1" c13
+tc14 = tc "scorePair scenario 2 pair 3,2" c14
+tc15 = tc "scoreFldIdx scenario 2 fld 0" c15
+tc16 = tc "scoreFldIdx scenario 2 fld 1" c16
+tc17 = tc "scoreFldIdx scenario 2 fld 2" c17
+tc18 = tc "scoreFldIdx scenario 2 fld 3" c18
+tc19 = tc "score scenario 2" c19
+tc20 = tc "scenario 2 fields consistent" c20
+tc21 = tc "scenario 2 funcs consistent" c21
+
+huTests = [tc0,tc1,tc2,tc3,tc4,tc5,tc6,tc7,tc8
+  ,tc9,tc10,tc11,tc12,tc13,tc14,tc15,tc16,tc17,tc18,tc19,tc20,tc21
+  ]
 
 -- reversing the reverse puts you back where you started
 prop_RevFncMap2x_Id :: FncMap -> Bool
@@ -122,8 +169,8 @@ prop_repoAfterGUnchanged :: FldMapFldFld -> Bool
 prop_repoAfterGUnchanged (FldMapFldFld m f g) = m' M.! g == m M.! g
   where m' = repositionAfter m f g
 -- repoAfter doesn't change anything outside of m(g) to m(f)
-prop_repoAfterLimitedChanges :: FldMapFldFld -> Bool
-prop_repoAfterLimitedChanges (FldMapFldFld m f g) = M.foldlWithKey' go True m'
+prop_repoAfterCorrectChanges :: FldMapFldFld -> Bool
+prop_repoAfterCorrectChanges (FldMapFldFld m f g) = M.foldlWithKey' go True m'
   where m' = repositionAfter m f g
         i_f = m M.! f
         i_g = m M.! g
@@ -150,7 +197,7 @@ tp9  = tp "repoAfter doesn't change size" prop_repoUnchangedSize
 tp10 = tp "repoAfter still covers [0..N-1]" prop_repoAfterStillCovers
 tp11 = tp "repoAfter really moves f" prop_repoAfterChangesF
 tp12 = tp "repoAfter g unchanged" prop_repoAfterGUnchanged
-tp13 = tp "repoAfter unchanged outside of (m(g),m(f)]" prop_repoAfterLimitedChanges
+tp13 = tp "repoAfter unchanged outside of (m(g),m(f)]" prop_repoAfterCorrectChanges
 
 qcTests = [tp0,tp1,tp2,tp3,tp4,tp5,tp6,tp7,tp8,tp9,tp10
   ,tp11
@@ -158,14 +205,6 @@ qcTests = [tp0,tp1,tp2,tp3,tp4,tp5,tp6,tp7,tp8,tp9,tp10
   ,tp13
   ]
 
-{-
-Scenario 1:
-Fnc |
-    |
-n1  | x   x
-n0  | x x x
-    --------- Fld
--}
 data_s1 = [
   ("fnc_0","fld_0"),("fnc_0","fld_1"),("fnc_0","fld_2"),
   ("fnc_1","fld_0"),("fnc_1","fld_2")
@@ -176,7 +215,7 @@ revFlds_s1 = M.fromList [(0,"fld_0"),(1,"fld_1"),(2,"fld_2")] :: RevFldMap
 revFuncs_s1 = M.fromList [(0,"fnc_0"),(1,"fnc_1")] :: RevFncMap
 
 {-
-Scenario 1:
+Scenario 2:
 Fnc |
 n3  |   x
 n2  |   x   x
