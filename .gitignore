@@ -1,5 +1,7 @@
 # Build directories
 build*
+tools/data-use/score/dist
+
 
 # Compiled Object files
 *.slo
