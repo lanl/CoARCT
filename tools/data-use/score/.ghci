@@ -1,0 +1,3 @@
+-- -*- Haskell -*-
+
+:set -isrc:apps:tests:tests/Test:bench:bench/data
