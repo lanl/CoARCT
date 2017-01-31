@@ -12,6 +12,17 @@ target_link_libraries(struct-field-use
   z
  )
 
+add_executable(func-decl-lister
+  FuncLister.cc
+  )
+target_link_libraries(func-decl-lister
+  corct
+  ${CLANG_LIBRARIES}
+  ${LLVM_LIBRARIES}
+  ${TINFO_LIB}
+  z
+ )
+
 ##add_executable(while-loop-detect
 ##  WhileLoopFinder.cc
 ##  )
