@@ -12,10 +12,21 @@ target_link_libraries(struct-field-use
   z
  )
 
-add_executable(func-decl-lister
-  FuncLister.cc
+add_executable(func-decl-lister-rav
+  FuncListerRAV.cc
   )
-target_link_libraries(func-decl-lister
+target_link_libraries(func-decl-lister-rav
+  corct
+  ${CLANG_LIBRARIES}
+  ${LLVM_LIBRARIES}
+  ${TINFO_LIB}
+  z
+ )
+
+add_executable(func-decl-lister-am
+  FuncListerAM.cc
+  )
+target_link_libraries(func-decl-lister-am
   corct
   ${CLANG_LIBRARIES}
   ${LLVM_LIBRARIES}
