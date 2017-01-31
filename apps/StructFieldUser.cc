@@ -33,17 +33,20 @@ static cl::opt<std::string> target_struct_string(
 
 /** Print out in various possibly useful ways. */
 template <typename MapOMapOSet>
-void print_fields(MapOMapOSet const & m);
+void
+print_fields(MapOMapOSet const & m);
 
-int main(int argc, const char **argv) {
+int
+main(int argc, const char ** argv)
+{
   using namespace corct;
-  CommonOptionsParser opt_prs(argc, argv, SFUOpts,addl_help);
-  RefactoringTool Tool(opt_prs.getCompilations(),opt_prs.getSourcePathList());
-  vec_str targ_fns(split(target_struct_string,','));
+  CommonOptionsParser opt_prs(argc, argv, SFUOpts, addl_help);
+  RefactoringTool Tool(opt_prs.getCompilations(), opt_prs.getSourcePathList());
+  vec_str targ_fns(split(target_struct_string, ','));
   struct_field_user s_finder(targ_fns);
   struct_field_user::matchers_t field_matchers = s_finder.matchers();
   finder_t finder;
-  for(auto m:field_matchers){
+  for(auto m : field_matchers) {
     finder.addMatcher(m, &s_finder);
   }
   Tool.run(newFrontendActionFactory(&finder).get());
@@ -52,28 +55,26 @@ int main(int argc, const char **argv) {
   std::cout << "Fields accessed, but not written:\n";
   print_fields(s_finder.non_lhs_uses_);
   return 0;
-} // main
+}  // main
 
 template <typename MapOMapOSet>
-void print_fields(MapOMapOSet const & m)
+void
+print_fields(MapOMapOSet const & m)
 {
   using corct::string_t;
   corct::string_t tabs("");
-  for(auto map_it : m)
-  {
+  for(auto map_it : m) {
     string_t const s_name = (map_it.first);
-    for(auto mm_it : (map_it.second))
-    {
-      string_t const f_name =  mm_it.first;
+    for(auto mm_it : (map_it.second)) {
+      string_t const f_name = mm_it.first;
       // tabs = corct::add_tab(tabs);
-      for(auto membr : mm_it.second)
-      {
+      for(auto membr : mm_it.second) {
         std::cout << tabs << f_name << " " << s_name << " " << membr << "\n";
       }
       // tabs = corct::remove_tab(tabs);
     }
   }
   return;
-} // print_fields
+}  // print_fields
 
 // End of file
