@@ -49,4 +49,4 @@ CoARCT/build-clang-3.9.0 $ ./test/corct-unittests
 [  PASSED  ] 36 tests.
 ```
 
-Los Alamos National Security, LLC (LANS) owns the copyright to CoARCT, which it identifies internally as LA-CC-17-039. The license is BSD 3-Clause.
+Los Alamos National Security, LLC (LANS) owns the copyright to CoARCT, which it identifies internally as LA-CC-17-039. See the LICENSE file for license information.
