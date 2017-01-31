@@ -147,7 +147,6 @@ is_on_lhs(clang::MemberExpr const * membr, clang::ASTContext & ctx)
       if(bop->isAssignmentOp()) {
         Expr const * e((Expr *)membr);
         if(bop->getLHS() == e) {
-          // std::cout << "\t GET OUT!! that shit actually worked!\n";
           on_lhs = true;
         }
       } else if(bop->isCompoundAssignmentOp()) {
