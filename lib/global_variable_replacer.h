@@ -20,22 +20,21 @@
 namespace corct
 {
 // clang-format off
-/** \brief Match reference ("globalReference") to a
-  global variable named g_var_name ("varName") in a function
-  ("function"). */
-auto mk_global_var_matcher = [](std::string const & g_var_name){
+/** \brief Match reference (bound to gref_bind_name) to a
+  global variable named g_var_name in a function. */
+auto mk_global_var_matcher(str_t_cr g_var_name, str_t_cr gref_bind_name){
   using namespace clang::ast_matchers;
   return declRefExpr(
     to(
       varDecl(
         hasGlobalStorage()
        ,hasName(g_var_name)
-      ).bind("varName")
+      )
        )
-    ,hasAncestor(functionDecl().bind("function"))
-    ).bind("globalReference")
+    ,hasAncestor(functionDecl() )
+    ).bind(gref_bind_name)
   ;
-}; // mk_decl_matcher
+}; // mk_global_var_matcher
 // clang-format on
 
 /** \brief Replace use of a global variable with uses of a
@@ -44,12 +43,11 @@ class global_variable_replacer :
   public clang::ast_matchers::MatchFinder::MatchCallback {
 
 public :
-
   using matcher_t = clang::ast_matchers::StatementMatcher;
-
   using matchers_t = std::vector<matcher_t>;
-
   using replacements_t = clang::tooling::Replacements;
+
+  static const string_t gref_bind_name = "globalReference";
 
   /** \brief Constcorctor
     \param reps: pointer to clang::Replacements object, as in tool.getReplacements()
@@ -66,46 +64,41 @@ public :
     assert(old_globals_.size() == new_vars_.size());
   } // ctor
 
-
   /** Process a variable that matches the criteria. */
-  virtual void run(const clang::ast_matchers::MatchFinder::MatchResult &Result) {
+  virtual void run(result_t const & result)
+  {
     using namespace clang;
-    ASTContext *Context = Result.Context;
     SourceManager & src_manager(
-      const_cast<SourceManager &>(Context->getSourceManager()));
-
-    const DeclRefExpr * g_var = Result.Nodes.getNodeAs<DeclRefExpr>("globalReference");
-    if(g_var)
-    {
-      string_t const gvar_name = g_var -> getNameInfo().getAsString();
-      if(!in_vec(old_globals_, gvar_name))
-      {
+        const_cast<SourceManager &>(result.Context->getSourceManager()));
+    const DeclRefExpr * g_var =
+        result.Nodes.getNodeAs<DeclRefExpr>(gref_bind_name);
+    if(g_var) {
+      string_t const gvar_name = g_var->getNameInfo().getAsString();
+      if(!in_vec(old_globals_, gvar_name)) {
         return;
       }
       uint32_t idx = 0;
       while(gvar_name != old_globals_[idx]) idx++;
 
-      clang::tooling::Replacement rep =
-        replace_source_range(src_manager,g_var->getSourceRange(),new_vars_[idx]);
-      if(!dry_run_)
-      {
+      clang::tooling::Replacement rep = replace_source_range(
+          src_manager, g_var->getSourceRange(), new_vars_[idx]);
+      if(!dry_run_) {
         reps_->insert(rep);
       }
-      else
-      {
-        llvm::outs() << "global_var_replacer: replacement "
-          << rep.toString() << "\n";
+      else {
+        llvm::outs() << "global_var_replacer: replacement " << rep.toString()
+                     << "\n";
       }
     }
     return;
-  } // global_replacer::run
+  }  // global_replacer::run
 
   /** Generate a set of matchers */
-  matchers_t
-  matchers() const {
+  matchers_t matchers() const
+  {
     matchers_t ms;
-    for(auto & o : old_globals_){
-      ms.push_back(mk_global_var_matcher(o));
+    for(auto & o : old_globals_) {
+      ms.push_back(mk_global_var_matcher(o, gref_bind_name));
     }
     return ms;
   }
@@ -115,7 +108,7 @@ private:
   vec_str const old_globals_;
   vec_str const new_vars_;
   bool dry_run_;
-}; // class global_variable_replacer
+};  // class global_variable_replacer
 
 } // corct::
 
