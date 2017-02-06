@@ -199,5 +199,124 @@ TEST(mthd_call_matcher, case5_distinguishesBoundVsFree)
   EXPECT_EQ(exp_matches,run_case<Testr2>(code, tst));
 }
 
+// Now test the full expand_callsite class
+TEST(expand_callsite,case1_expands)
+{
+  string_t const code = "void f(int){return;} void g(){int i(42);f(i); return;}";
+  ASTUPtr ast; ASTContext * pctx; TranslationUnitDecl * decl;
+  std::tie(ast, pctx, decl) = prep_code(code);
+  expand_callsite::Base::replacements_t reps; // in 3.9, this is std::set
+  vec_str targs = {"f"};
+  string_t new_arg("boo");
+  expand_callsite ec(reps,targs,new_arg,false);
+  auto ms(ec.matchers());
+  finder_t finder;
+  for(auto & m: ms){
+    finder.addMatcher(m, &ec);
+  }
+  finder.matchAST(*pctx);
+  EXPECT_EQ(1u,reps.size());
+  replacement_t const & rep1(*reps.begin());
+  EXPECT_EQ("input.cc",rep1.getFilePath());
+  EXPECT_EQ(43u,rep1.getOffset());
+  EXPECT_EQ(0u,rep1.getLength());
+  EXPECT_EQ(", boo",rep1.getReplacementText());
+} // TEST(expand_callsite,expands)
+// case 2: no parameters in function
+TEST(expand_callsite,case2_expands)
+{
+  string_t const code = "void f(){return;} void g(){f(); return;}";
+  ASTUPtr ast; ASTContext * pctx; TranslationUnitDecl * decl;
+  std::tie(ast, pctx, decl) = prep_code(code);
+  expand_callsite::Base::replacements_t reps; // in 3.9, this is std::set
+  vec_str targs = {"f"};
+  string_t new_arg("boo");
+  expand_callsite ec(reps,targs,new_arg,false);
+  auto ms(ec.matchers());
+  finder_t finder;
+  for(auto & m: ms){
+    finder.addMatcher(m, &ec);
+  }
+  finder.matchAST(*pctx);
+  EXPECT_EQ(1u,reps.size());
+  replacement_t const & rep1(*reps.begin());
+  EXPECT_EQ("input.cc",rep1.getFilePath());
+  EXPECT_EQ(29u,rep1.getOffset());
+  EXPECT_EQ(0u,rep1.getLength());
+  EXPECT_EQ("boo",rep1.getReplacementText());
+} // TEST(expand_callsite,expands)
+// case 3: has a defaulted parameter in first spot (un-overridden in call)
+TEST(expand_callsite,case3_expands)
+{
+  string_t const code = "void f(int i = 42){return;} void g(){f(); return;}";
+  ASTUPtr ast; ASTContext * pctx; TranslationUnitDecl * decl;
+  std::tie(ast, pctx, decl) = prep_code(code);
+  expand_callsite::Base::replacements_t reps; // in 3.9, this is std::set
+  vec_str targs = {"f"};
+  string_t new_arg("boo");
+  bool const verbose(false);
+  expand_callsite ec(reps,targs,new_arg,false,verbose);
+  auto ms(ec.matchers());
+  finder_t finder;
+  for(auto & m: ms){
+    finder.addMatcher(m, &ec);
+  }
+  finder.matchAST(*pctx);
+  EXPECT_EQ(1u,reps.size());
+  replacement_t const & rep1(*reps.begin());
+  EXPECT_EQ("input.cc",rep1.getFilePath());
+  EXPECT_EQ(38u,rep1.getOffset());
+  EXPECT_EQ(0u,rep1.getLength());
+  EXPECT_EQ("boo",rep1.getReplacementText());
+} // TEST(expand_callsite,expands)
+// case 4: has a defaulted parameter in first spot (overridden in call)
+TEST(expand_callsite,case4_expands)
+{
+  string_t const code = "void f(int i = 42){return;} void g(){int i(43);f(i); return;}";
+  ASTUPtr ast; ASTContext * pctx; TranslationUnitDecl * decl;
+  std::tie(ast, pctx, decl) = prep_code(code);
+  expand_callsite::Base::replacements_t reps; // in 3.9, this is std::set
+  vec_str targs = {"f"};
+  string_t new_arg("boo");
+  bool const verbose(false);
+  expand_callsite ec(reps,targs,new_arg,false,verbose);
+  auto ms(ec.matchers());
+  finder_t finder;
+  for(auto & m: ms){
+    finder.addMatcher(m, &ec);
+  }
+  finder.matchAST(*pctx);
+  EXPECT_EQ(1u,reps.size());
+  replacement_t const & rep1(*reps.begin());
+  EXPECT_EQ("input.cc",rep1.getFilePath());
+  EXPECT_EQ(48u,rep1.getOffset());
+  EXPECT_EQ(0u,rep1.getLength());
+  EXPECT_EQ("boo",rep1.getReplacementText());
+} // TEST(expand_callsite,expands)
+// case 5: defaulted parameter after first spot (not overridden in call)
+TEST(expand_callsite,case5_expands)
+{
+  string_t const code = "void f(double d, int i = 42){return;} void g(){f(3.14159); return;}";
+  ASTUPtr ast; ASTContext * pctx; TranslationUnitDecl * decl;
+  std::tie(ast, pctx, decl) = prep_code(code);
+  expand_callsite::Base::replacements_t reps; // in 3.9, this is std::set
+  vec_str targs = {"f"};
+  string_t new_arg("boo");
+  bool const verbose(false);
+  expand_callsite ec(reps,targs,new_arg,false,verbose);
+  auto ms(ec.matchers());
+  finder_t finder;
+  for(auto & m: ms){
+    finder.addMatcher(m, &ec);
+  }
+  finder.matchAST(*pctx);
+  EXPECT_EQ(1u,reps.size());
+  replacement_t const & rep1(*reps.begin());
+  EXPECT_EQ("input.cc",rep1.getFilePath());
+  EXPECT_EQ(56u,rep1.getOffset());
+  EXPECT_EQ(0u,rep1.getLength());
+  EXPECT_EQ(", boo",rep1.getReplacementText());
+} // TEST(expand_callsite,expands)
+
 
 // End of file

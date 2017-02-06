@@ -7,11 +7,13 @@ void g(){
   return;
 }
 
+/*
+void f(){return;} void g(){f(); return;}
+*/
+
 void h(){return;}
 
 void i(){return h();}
-
-/*void f(){return;} void g(){f(); return;}*/
 
 struct S{
   void h(){return;}
@@ -33,3 +35,10 @@ void n(S s){ s->i();}
 /*
 struct S{  void h(){return;}  void i(){return;}};void n(S s){ s->i();}
 */
+
+// Example mixing bound methods and unbound functions with same name
+/*
+void h(){return;}void i(){return h();}struct S{  void h(){return;}  void i(){g(); return;}};void k(S & s){ s.h(); return;}
+*/
+
+// Examples for expand_callsite
