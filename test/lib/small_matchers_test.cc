@@ -3,6 +3,7 @@
 // Jan 05, 2017
 // (c) Copyright 2017 LANSLLC, all rights reserved
 
+#include "prep_code.h"
 #include "small_matchers.h"
 #include "clang/Frontend/FrontendActions.h"
 #include "clang/Tooling/Refactoring.h"
@@ -19,19 +20,6 @@ using namespace clang::ast_matchers;
 expression; compile to AST; count number of times matcher hits nodes. It's a lot
 of work to get around constructing a consistent AST subtree directly.
 */
-
-using ASTUPtr = std::unique_ptr<ASTUnit>;
-
-/**\brief Compile code fragment to AST.
-\param code: valid c++ code
-\return {unique_ptr<AST>,ASTContext *, TranslationDecl *}
-*/
-inline auto prep_code(str_t_cr code) {
-  ASTUPtr ast(clang::tooling::buildASTFromCode(code));
-  ASTContext* pctx = &(ast->getASTContext());
-  TranslationUnitDecl* decl = pctx->getTranslationUnitDecl();
-  return std::make_tuple(std::move(ast), pctx, decl);
-}
 
 struct Tests_ptr_ref : public callback_t {
   using matcher_t = StatementMatcher;
