@@ -39,6 +39,7 @@ clang::tooling::Replacement gen_new_call(
   ,clang::FunctionDecl *func_decl
   ,std::string const & new_arg_text
   ,clang::SourceManager const & sm
+  ,bool const verbose = false
   );
 
 clang::tooling::Replacement gen_signature_repl(

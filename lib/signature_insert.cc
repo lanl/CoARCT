@@ -31,6 +31,7 @@ Replacement gen_new_call(
   ,FunctionDecl *func_decl
   ,str_t_cr & new_arg_text
   ,SourceManager const & sm
+  ,bool const verbose
   )
 {
   using namespace clang;
@@ -44,14 +45,18 @@ Replacement gen_new_call(
   // branch below may be borken.
   SourceLocation call_start = call_expr -> getLocStart();
   SourceLocation call_end = call_expr -> getLocEnd();
-  std::cout << "call start: ";
-  corct::dumpLocation(call_start,&sm);
-  std::cout << "\ncall end: ";
-  corct::dumpLocation(call_end,&sm);
-  std::cout << "\n";
+  if(verbose){
+    std::cout << "call start: ";
+    corct::dumpLocation(call_start,&sm);
+    std::cout << "\ncall end: ";
+    corct::dumpLocation(call_end,&sm);
+    std::cout << "\n";
+  }
   if(0 == call_expr-> getNumArgs())
   {
-    HERE("0 args");
+    if(verbose){
+      HERE("0 args");
+    }
     // what location to use?
     return prepend_source_range(sm,call_expr -> getRParenLoc(),new_arg_text);
   }
@@ -62,26 +67,35 @@ Replacement gen_new_call(
     a_iter ait = call_expr -> arg_end();
     ait--;
     Expr *last(*ait);
-    corct::dumpSourceRange(last->getSourceRange(), &sm);
+    if(verbose){
+      corct::dumpSourceRange(last->getSourceRange(), &sm);
+    }
     rep_str << ", " << new_arg_text;
     return append_source_range(sm,last->getSourceRange(),rep_str.str());
   }
   else
   {
     a_iter ait = call_expr->arg_begin();
+    uint32_t n(0);
     for(p_iter pit = func_decl->param_begin(); pit!= func_decl->param_end(); ++pit,++ait)
     {
       ParmVarDecl *lastp(*pit);
+      n++;
       if(lastp->hasDefaultArg())
       {
         Expr *lasta(*--ait);
-        std::cout << "In default action: ";
-        corct::dumpSourceRange(lasta->getSourceRange(), &sm);
-        std::cout << "\n";
-        rep_str << ", " << new_arg_text;
-        std::cout << "In default action: ";
-        corct::dumpSourceRange(lasta->getSourceRange(), &sm);
-        std::cout << "\n";
+        if(verbose){
+          std::cout << "In default action: ";
+          corct::dumpSourceRange(lasta->getSourceRange(), &sm);
+          std::cout << "\n";
+        }
+        if(n>1){
+          rep_str << ", ";
+        }
+        rep_str << new_arg_text;
+        // std::cout << "In default action: ";
+        // corct::dumpSourceRange(lasta->getSourceRange(), &sm);
+        // std::cout << "\n";
         return append_source_range(sm,lasta->getSourceRange(),rep_str.str());
       }
     }
