@@ -45,8 +45,9 @@ auto mk_fn_call_matcher(
 // clang-format on
 
 // clang-format off
-/** Match a call to function with specified name, bound in "function". Pretty
- sure this won't pick up a function pointer (TODO need to check that).
+/** Match a call to bound member function with specified name, with
+node bound to 'fn_bind_name'. This will work with with object,
+reference, or pointer to object.
 */
 auto mk_mthd_call_matcher(
   std::string const & cs_bind_name,
@@ -56,15 +57,11 @@ auto mk_mthd_call_matcher(
   using namespace clang::ast_matchers;
   return cxxMemberCallExpr(
     unless(isExpansionInSystemHeader()),
-    hasDescendant(
-      declRefExpr(
-        to(
-          functionDecl(
-            hasName(targ_name)
-          ).bind(fn_bind_name)
-        )
-      )
-    )//.bind("recDecl")
+    callee(
+      cxxMethodDecl(
+        hasName(targ_name)
+      ).bind(fn_bind_name) // cxxMethodDecl
+    ) // callee
   ).bind(cs_bind_name);
 } // mk_mthd_call_matcher
 // clang-format on
