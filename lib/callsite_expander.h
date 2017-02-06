@@ -24,6 +24,7 @@ namespace corct {
  sure this won't pick up a function pointer (TODO need to check that).
 */
 auto mk_fn_call_matcher(
+  std::string const & cs_bind_name,
   std::string const & fn_bind_name,
   std::string const & targ_name)
 {
@@ -35,13 +36,39 @@ auto mk_fn_call_matcher(
         to(
           functionDecl(
             hasName(targ_name)
-          ).bind("func_decl")
+          ).bind(fn_bind_name)
         )
       )
     )//.bind("recDecl")
-  ).bind(fn_bind_name);
+  ).bind(cs_bind_name);
 } // mk_fn_call_matcher
 // clang-format on
+
+// clang-format off
+/** Match a call to function with specified name, bound in "function". Pretty
+ sure this won't pick up a function pointer (TODO need to check that).
+*/
+auto mk_mthd_call_matcher(
+  std::string const & cs_bind_name,
+  std::string const & fn_bind_name,
+  std::string const & targ_name)
+{
+  using namespace clang::ast_matchers;
+  return cxxMemberCallExpr(
+    unless(isExpansionInSystemHeader()),
+    hasDescendant(
+      declRefExpr(
+        to(
+          functionDecl(
+            hasName(targ_name)
+          ).bind(fn_bind_name)
+        )
+      )
+    )//.bind("recDecl")
+  ).bind(cs_bind_name);
+} // mk_mthd_call_matcher
+// clang-format on
+
 
 struct expand_callsite_traits {
   using matcher_t = clang::ast_matchers::StatementMatcher;
@@ -54,15 +81,16 @@ class expand_callsite
 public:
   using Base = function_replacement_generator<expand_callsite_traits>;
 
-  const string_t fn_bind_name = "callee";
+  const string_t fn_bind_name_ = "callee";
+  const string_t cs_bind_name_ = "callsite";
 
   void run(result_t const & result) override
   {
     using namespace clang;
     CallExpr * call_site =
-        const_cast<CallExpr *>(result.Nodes.getNodeAs<CallExpr>(fn_bind_name));
+        const_cast<CallExpr *>(result.Nodes.getNodeAs<CallExpr>(cs_bind_name_));
     FunctionDecl * func_decl = const_cast<FunctionDecl *>(
-        result.Nodes.getNodeAs<FunctionDecl>("func_decl"));
+        result.Nodes.getNodeAs<FunctionDecl>(fn_bind_name_));
     if(call_site && func_decl) {
       string_t callee_name = func_decl->getNameAsString();
       if(corct::in_vec(targets_, callee_name)) {
@@ -87,7 +115,7 @@ public:
 
   matcher_t mk_matcher(string_t const & t) const override
   {
-    return mk_fn_call_matcher(fn_bind_name, t);
+    return mk_fn_call_matcher(cs_bind_name_,fn_bind_name_, t);
   }
 
   expand_callsite(Base::replacements_t & reps,
