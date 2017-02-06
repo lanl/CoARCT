@@ -81,8 +81,8 @@ class expand_callsite
 public:
   using Base = function_replacement_generator<expand_callsite_traits>;
 
-  const string_t fn_bind_name_ = "callee";
-  const string_t cs_bind_name_ = "callsite";
+  static const string_t fn_bind_name_; // = "callee";
+  static const string_t cs_bind_name_; // = "callsite";
 
   void run(result_t const & result) override
   {
@@ -126,6 +126,9 @@ public:
   {}
 
 };  // expand_callsite
+
+const string_t expand_callsite::fn_bind_name_ = "callee";
+const string_t expand_callsite::cs_bind_name_ = "callsite";
 
 }  // corct::
 
