@@ -7,6 +7,10 @@ void g(){
   return;
 }
 
+void h(){return;}
+
+void i(){return h();}
+
 /*void f(){return;} void g(){f(); return;}*/
 
 struct S{

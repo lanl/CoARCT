@@ -187,6 +187,17 @@ TEST(mthd_call_matcher, case4_objectHit)
   uint32_t const exp_matches = 1u;
   EXPECT_EQ(exp_matches,run_case<Testr2>(code, tst));
 }
+TEST(mthd_call_matcher, case5_distinguishesBoundVsFree)
+{
+  string_t const code =
+    "void h(){return;}void i(){return h();}struct S{  void h(){return;}  void i(){ return;}};void k(S & s){ s.h(); return;}";
+  Testr2 tst(mk_mthd_call_matcher);
+  tst.cs_bind_name_ = "cs";
+  tst.fn_bind_name_ = "fn";
+  tst.targ_name_ = "h";
+  uint32_t const exp_matches = 1u;
+  EXPECT_EQ(exp_matches,run_case<Testr2>(code, tst));
+}
 
 
 // End of file
