@@ -72,7 +72,20 @@ struct expand_callsite_traits {
 };
 
 /**\brief Exoands function callsites by adding specified argument after the
-last non-default argument. */
+last non-default argument in every call to each target function. For example,
+given
+    void foo(int bar, double baz = 3.14159);
+and
+    expand_callsite ec(reps,{"foo","fi","fum"},"quz",false)
+then ec will replace
+    foo(ibar,dbaz);
+with
+    foo(ibar,quz,dbaz);
+and
+    foo(ibar);
+with
+    foo(ibar,quz);
+ */
 class expand_callsite
     : public function_replacement_generator<expand_callsite_traits> {
 public:
@@ -91,13 +104,17 @@ public:
     if(call_site && func_decl) {
       string_t callee_name = func_decl->getNameAsString();
       if(corct::in_vec(targets_, callee_name)) {
-        std::cout << "callsite_expander arrived at target function: "
-                  << callee_name << ":\n";
+        if(verbose_){
+          std::cout << "callsite_expander arrived at target function: "
+                    << callee_name << ":\n";
+        }
         clang::SourceManager & src_manager(const_cast<clang::SourceManager &>(
             result.Context->getSourceManager()));
         replacement_t rep =
-            gen_new_call(call_site, func_decl, new_str_, src_manager);
-        std::cout << "Suggested replacement: " << rep.toString() << "\n";
+            gen_new_call(call_site, func_decl, new_str_, src_manager, verbose_);
+        if(verbose_){
+          std::cout << "Suggested replacement: " << rep.toString() << "\n";
+        }
         if(!dry_run_) {
           reps_.insert(rep);
         }
@@ -118,10 +135,14 @@ public:
   expand_callsite(Base::replacements_t & reps,
                   vec_str const & targets,
                   str_t_cr new_arg,
-                  bool const dry_run)
+                  bool const dry_run,
+                  bool const verbose = false)
       : function_replacement_generator(reps, targets, new_arg, dry_run)
+      , verbose_(verbose)
   {}
 
+private:
+  bool const verbose_;
 };  // expand_callsite
 
 const string_t expand_callsite::fn_bind_name_ = "callee";
