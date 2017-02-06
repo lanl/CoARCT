@@ -47,7 +47,7 @@ public :
   using matchers_t = std::vector<matcher_t>;
   using replacements_t = clang::tooling::Replacements;
 
-  static const string_t gref_bind_name = "globalReference";
+  static const string_t gref_bind_name;
 
   /** \brief Constcorctor
     \param reps: pointer to clang::Replacements object, as in tool.getReplacements()
@@ -109,6 +109,9 @@ private:
   vec_str const new_vars_;
   bool dry_run_;
 };  // class global_variable_replacer
+
+const string_t global_variable_replacer::gref_bind_name = "globalReference";
+
 
 } // corct::
 
