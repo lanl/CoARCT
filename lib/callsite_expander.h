@@ -19,6 +19,8 @@
 #include <iostream>
 
 namespace corct {
+
+
 // clang-format off
 /** Match a call to function with specified name, bound in "function". Pretty
  sure this won't pick up a function pointer (TODO need to check that).
@@ -42,9 +44,7 @@ auto mk_fn_call_matcher(
     )//.bind("recDecl")
   ).bind(cs_bind_name);
 } // mk_fn_call_matcher
-// clang-format on
 
-// clang-format off
 /** Match a call to bound member function with specified name, with
 node bound to 'fn_bind_name'. This will work with with object,
 reference, or pointer to object.
@@ -66,12 +66,11 @@ auto mk_mthd_call_matcher(
 } // mk_mthd_call_matcher
 // clang-format on
 
-
 struct expand_callsite_traits {
   using matcher_t = clang::ast_matchers::StatementMatcher;
 };
 
-/**\brief Exoands function callsites by adding specified argument after the
+/**\brief Expands function callsites by adding specified argument after the
 last non-default argument in every call to each target function. For example,
 given
     void foo(int bar, double baz = 3.14159);
@@ -85,14 +84,19 @@ and
     foo(ibar);
 with
     foo(ibar,quz);
+
+This currently has the (potential) shortcoming that it's not very exact about
+the differences between free function calls and method calls. With a bit of
+work, it can be used for either. See TEST(expand_callsite,case6_method_expands)
+for an example of how this works.
  */
 class expand_callsite
     : public function_replacement_generator<expand_callsite_traits> {
 public:
   using Base = function_replacement_generator<expand_callsite_traits>;
 
-  static const string_t fn_bind_name_; // = "callee";
-  static const string_t cs_bind_name_; // = "callsite";
+  static const string_t fn_bind_name_;
+  static const string_t cs_bind_name_;
 
   void run(result_t const & result) override
   {

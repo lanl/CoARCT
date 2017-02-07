@@ -317,6 +317,41 @@ TEST(expand_callsite,case5_expands)
   EXPECT_EQ(0u,rep1.getLength());
   EXPECT_EQ(", boo",rep1.getReplacementText());
 } // TEST(expand_callsite,expands)
+TEST(expand_callsite,case6_method_expands)
+{
+  using EC = expand_callsite;
+  string_t const code =
+    "void f(){return;} void g(){f(); return;} struct S{  void h(){return;}  void i(){g();}};void k(S & s){ s.h(); return;}";
+  ASTUPtr ast; ASTContext * pctx; TranslationUnitDecl * decl;
+  std::tie(ast, pctx, decl) = prep_code(code);
+  EC::Base::replacements_t reps; // in 3.9, this is std::set
+  vec_str ftargs = {"f","g","h"};
+  string_t new_arg("boo");
+  EC ec(reps,ftargs,new_arg,false);
+  auto ms(ec.matchers());
+  finder_t finder;
+  for(auto & m: ms){
+    finder.addMatcher(m, &ec);
+  }
+  finder.addMatcher(
+      mk_mthd_call_matcher(EC::cs_bind_name_, EC::fn_bind_name_, "h"), &ec);
+  finder.matchAST(*pctx);
+  replacement_t er1("input.cc",29,0,"boo");
+  replacement_t er2("input.cc",82,0,"boo");
+  replacement_t er3("input.cc",106,0,"boo");
+  EC::Base::replacements_t exp_reps = {er1,er2,er3};
+  EXPECT_EQ(exp_reps.size(),reps.size());
+  using it_t = expand_callsite::Base::replacements_t::iterator;
+  it_t ri = reps.begin(),ei = exp_reps.begin();
+  for(; ri != reps.end() && ei != exp_reps.end(); ++ri,++ei){
+    bool const rep_ok = *ri == *ei;
+    if(!rep_ok){
+      std::cout << "rep: " << ri->toString() << ", expected: " << ei->toString()
+        << std::endl;
+    }
+    EXPECT_TRUE(rep_ok);
+  }
+} // TEST(expand_callsite,expands)
 
 
 // End of file
