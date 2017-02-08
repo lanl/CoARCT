@@ -56,10 +56,13 @@ public:
   {}
 
   virtual ~function_replacement_generator() {}
+
+  replacements_t const & get_replacements() const { return reps_;}
+
   // state
 protected:
   replacements_t & reps_;
-  vec_str const & targets_;
+  vec_str const & targets_; //!< function targets (used in function matchers)
   str_t_cr new_str_;
   bool const dry_run_;
 };  // replacement_generator
