@@ -18,16 +18,16 @@
 
 namespace corct
 {
-// clang-format off
-/** Match a function("function") declaration matching specified name
- that is not in a system header. */
-auto mk_fn_decl_matcher(std::string const & fn_name){
+/** Match a function (declaration bound to 'fn_bind_name') declaration
+ matching specified name that is not in a system header. */
+auto mk_fn_decl_matcher(str_t_cr fn_name, str_t_cr fn_bind_name){
   using namespace clang::ast_matchers;
+  // clang-format off
   return
     functionDecl(
       unless(isExpansionInSystemHeader()),
       hasName(fn_name)
-    ).bind("function");
+    ).bind(fn_bind_name);
 } // mk_fn_decl_matcher
 // clang-format on
 
@@ -43,18 +43,17 @@ class function_signature_expander :
   public function_replacement_generator<expand_signature_traits>{
 public :
   using Base = function_replacement_generator<expand_signature_traits>;
+  static const string_t fn_bind_name_;
 
   void run(result_t const & result) override {
     clang::FunctionDecl * func_decl = const_cast<clang::FunctionDecl *>(
-      result.Nodes.getNodeAs<clang::FunctionDecl>("function"));
+      result.Nodes.getNodeAs<clang::FunctionDecl>(fn_bind_name_));
     clang::SourceManager & src_manager(
       const_cast<clang::SourceManager &>(result.Context->getSourceManager()));
     if(func_decl){
-      std::cout << "In function: " << func_decl -> getNameAsString() << ":\n";
       replacement_t rep = gen_new_signature(func_decl,new_str_,src_manager);
       if(!dry_run_)
       {
-        HERE("Inserting replacement");
         reps_.insert(rep);
       }
     }
@@ -65,7 +64,7 @@ public :
   } // run
 
   matcher_t mk_matcher(str_t_cr target) const override {
-    return mk_fn_decl_matcher(target);
+    return mk_fn_decl_matcher(target,fn_bind_name_);
   }
 
   /** \brief Ctor
@@ -81,9 +80,9 @@ public :
     bool const dry_run)
     : Base(reps,targ_fns,new_param,dry_run)
   {} // ctor
-
 }; // function_signature_expander
 
+const string_t function_signature_expander::fn_bind_name_ = "fdecl";
 } // corct::
 
 #endif // include guard
