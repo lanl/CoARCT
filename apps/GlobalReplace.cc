@@ -167,8 +167,8 @@ main(int argc, const char ** argv)
   corct::global_variable_replacer::matchers_t global_ref_matchers =
       v_replacer.matchers();
   corct::function_signature_expander::matchers_t exp_matchers =
-      f_expander.matchers();
-  corct::expand_callsite::matchers_t site_matchers = s_expander.matchers();
+      f_expander.fn_matchers();
+  corct::expand_callsite::matchers_t site_matchers = s_expander.fn_matchers();
 
   std::cout << targ_fns.size() << " targets, along with " << exp_matchers.size()
             << " matchers\n";

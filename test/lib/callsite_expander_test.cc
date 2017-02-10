@@ -212,7 +212,7 @@ template <typename Tester>
 bool run_case_ec(string_t const & code, Tester & t, replacements_t const & reps_exp){
   ASTUPtr ast; ASTContext * pctx; TranslationUnitDecl * decl;
   std::tie(ast, pctx, decl) = prep_code(code);
-  auto ms(t.matchers());
+  auto ms(t.fn_matchers());
   finder_t finder;
   for(auto & m: ms){
     finder.addMatcher(m, &t);
@@ -314,7 +314,7 @@ TEST(expand_callsite,case6_method_expands)
 
   ASTUPtr ast; ASTContext * pctx; TranslationUnitDecl * decl;
   std::tie(ast, pctx, decl) = prep_code(code);
-  auto ms(ec.matchers());
+  auto ms(ec.fn_matchers());
   finder_t finder;
   for(auto & m: ms){
     finder.addMatcher(m, &ec);

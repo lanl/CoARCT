@@ -107,7 +107,8 @@ public:
         result.Nodes.getNodeAs<FunctionDecl>(fn_bind_name_));
     if(call_site && func_decl) {
       string_t callee_name = func_decl->getNameAsString();
-      if(corct::in_vec(targets_, callee_name)) {
+      if(corct::in_vec(fn_targets_, callee_name) ||
+         corct::in_vec(mthd_targets_, callee_name)) {
         if(verbose_){
           std::cout << "callsite_expander arrived at target function: "
                     << callee_name << ":\n";
@@ -131,9 +132,14 @@ public:
     return;
   }  // run
 
-  matcher_t mk_matcher(string_t const & t) const override
+  matcher_t mk_fn_matcher(string_t const & t) const override
   {
     return mk_fn_call_matcher(cs_bind_name_,fn_bind_name_, t);
+  }
+
+  matcher_t mk_mthd_matcher(string_t const & t) const override
+  {
+    return mk_mthd_call_matcher(cs_bind_name_,fn_bind_name_, t);
   }
 
   expand_callsite(Base::replacements_t & reps,

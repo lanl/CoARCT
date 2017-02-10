@@ -17,10 +17,15 @@ namespace corct {
 /** \brief Base class for simple function refactorizations.
 
 It supports generating a set of matchers for named targets (one matcher
-per target. It maintains state like a pointer to a Clang Replacements
+per target). It maintains state like a pointer to a Clang Replacements
 data structure. It maintains a string that indicates some kind of new
 text, such as a new parameter text or new argument text. Finally, it has a dry
 run indicator.
+
+The interface distinguishes between function targets and method targets. While
+both canbe handled by the same callback, they require different matchers. This
+actually allows the callback to distinguish between methods and free functions
+with the same name.
 */
 template <typename traits_t>
 class function_replacement_generator
@@ -36,23 +41,46 @@ public:
   virtual void run(const result_t & result) override = 0;
 
   /**\brief Generate an AST matcher for target function. */
-  virtual matcher_t mk_matcher(str_t_cr target) const = 0;
+  virtual matcher_t mk_fn_matcher(str_t_cr target) const = 0;
 
-  /** \brief Get a set of matchers to which derived class will respond. */
-  matchers_t matchers() const
+  /**\brief Generate an AST matcher for target function. */
+  virtual matcher_t mk_mthd_matcher(str_t_cr target) const = 0;
+
+  /** \brief Get a set of function matchers to which derived class will respond.
+   */
+  matchers_t fn_matchers() const
   {
     matchers_t ms;
-    for(auto const & t : targets_) {
-      ms.push_back(mk_matcher(t));
+    for(auto const & t : fn_targets_) {
+      ms.push_back(mk_fn_matcher(t));
+    }
+    return ms;
+  }
+
+  /** \brief Get a set of method matchers to which derived class will respond.
+   */
+  matchers_t mthd_matchers() const
+  {
+    matchers_t ms;
+    for(auto const & t : mthd_targets_) {
+      ms.push_back(mk_mthd_matcher(t));
     }
     return ms;
   }
 
   function_replacement_generator(replacements_t & reps,
-                                 vec_str const & targets,
+                                 vec_str const & fn_targets,
                                  str_t_cr new_str,
                                  bool const dry_run)
-      : reps_(reps), targets_(targets), new_str_(new_str), dry_run_(dry_run)
+      : reps_(reps), fn_targets_(fn_targets), new_str_(new_str), dry_run_(dry_run)
+  {}
+
+  function_replacement_generator(replacements_t & reps,
+                                 vec_str const & fn_targets,
+                                 vec_str const & mthd_targets,
+                                 str_t_cr new_str,
+                                 bool const dry_run)
+      : reps_(reps), fn_targets_(fn_targets), mthd_targets_(mthd_targets), new_str_(new_str), dry_run_(dry_run)
   {}
 
   virtual ~function_replacement_generator() {}
@@ -62,7 +90,8 @@ public:
   // state
 protected:
   replacements_t & reps_;
-  vec_str const & targets_; //!< function targets (used in function matchers)
+  vec_str const fn_targets_; //!< function targets
+  vec_str const mthd_targets_; //!< method targets
   str_t_cr new_str_;
   bool const dry_run_;
 };  // replacement_generator
