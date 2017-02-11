@@ -29,6 +29,15 @@ auto mk_fn_decl_matcher(str_t_cr fn_name, str_t_cr fn_bind_name){
       hasName(fn_name)
     ).bind(fn_bind_name);
 } // mk_fn_decl_matcher
+
+auto mk_mthd_decl_matcher(str_t_cr fn_name, str_t_cr fn_bind_name){
+  using namespace clang::ast_matchers;
+  return
+    cxxMethodDecl(
+      unless(isExpansionInSystemHeader()),
+      hasName(fn_name)
+    ).bind(fn_bind_name); // cxxMethodDecl
+}
 // clang-format on
 
 struct expand_signature_traits
@@ -63,8 +72,12 @@ public :
     return;
   } // run
 
-  matcher_t mk_matcher(str_t_cr target) const override {
+  matcher_t mk_fn_matcher(str_t_cr target) const override {
     return mk_fn_decl_matcher(target,fn_bind_name_);
+  }
+
+  matcher_t mk_mthd_matcher(str_t_cr target) const override {
+    return mk_mthd_decl_matcher(target,fn_bind_name_);
   }
 
   /** \brief Ctor

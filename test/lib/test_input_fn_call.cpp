@@ -41,4 +41,13 @@ struct S{  void h(){return;}  void i(){return;}};void n(S s){ s->i();}
 void h(){return;}void i(){return h();}struct S{  void h(){return;}  void i(){g(); return;}};void k(S & s){ s.h(); return;}
 */
 
+void p(int i=42);
+
+void q(int foo, double pi = 3.2);
+
+/*
+void p(int i=42); void q(int foo, double pi = 3.2);
+
+*/
+
 // Examples for expand_callsite
