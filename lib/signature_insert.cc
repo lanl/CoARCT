@@ -207,7 +207,6 @@ Replacement gen_new_signature(
     p_iter pit = f_decl-> param_end();
     pit--;
     ParmVarDecl *last(*pit);
-    dumpSourceRange(last->getSourceRange(),&sm);
     rep_str << ", " << new_param_text;
     return append_source_range(sm,last->getSourceRange(),rep_str.str());
   }// if(!has_defaults)
