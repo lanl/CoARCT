@@ -4,6 +4,7 @@
 // (c) Copyright 2017 LANSLLC, all rights reserved
 
 /* Tests of utilities that build on clang */
+#include "prep_code.h"
 #include "utilities.h"
 #include "gtest/gtest.h"
 #include "clang/Tooling/Tooling.h"
@@ -20,19 +21,6 @@ expression; compile to AST; use matcher to extract interesting node; apply
 function to interesting node. It's a lot of work to get around constructing a
 consistent AST subtree directly.
 */
-
-using ASTUPtr = std::unique_ptr<ASTUnit>;
-
-/**\brief Compile code fragment to AST.
-\param code: valid c++ code
-\return {unique_ptr<AST>,ASTContext *, TranslationDecl *}
-*/
-inline auto prep_code(str_t_cr code) {
-  ASTUPtr ast(clang::tooling::buildASTFromCode(code));
-  ASTContext* pctx = &(ast->getASTContext());
-  TranslationUnitDecl* decl = pctx->getTranslationUnitDecl();
-  return std::make_tuple(std::move(ast), pctx, decl);
-}
 
 // is_on_lhs:
 struct Tests_On_LHS : public callback_t {

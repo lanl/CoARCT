@@ -4,27 +4,13 @@
 // (c) Copyright 2017 LANSLLC, all rights reserved
 
 #include "global_matchers.h"
+#include "prep_code.h"
 #include "gtest/gtest.h"
 #include <tuple>
 
 using namespace corct;
 using namespace clang;
 using namespace clang::ast_matchers;
-
-using ASTUPtr = std::unique_ptr<ASTUnit>;
-
-/**\brief Compile code fragment to AST.
-\param code: valid c++ code
-\return {unique_ptr<AST>,ASTContext *, TranslationDecl *}
-*/
-inline auto
-prep_code(str_t_cr code)
-{
-  ASTUPtr ast(clang::tooling::buildASTFromCode(code));
-  ASTContext * pctx = &(ast->getASTContext());
-  TranslationUnitDecl * decl = pctx->getTranslationUnitDecl();
-  return std::make_tuple(std::move(ast), pctx, decl);
-}
 
 template <typename Match_Maker_t>
 struct Tests_global : public callback_t {
@@ -65,9 +51,7 @@ template <typename Tester>
 inline uint32_t
 run_case(str_t_cr code, Tester & tst)
 {
-  ASTUPtr ast;
-  ASTContext * pctx;
-  TranslationUnitDecl * decl;
+  ASTUPtr ast; ASTContext * pctx; TranslationUnitDecl * decl;
   std::tie(ast, pctx, decl) = prep_code(code);
   // decl->dump(); // uncomment for debugging
   auto m(tst.matcher());

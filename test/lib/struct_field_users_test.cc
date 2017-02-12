@@ -3,6 +3,7 @@
 // Jan 06, 2017
 // (c) Copyright 2017 LANSLLC, all rights reserved
 
+#include "prep_code.h"
 #include "struct_field_user.h"
 #include "gtest/gtest.h"
 #include <tuple>
@@ -10,21 +11,6 @@
 using namespace corct;
 using namespace clang;
 using namespace clang::ast_matchers;
-
-using ASTUPtr = std::unique_ptr<ASTUnit>;
-
-/**\brief Compile code fragment to AST.
-\param code: valid c++ code
-\return {unique_ptr<AST>,ASTContext *, TranslationDecl *}
-*/
-inline auto
-prep_code(str_t_cr code)
-{
-  ASTUPtr ast(clang::tooling::buildASTFromCode(code));
-  ASTContext * pctx = &(ast->getASTContext());
-  TranslationUnitDecl * decl = pctx->getTranslationUnitDecl();
-  return std::make_tuple(std::move(ast), pctx, decl);
-}
 
 inline uint32_t
 run_case(str_t_cr code, struct_field_user & tst){

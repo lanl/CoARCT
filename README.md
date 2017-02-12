@@ -1,3 +1,5 @@
+Note: this is the cleanup branch, with various things that need tidying. You almost certainly want to see clang-3.9.0.
+
 # CoARCT
 Code Analysis and Refactoring with Clang Tools
 
