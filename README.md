@@ -33,20 +33,20 @@ Currently known to work with Clang 3.9.0 and Clang 3.8.0.
 2. Clone the repository
 3. Create a build directory
 ```
-CoARCT $ mkdir build-clang-3.9.0
-CoARCT $ cd build-clang-3.9.0
+/home/CoARCT $ mkdir build-clang-3.9.0
+/home/CoARCT $ cd build-clang-3.9.0
 ```
 4. Run cmake, make
 ```
-CoARCT/build-clang-3.9.0 $ cmake ..
-CoARCT/build-clang-3.9.0 $ make
+/home/CoARCT/build-clang-3.9.0 $ cmake ..
+/home/CoARCT/build-clang-3.9.0 $ make
 ```
 5. Run the unit tests
 ```
-CoARCT/build-clang-3.9.0 $ ./test/corct-unittests
+/home/CoARCT/build-clang-3.9.0 $ ./test/corct-unittests
 ...
-[==========] 36 tests from 7 test cases ran. (44 ms total)
-[  PASSED  ] 36 tests.
+[==========] 55 tests from 11 test cases ran. (139 ms total)
+[  PASSED  ] 55 tests.
 ```
 
 Los Alamos National Security, LLC (LANS) owns the copyright to CoARCT, which it identifies internally as LA-CC-17-039. See the LICENSE file for license information.
