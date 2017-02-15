@@ -3,6 +3,9 @@
 // Feb 14, 2017
 // (c) Copyright 2017 LANSLLC, all rights reserved
 
+/* Find all C struct fields declared with a typedef; report the typedef and
+ * underlying (desugared) type. Ignores fields declared as builtin types. */
+
 #include "dump_things.h"
 #include "make_replacement.h"
 #include "types.h"
@@ -16,7 +19,6 @@
 
 using namespace clang::tooling;
 using namespace llvm;
-using corct::string_t;
 
 struct Typedef_Reporter
     : public clang::ast_matchers::MatchFinder::MatchCallback {
@@ -44,14 +46,14 @@ struct Typedef_Reporter
     TypedefType * tt = const_cast<TypedefType *>(
         result.Nodes.getNodeAs<TypedefType>(ty_bd_name_));
     if(f_decl && tt) {
-      string_t const struct_name = f_decl->getParent()->getNameAsString();
-      string_t const fld_name = f_decl->getNameAsString();
+      std::string const struct_name = f_decl->getParent()->getNameAsString();
+      std::string const fld_name = f_decl->getNameAsString();
       QualType qt = tt->desugar();
-      string_t const ty_name = qt.getAsString();
+      std::string const ty_name = qt.getAsString();
       QualType ut = tt->getDecl()->getUnderlyingType();
-      string_t ut_name = ut.getAsString();
+      std::string ut_name = ut.getAsString();
       TypedefNameDecl * tnd = tt->getDecl();
-      string_t tnd_name = tnd->getNameAsString();
+      std::string tnd_name = tnd->getNameAsString();
       std::cout << "Struct '" << struct_name << "'' declares field '"
                 << fld_name << " with typedef name = '" << tnd_name << "'"
                 << ", underlying type = '" << ut_name << "'" << std::endl;
@@ -62,7 +64,6 @@ struct Typedef_Reporter
     }
     return;
   }  // run
-
 };  // struct Typedef_Reporter
 
 static llvm::cl::OptionCategory TROpts("Common options for typedef-report");
@@ -75,9 +76,6 @@ main(int argc, const char ** argv)
   using namespace corct;
   CommonOptionsParser opt_prs(argc, argv, TROpts, addl_help);
   RefactoringTool Tool(opt_prs.getCompilations(), opt_prs.getSourcePathList());
-  // vec_str targ_fns(split(target_struct_string, ','));
-  // struct_field_user s_finder(targ_fns);
-  // struct_field_user::matchers_t field_matchers = s_finder.matchers();
   Typedef_Reporter tr;
   finder_t finder;
   finder.addMatcher(tr.matcher(), &tr);
