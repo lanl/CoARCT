@@ -1,5 +1,4 @@
 // test_input_struct_field_user.cc
-// T. M. Kelley
 // Jan 06, 2017
 // (c) Copyright 2017 LANSLLC, all rights reserved
 
