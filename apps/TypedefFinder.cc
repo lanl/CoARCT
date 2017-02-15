@@ -45,13 +45,13 @@ struct Typedef_Reporter
     TypedefType * tt = const_cast<TypedefType *>(
         result.Nodes.getNodeAs<TypedefType>(ty_bd_name_));
     if(f_decl && tt) {
+      // QualType qt = tt->desugar();   // good to see
+      QualType ut = tt->getDecl()->getUnderlyingType();
+      TypedefNameDecl * tnd = tt->getDecl();
       std::string const struct_name = f_decl->getParent()->getNameAsString();
       std::string const fld_name = f_decl->getNameAsString();
-      QualType qt = tt->desugar();
-      std::string const ty_name = qt.getAsString();
-      QualType ut = tt->getDecl()->getUnderlyingType();
+      // std::string const ty_name = qt.getAsString();
       std::string ut_name = ut.getAsString();
-      TypedefNameDecl * tnd = tt->getDecl();
       std::string tnd_name = tnd->getNameAsString();
       std::cout << "Struct '" << struct_name << "' declares field '"
                 << fld_name << " with typedef name = '" << tnd_name << "'"
