@@ -36,14 +36,17 @@ Currently known to work with Clang 3.9.0 and Clang 3.8.0.
 2. Clone the repository
 
 3. Create a build directory
+
 ```    /home/CoARCT $ mkdir build-clang-3.9.0
     /home/CoARCT $ cd build-clang-3.9.0```
 
 4. Run cmake, make
+
 ```    /home/CoARCT/build-clang-3.9.0 $ cmake ..
     /home/CoARCT/build-clang-3.9.0 $ make```
 
 5. Run the unit tests
+
 ```    /home/CoARCT/build-clang-3.9.0 $ ./test/corct-unittests
     ...
     [==========] 55 tests from 11 test cases ran. (139 ms total)
