@@ -1,5 +1,4 @@
 // struct_field_user.h
-// T. M. Kelley
 // Oct 13, 2016
 // (c) Copyright 2016 LANSLLC, all rights reserved
 

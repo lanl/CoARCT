@@ -1,5 +1,4 @@
 // callsite_expander.h
-// T. M. Kelley
 // Oct 06, 2016
 // (c) Copyright 2016 LANSLLC, all rights reserved
 

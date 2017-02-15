@@ -1,5 +1,4 @@
 // dump_things.h
-// T. M. Kelley
 // Sep 16, 2016
 // (c) Copyright 2016 LANSLLC, all rights reserved
 

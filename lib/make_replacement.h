@@ -1,5 +1,4 @@
 // make_replacement.h
-// T. M. Kelley
 // Aug 19, 2016
 // (c) Copyright 2016 LANSLLC, all rights reserved
 
