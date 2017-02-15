@@ -44,7 +44,8 @@ Currently known to work with Clang 3.9.0 and Clang 3.8.0.
 
 5. Run the unit tests
 
-```    /home/CoARCT/build-clang-3.9.0 $ ./test/corct-unittests
+```
+/home/CoARCT/build-clang-3.9.0 $ ./test/corct-unittests
     ...
     [==========] 55 tests from 11 test cases ran. (139 ms total)
     [  PASSED  ] 55 tests.
