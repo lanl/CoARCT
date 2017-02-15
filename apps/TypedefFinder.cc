@@ -54,7 +54,7 @@ struct Typedef_Reporter
       std::string ut_name = ut.getAsString();
       TypedefNameDecl * tnd = tt->getDecl();
       std::string tnd_name = tnd->getNameAsString();
-      std::cout << "Struct '" << struct_name << "'' declares field '"
+      std::cout << "Struct '" << struct_name << "' declares field '"
                 << fld_name << " with typedef name = '" << tnd_name << "'"
                 << ", underlying type = '" << ut_name << "'" << std::endl;
     }
