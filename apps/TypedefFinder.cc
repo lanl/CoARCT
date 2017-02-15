@@ -44,8 +44,13 @@ struct Typedef_Reporter : public corct::callback_t{
       string_t const fld_name = f_decl->getNameAsString();
       QualType qt = tt->desugar();
       string_t const ty_name = qt.getAsString();
-      std::cout << "Struct " << struct_name << " declares field: "
-        << fld_name  << " with desugared type '" << ty_name << "'" << std::endl;
+      QualType ut = tt->getDecl()->getUnderlyingType();
+      string_t ut_name = ut.getAsString();
+      TypedefNameDecl * tnd = tt->getDecl();
+      string_t tnd_name = tnd->getNameAsString();
+      std::cout << "Struct '" << struct_name << "'' declares field '"
+                << fld_name << " with typedef name = '" << tnd_name << "'"
+                << ", underlying type = '" << ut_name << "'" << std::endl;
     }
     else{
       corct::check_ptr(f_decl,"f_decl");
