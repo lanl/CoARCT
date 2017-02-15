@@ -18,28 +18,32 @@ using namespace clang::tooling;
 using namespace llvm;
 using corct::string_t;
 
-struct Typedef_Reporter : public corct::callback_t{
-  string_t const ty_bd_name_ = "type_decl";
-  string_t const fd_bd_name_ = "fld_decl";
+struct Typedef_Reporter
+    : public clang::ast_matchers::MatchFinder::MatchCallback {
+  std::string const ty_bd_name_ = "type_decl";
+  std::string const fd_bd_name_ = "fld_decl";
 
-  auto matcher(){
+  auto matcher()
+  {
     using namespace clang::ast_matchers;
+    // clang-format off
     return
     fieldDecl(
       hasType(
         typedefType().bind(ty_bd_name_)
       )//hasType
     ).bind(fd_bd_name_);
-  } // mathcer
+    // clang-format on
+  }  // mathcer
 
-  virtual
-  void run(corct::result_t const & result) override {
+  virtual void run(corct::result_t const & result) override
+  {
     using namespace clang;
     FieldDecl * f_decl =
         const_cast<FieldDecl *>(result.Nodes.getNodeAs<FieldDecl>(fd_bd_name_));
     TypedefType * tt = const_cast<TypedefType *>(
         result.Nodes.getNodeAs<TypedefType>(ty_bd_name_));
-    if(f_decl && tt){
+    if(f_decl && tt) {
       string_t const struct_name = f_decl->getParent()->getNameAsString();
       string_t const fld_name = f_decl->getNameAsString();
       QualType qt = tt->desugar();
@@ -52,14 +56,14 @@ struct Typedef_Reporter : public corct::callback_t{
                 << fld_name << " with typedef name = '" << tnd_name << "'"
                 << ", underlying type = '" << ut_name << "'" << std::endl;
     }
-    else{
-      corct::check_ptr(f_decl,"f_decl");
-      corct::check_ptr(tt,"tt");
+    else {
+      corct::check_ptr(f_decl, "f_decl");
+      corct::check_ptr(tt, "tt");
     }
     return;
-  } // run
+  }  // run
 
-}; // struct Typedef_Reporter
+};  // struct Typedef_Reporter
 
 static llvm::cl::OptionCategory TROpts("Common options for typedef-report");
 
