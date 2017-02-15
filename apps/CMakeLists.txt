@@ -1,6 +1,17 @@
 include_directories ("${PROJECT_SOURCE_DIR}/lib")
 
 
+add_executable(typedef-report
+  TypedefFinder.cc
+  )
+target_link_libraries(typedef-report
+  corct
+  ${CLANG_LIBRARIES}
+  ${LLVM_LIBRARIES}
+  ${TINFO_LIB}
+  z
+ )
+
 add_executable(global-replace
   GlobalReplace.cc
   )
