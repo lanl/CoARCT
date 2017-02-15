@@ -32,13 +32,17 @@ Currently known to work with Clang 3.9.0 and Clang 3.8.0.
     CLANG_LIB_DIR: points to where Clang libraries are installed. (e.g. ${HOME}/llvm/clang+llvm-3.9.0-x86_64-apple-darwin/lib)
     LibClang_INCLUDE_DIR: where Clang headers reside (e.g. ${HOME}/llvm/clang+llvm-3.9.0-x86_64-apple-darwin/include)
 ```
+
 2. Clone the repository
+
 3. Create a build directory
 ```    /home/CoARCT $ mkdir build-clang-3.9.0
     /home/CoARCT $ cd build-clang-3.9.0```
+
 4. Run cmake, make
 ```    /home/CoARCT/build-clang-3.9.0 $ cmake ..
     /home/CoARCT/build-clang-3.9.0 $ make```
+
 5. Run the unit tests
 ```    /home/CoARCT/build-clang-3.9.0 $ ./test/corct-unittests
     ...
