@@ -1,5 +1,4 @@
 // FuncListerRAV.cc
-// T. M. Kelley
 // Jan 25, 2017
 // (c) Copyright 2017 LANSLLC, all rights reserved
 

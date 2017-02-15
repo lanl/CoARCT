@@ -1,5 +1,4 @@
 // GlobalDetect.cc
-// T. M. Kelley
 // Oct. 6, 2016
 // (c) Copyright 2016-7 LANSLLC, all rights reserved
 

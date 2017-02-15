@@ -1,5 +1,4 @@
 // FuncListerAM.cc
-// T. M. Kelley
 // Jan 26, 2017
 // (c) Copyright 2017 LANSLLC, all rights reserved
 

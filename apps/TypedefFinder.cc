@@ -1,5 +1,4 @@
 // TypedefFinder.cc
-// T. M. Kelley
 // Feb 14, 2017
 // (c) Copyright 2017 LANSLLC, all rights reserved
 

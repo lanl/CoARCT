@@ -1,6 +1,4 @@
-
 // LoopConvert.cc
-// T. M. Kelley
 // Aug 17, 2016
 // (c) Copyright 2016 LANSLLC, all rights reserved
 
