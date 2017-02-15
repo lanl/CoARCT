@@ -25,13 +25,11 @@ Currently known to work with Clang 3.9.0 and Clang 3.8.0.
 ## Build
 
 1. Define these environment variables
-```
     GTEST_DIR: Top level directory of google test installation
     TINFO_LIB_DIR: points to where libtinfo.a is installed.
     LLVM_LIB_DIR: points to where LLVM libraries are installed (e.g. ${HOME}/llvm/clang+llvm-3.9.0-x86_64-apple-darwin/lib)
     CLANG_LIB_DIR: points to where Clang libraries are installed. (e.g. ${HOME}/llvm/clang+llvm-3.9.0-x86_64-apple-darwin/lib)
     LibClang_INCLUDE_DIR: where Clang headers reside (e.g. ${HOME}/llvm/clang+llvm-3.9.0-x86_64-apple-darwin/include)
-```
 2. Clone the repository
 3. Create a build directory
 
