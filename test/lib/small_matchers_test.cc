@@ -1,5 +1,4 @@
 // test_small_matchers.cc
-// T. M. Kelley
 // Jan 05, 2017
 // (c) Copyright 2017 LANSLLC, all rights reserved
 

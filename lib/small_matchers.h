@@ -1,5 +1,4 @@
 // small_matchers.h
-// T. M. Kelley
 // Dec 06, 2016
 // (c) Copyright 2016 LANSLLC, all rights reserved
 

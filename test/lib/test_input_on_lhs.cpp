@@ -1,5 +1,4 @@
 // test_input_on_lhs.cc
-// T. M. Kelley
 // Jan 03, 2017
 // (c) Copyright 2017 LANSLLC, all rights reserved
 

@@ -1,5 +1,4 @@
 // TypedefFinder.cc
-// T. M. Kelley
 // Feb 14, 2017
 // (c) Copyright 2017 LANSLLC, all rights reserved
 
@@ -36,10 +35,10 @@ struct Typedef_Reporter
       )//hasType
     ).bind(fd_bd_name_);
     // clang-format on
-  }  // mathcer
+  }  // matcher
 
-  virtual void run(corct::result_t const & result) override
-  {
+  virtual
+  void run(corct::result_t const & result) override {
     using namespace clang;
     FieldDecl * f_decl =
         const_cast<FieldDecl *>(result.Nodes.getNodeAs<FieldDecl>(fd_bd_name_));
