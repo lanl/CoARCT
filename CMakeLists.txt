@@ -48,8 +48,10 @@ APPEND_CLANG_LIB(LLVMSupport)
 APPEND_CLANG_LIB(LLVMCore)
 
 # derived from looking at clang++ -v
+
 set(LocalLibClang_DEFINITIONS -fPIC -fvisibility-inlines-hidden -Wall -W -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wmissing-field-initializers -pedantic -Wno-long-long -Wcovered-switch-default -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Werror=date-time -std=c++14 -O3 -DNDEBUG  -fno-exceptions -fno-rtti -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS)
 add_definitions(${LocalLibClang_DEFINITIONS})
+
 
 include_directories($ENV{LibClang_INCLUDE_DIR})
 
@@ -64,6 +66,18 @@ if(${TINFO_LIB-NOTFOUND})
 else()
   set(TINFO_LIBS ${TINFO_LIBS} ${TINFO_LIB})
 endif()
+
+# 1. ----------- Boost -----------
+if (NOT DEFINED BOOST_INCLUDE_DIR)
+  if (DEFINED ENV{BOOST_DIR})
+    set(BOOST_INCLUDE_DIR $ENV{BOOST_DIR})
+    message(STATUS "BOOST_INCLUDE_DIR is ${BOOST_INCLUDE_DIR}")
+  else()
+    message(ERROR "Error: environment variable BOOST_DIR is not defined.")
+    return()
+  endif()
+endif()
+include_directories(${BOOST_INCLUDE_DIR})
 
 # 2. ---------- Library ----------
 add_subdirectory(lib)
