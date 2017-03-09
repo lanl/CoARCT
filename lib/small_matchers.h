@@ -64,17 +64,15 @@ match_arrow_next(str_t_cr bd_var_nm,
   using namespace clang::ast_matchers;
 // clang-format off
   return
-    // ignoringImpCasts(
-      memberExpr(
-        isArrow(),
-        member(
-          hasName("next")
-        )
-       ,hasDescendant(
-          mk_ptr_matcher(bd_var_nm,bd_ref_nm,ptr_var_nm)
-        )// hasDescendant
-      )//memberExpr
-    // ) // ignoringImpCasts
+    memberExpr(
+      isArrow(),
+      member(
+        hasName("next")
+      )
+     ,hasDescendant(
+        mk_ptr_matcher(bd_var_nm,bd_ref_nm,ptr_var_nm)
+      )// hasDescendant
+    )//memberExpr
   ;
 // clang-format on
 } // match_arrow_next
