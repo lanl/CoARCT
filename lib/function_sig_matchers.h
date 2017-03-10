@@ -23,12 +23,7 @@ template <class T>
 string_t
 type_as_string()
 {
-  std::stringstream type_strm;
-  if(std::is_const<T>::value) {
-    type_strm << "const ";
-  }
-  type_strm << boost::typeindex::type_id<T>().pretty_name();
-  return type_strm.str();
+  return boost::typeindex::type_id<T>().pretty_name();
 }  // type_as_string
 
 /**\brief Generate a matcher to parameter n, of type T.
@@ -38,7 +33,6 @@ template <size_t n, typename T>
 auto
 param_matcher()
 {
-  // printf("%s:%i\n", __PRETTY_FUNCTION__, __LINE__);
   using namespace clang::ast_matchers;
   std::stringstream pstr;
   pstr << "parm" << n;
@@ -97,9 +91,7 @@ allOf_params_impl(std::index_sequence<Us...>)
   return clang::ast_matchers::allOf(param_matcher<Us, Ts>()...);
 }
 
-template <class C>
-struct Function_Sig {
-};
+template <class C> struct Function_Sig {};
 
 template <typename Ret_T, typename... Args>
 struct Function_Sig<Ret_T (*)(Args...)> {
@@ -107,7 +99,6 @@ struct Function_Sig<Ret_T (*)(Args...)> {
 
   static auto func_sig_matcher()
   {
-    // std::cout << __PRETTY_FUNCTION__ << std::endl;
     using namespace clang::ast_matchers;
     return functionDecl(ret_type_matcher(), params_matcher()).bind("fdecl");
   }  // func_sig_matcher
