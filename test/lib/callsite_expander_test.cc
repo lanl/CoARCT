@@ -28,7 +28,7 @@ run_case(str_t_cr code, Tester & tst)
   finder.addMatcher(m, &tst);
   finder.matchAST(*pctx);
   return tst.matched_;
-}
+} // run_case
 
 template <typename Match_Maker_t>
 struct Tests_fn_call_matcher : public callback_t {

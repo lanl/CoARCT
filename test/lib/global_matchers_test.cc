@@ -175,6 +175,7 @@ TEST(Global_Printer, case1_HitFunction)
 {
   std::stringstream s;
   Global_Printer gp(s);
+  clearLocation();
   string_t const code = "int global_i;void f(){  global_i = 1;}";
   string_t exp_str =
       "In function 'f' 'global_i' referred to at <input.cc:1:25>\n";

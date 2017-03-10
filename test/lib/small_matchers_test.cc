@@ -165,4 +165,18 @@ TEST(arrow_matcher,case4_MissesNonArrowRefs){
   EXPECT_EQ(run_case_ptr_match(code,tam),exp_matches);
 }
 
+TEST(count_public,public2){
+  string_t code = "class A{public: int a; public: int b;};";
+  ASTUPtr ast; ASTContext * pctx; TranslationUnitDecl * decl;
+  std::tie(ast, pctx, decl) = prep_code(code);
+  finder_t finder;
+  count_public cp;
+  auto m = cp.matcher();
+  finder.addMatcher(m,&cp);
+  finder.matchAST(*pctx);
+  count_public::map_t & map(cp.public_count_);
+  EXPECT_EQ(1u,map.size());
+  EXPECT_EQ(2u,map["A"]);
+}
+
 // End of file

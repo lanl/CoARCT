@@ -21,7 +21,7 @@ TEST(utilities, here) {
   calls_here();
   // restore cout
   std::cout.rdbuf(orig_buf);
-  string_t exp_str = "calls_here:15: hola, testy amigos!\n";
+  string_t exp_str = "calls_here:14: hola, testy amigos!\n";
   EXPECT_EQ(exp_str, s.str());
 }  // TEST(utilities, here)
 
