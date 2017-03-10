@@ -79,6 +79,8 @@ if (NOT DEFINED BOOST_INCLUDE_DIR)
 endif()
 include_directories(${BOOST_INCLUDE_DIR})
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
+
 # 2. ---------- Library ----------
 add_subdirectory(lib)
 
