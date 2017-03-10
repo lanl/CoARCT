@@ -1,7 +1,7 @@
 # CoARCT
 Code Analysis and Refactoring with Clang Tools
 
-CoARCT (pronounced like the word "corked") is a small set of tools built on the Clang tools. It demonstrates some more sustained examples of refactoring and analyzing code with AST Matchers and the clang Refactoring Tool.
+CoARCT (pronounced like the word "corked") is a small set of tools built on Clang's LibTooling. CoARCT demonstrates some more sustained examples of refactoring and analyzing code with AST Matchers and the clang Refactoring Tool.
 
 It includes library code and command line drivers that go beyond some of the (excellent!) tutorials that are available. The CoARCT examples are drawn from refactoring legacy codes:
 * Reporting which functions use which global variables;
