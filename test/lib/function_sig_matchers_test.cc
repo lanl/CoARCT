@@ -143,5 +143,13 @@ TEST(function_sig_matcher,case7_Hit_Volatile){
   run_case<fsig_matcher_test,ftype>(code,tester);
   EXPECT_EQ(0u,tester.matched_);
 }
+// double p(){return double();}
+// TEST(function_sig_matcher,case7_Hit_NoArgs){
+//   using ftype = decltype(&p);
+//   string_t code = "double q(){}";
+//   fsig_matcher_test tester;
+//   run_case<fsig_matcher_test,ftype>(code,tester);
+//   EXPECT_EQ(1u,tester.matched_);
+// }
 
 // End of file
