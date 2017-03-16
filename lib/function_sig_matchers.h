@@ -46,37 +46,21 @@ param_matcher()
   if(is_volatile) tstr << "volatile ";
   tstr << type_as_string<T>();
   // clang-format off
-  auto t_match =
-    hasType(
-      qualType(
-        asString(
-          tstr.str()
-        )
-        ,
-        is_volatile ? isVolatileQualified() : unless(isVolatileQualified()),
-        is_const ? isConstQualified() : unless(isConstQualified())
-      ) //qualType
-    ); // hasType
-  auto ref_t_match =
-    hasType(
-      references(
-        qualType(
-          asString(
-            tstr.str()
-          )
-          ,
-          is_volatile ? isVolatileQualified() : unless(isVolatileQualified()),
-          is_const ? isConstQualified() : unless(isConstQualified())
-        ) //qualType
-      ) // references
-    ); // hasType
+  auto qual_t_match =
+    qualType(
+      asString(
+        tstr.str()
+      ),
+      is_volatile ? isVolatileQualified() : unless(isVolatileQualified()),
+      is_const ? isConstQualified() : unless(isConstQualified())
+    ); //qualType
+  auto t_match = hasType( qual_t_match);
+  auto ref_t_match = hasType( references( qual_t_match));
   return
     hasParameter(
       n,
       parmVarDecl(
-        is_lvalue_reference ?
-          (/*printf("%s:%i ref\n",__FUNCTION__,__LINE__),*/ ref_t_match) :
-          (/*printf("%s:%i non-ref\n",__FUNCTION__,__LINE__),*/ t_match)
+        is_lvalue_reference ? ref_t_match : t_match
       ).bind(pstr.str()) // parmVarDecl
     ) // hasParameter
   ;
@@ -91,16 +75,59 @@ allOf_params_impl(std::index_sequence<Us...>)
   return clang::ast_matchers::allOf(param_matcher<Us, Ts>()...);
 }
 
+// template <>
+// auto
+// allOf_params_impl<>()
+// {
+//   return clang::ast_matchers::allOf(param_matcher<Us, Ts>()...);
+// }
+
+template <class T, size_t s>
+auto
+allOf_params_impl(std::index_sequence<s>)
+{
+  return param_matcher<s, T>();
+}
+
+
 template <class C> struct Function_Sig {};
+
+template <typename Ret_T>
+struct Function_Sig<Ret_T(*)()>{
+  static auto func_sig_matcher()
+  {
+    using namespace clang::ast_matchers;
+    // clang-format off
+    auto fdecl_no_params = functionDecl(
+      ret_type_matcher(),
+      parameterCountIs(0u)
+    ).bind("fdecl");
+    // clang-format on
+    return fdecl_no_params;
+  }  // func_sig_matcher
+  static auto ret_type_matcher()
+  {
+    using namespace clang::ast_matchers;
+    return returns(asString(type_as_string<Ret_T>()));
+  }  // ret_type_matcher
+};
 
 template <typename Ret_T, typename... Args>
 struct Function_Sig<Ret_T (*)(Args...)> {
   using Idcs = std::index_sequence_for<Args...>;
+  static constexpr size_t n_args = sizeof...(Args);
 
   static auto func_sig_matcher()
   {
     using namespace clang::ast_matchers;
-    return functionDecl(ret_type_matcher(), params_matcher()).bind("fdecl");
+    // clang-format off
+    auto fdecl_params = functionDecl(
+      ret_type_matcher(),
+      parameterCountIs(n_args),
+      params_matcher()
+    ).bind("fdecl");
+    // clang-format on
+    return fdecl_params;
   }  // func_sig_matcher
 
   static auto params_matcher() { return allOf_params_impl<Args &&...>(Idcs()); }
