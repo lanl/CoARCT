@@ -143,13 +143,35 @@ TEST(function_sig_matcher,case7_Hit_Volatile){
   run_case<fsig_matcher_test,ftype>(code,tester);
   EXPECT_EQ(0u,tester.matched_);
 }
-// double p(){return double();}
-// TEST(function_sig_matcher,case7_Hit_NoArgs){
-//   using ftype = decltype(&p);
-//   string_t code = "double q(){}";
-//   fsig_matcher_test tester;
-//   run_case<fsig_matcher_test,ftype>(code,tester);
-//   EXPECT_EQ(1u,tester.matched_);
-// }
+double p(){return double();}
+TEST(function_sig_matcher,case7_Hit_NoArgs){
+  using ftype = decltype(&p);
+  string_t code = "double q(){}";
+  fsig_matcher_test tester;
+  run_case<fsig_matcher_test,ftype>(code,tester);
+  EXPECT_EQ(1u,tester.matched_);
+}
+TEST(function_sig_matcher,case7a_Miss_NoArgs){
+  using ftype = decltype(&p);
+  string_t code = "double q(int){}";
+  fsig_matcher_test tester;
+  run_case<fsig_matcher_test,ftype>(code,tester);
+  EXPECT_EQ(0u,tester.matched_);
+}
+double q(float ){return double();}
+TEST(function_sig_matcher,case8_Hit_1Arg){
+  using ftype = decltype(&q);
+  string_t code = "double q(float f){}";
+  fsig_matcher_test tester;
+  run_case<fsig_matcher_test,ftype>(code,tester);
+  EXPECT_EQ(1u,tester.matched_);
+}
+TEST(function_sig_matcher,case8a_Miss_1Arg){
+  using ftype = decltype(&q);
+  string_t code = "double q(double d){}";
+  fsig_matcher_test tester;
+  run_case<fsig_matcher_test,ftype>(code,tester);
+  EXPECT_EQ(0u,tester.matched_);
+}
 
 // End of file
