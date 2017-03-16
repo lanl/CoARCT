@@ -75,6 +75,13 @@ allOf_params_impl(std::index_sequence<Us...>)
   return clang::ast_matchers::allOf(param_matcher<Us, Ts>()...);
 }
 
+// template <>
+// auto
+// allOf_params_impl<>()
+// {
+//   return clang::ast_matchers::allOf(param_matcher<Us, Ts>()...);
+// }
+
 template <class T, size_t s>
 auto
 allOf_params_impl(std::index_sequence<s>)
@@ -84,6 +91,26 @@ allOf_params_impl(std::index_sequence<s>)
 
 
 template <class C> struct Function_Sig {};
+
+template <typename Ret_T>
+struct Function_Sig<Ret_T(*)()>{
+  static auto func_sig_matcher()
+  {
+    using namespace clang::ast_matchers;
+    // clang-format off
+    auto fdecl_no_params = functionDecl(
+      ret_type_matcher(),
+      parameterCountIs(0u)
+    ).bind("fdecl");
+    // clang-format on
+    return fdecl_no_params;
+  }  // func_sig_matcher
+  static auto ret_type_matcher()
+  {
+    using namespace clang::ast_matchers;
+    return returns(asString(type_as_string<Ret_T>()));
+  }  // ret_type_matcher
+};
 
 template <typename Ret_T, typename... Args>
 struct Function_Sig<Ret_T (*)(Args...)> {
@@ -99,17 +126,8 @@ struct Function_Sig<Ret_T (*)(Args...)> {
       parameterCountIs(n_args),
       params_matcher()
     ).bind("fdecl");
-    // auto fdecl_1_param = functionDecl(
-    //   ret_type_matcher(),
-    //   parameterCountIs(n_args),
-    //   param_matcher<0,Args...>()
-    // ).bind("fdecl");
-    auto fdecl_no_params = functionDecl(
-      ret_type_matcher(),
-      parameterCountIs(n_args)
-    ).bind("fdecl");
     // clang-format on
-    return n_args > 0 ? fdecl_params : fdecl_no_params;
+    return fdecl_params;
   }  // func_sig_matcher
 
   static auto params_matcher() { return allOf_params_impl<Args &&...>(Idcs()); }
