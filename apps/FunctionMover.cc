@@ -86,15 +86,15 @@ struct Function_Mover
   Replacements & repls_;
 };   // struct Function_Mover
 
-static llvm::cl::OptionCategory TROpts("Common options for typedef-report");
+static llvm::cl::OptionCategory FMOpts("Common options for function-mover");
 
-const char * addl_help = "Find structs with fields declared via typedef";
+const char * addl_help = "(Incomplete) Demo of moving function from one file to another";
 
 int
 main(int argc, const char ** argv)
 {
   using namespace corct;
-  CommonOptionsParser opt_prs(argc, argv, TROpts, addl_help);
+  CommonOptionsParser opt_prs(argc, argv, FMOpts, addl_help);
   RefactoringTool tool(opt_prs.getCompilations(), opt_prs.getSourcePathList());
   Function_Mover fm(tool.getReplacements());
   finder_t finder;
