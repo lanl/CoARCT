@@ -1,9 +1,10 @@
 // FunctionMover.cc
-// Mar 17, 2017
+// Mar 19, 2017
 // (c) Copyright 2017 LANSLLC, all rights reserved
 
-/* Find all C struct fields declared with a typedef; report the typedef and
- * underlying (desugared) type. Ignores fields declared as builtin types. */
+/*  Motivation: move a function definition from one file to another.
+ * This application demonstrates matching the function, recovering the source,
+ * and cutting the source from the original file. */
 
 #include "dump_things.h"
 #include "make_replacement.h"
