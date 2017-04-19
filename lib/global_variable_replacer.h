@@ -50,11 +50,11 @@ public:
     tool.getReplacements()
     \param new_var: new variable text
      */
-  global_variable_replacer(replacements_t * reps,
+  global_variable_replacer(replacements_map_t & rep_map,
                            vec_str const & old_globals,
                            vec_str const & new_vars,
                            bool const dry_run)
-      : reps_(reps),
+      : rep_map_(rep_map),
         old_globals_(old_globals),
         new_vars_(new_vars),
         dry_run_(dry_run)
@@ -81,7 +81,10 @@ public:
       clang::tooling::Replacement rep = replace_source_range(
           src_manager, g_var->getSourceRange(), new_vars_[idx]);
       if(!dry_run_) {
-        reps_->insert(rep);
+        auto & reps = find_repls(g_var,src_manager,rep_map_);
+        if(reps.add(rep)){
+          HERE("add replacement failed");
+        }
       }
       else {
         llvm::outs() << "global_var_replacer: replacement " << rep.toString()
@@ -105,7 +108,7 @@ public:
   }
 
 private:
-  replacements_t * reps_;
+  replacements_map_t & rep_map_;
   vec_str const old_globals_;
   vec_str const new_vars_;
   bool dry_run_;

@@ -218,7 +218,7 @@ run_case_ec(string_t const & code, Tester & t, replacements_t const & reps_exp)
     finder.addMatcher(m, &t);
   }
   finder.matchAST(*pctx);
-  replacements_t const & reps(t.get_replacements());
+  replacements_t const & reps(t.get_replacements(fname));
   bool const size_ok(reps_exp.size() == reps.size());
   EXPECT_EQ(reps_exp.size(),reps.size());
   bool const reps_match = reps_exp == reps;
@@ -237,12 +237,12 @@ run_case_ec(string_t const & code, Tester & t, replacements_t const & reps_exp)
 TEST(expand_callsite,case1_expands)
 {
   string_t const code = "void f(int){return;} void g(){int i(42);f(i); return;}";
-  replacements_t reps; // in 3.9, this is std::set
+  replacements_map_t reps; // in 3.9, this is std::set
   vec_str targs = {"f"};
   expand_callsite ec(reps,targs,new_arg,false);
   replacements_t exp_reps;
   if(exp_reps.add({fname,43u,0u,cboo})){
-    HERE("add replacement failed");
+    HERE("add replacement failed")
   }
   run_case_ec<EC>(code,ec,exp_reps);
 }
@@ -253,7 +253,7 @@ TEST(expand_callsite,case2_expands)
   string_t const code = "void f(){return;} void g(){f(); return;}";
   // ASTUPtr ast; ASTContext * pctx; TranslationUnitDecl * decl;
   // std::tie(ast, pctx, decl) = prep_code(code);
-  replacements_t reps; // in 3.9, this is std::set
+  replacements_map_t reps; // in 3.9, this is std::set
   vec_str targs = {"f"};
   expand_callsite ec(reps,targs,new_arg,false);
   // auto ms(ec.matchers());
@@ -278,7 +278,7 @@ TEST(expand_callsite,case2_expands)
 TEST(expand_callsite,case3_expands)
 {
   string_t const code = "void f(int i = 42){return;} void g(){f(); return;}";
-  replacements_t reps; // in 3.9, this is std::set
+  replacements_map_t reps; // in 3.9, this is std::set
   vec_str targs = {"f"};
   expand_callsite ec(reps,targs,new_arg,false);
   replacements_t exp_reps;
@@ -291,7 +291,7 @@ TEST(expand_callsite,case3_expands)
 TEST(expand_callsite,case4_expands)
 {
   string_t const code = "void f(int i = 42){return;} void g(){int i(43);f(i); return;}";
-  replacements_t reps; // in 3.9, this is std::set
+  replacements_map_t reps; // in 3.9, this is std::set
   vec_str targs = {"f"};
   expand_callsite ec(reps,targs,new_arg,false);
   replacements_t exp_reps;
@@ -304,7 +304,7 @@ TEST(expand_callsite,case4_expands)
 TEST(expand_callsite,case5_expands)
 {
   string_t const code = "void f(double d, int i = 42){return;} void g(){f(3.14159); return;}";
-  replacements_t reps; // in 3.9, this is std::set
+  replacements_map_t reps; // in 3.9, this is std::set
   vec_str targs = {"f"};
   expand_callsite ec(reps,targs,new_arg,false);
   replacements_t exp_reps;
@@ -313,19 +313,44 @@ TEST(expand_callsite,case5_expands)
   }
   run_case_ec(code,ec,exp_reps);
 } // TEST(expand_callsite,expands)
+
+/*
+void
+f()
+{
+  return;
+}
+void
+g()
+{
+  f();
+  return;
+}
+struct S {
+  void h() { return; }
+  void i() { g(); }
+};
+void
+k(S & s)
+{
+  s.h();
+  return;
+}
+*/
+
 /* This test checks both function and methods matching using the
 same Callback. This currently requires manually registering the method names.*/
 TEST(expand_callsite,case6_method_expands)
 {
   string_t const code =
     "void f(){return;} void g(){f(); return;} struct S{  void h(){return;}  void i(){g();}};void k(S & s){ s.h(); return;}";
-  replacements_t reps; // in 3.9, this is std::set
+  replacements_map_t reps; // in 3.9, this is std::set
   vec_str ftargs = {"f","g","h"};
   expand_callsite ec(reps,ftargs,new_arg,false);
   replacements_t exp_reps;
-  replacement_t er1(fname,29,0,boo);
-  replacement_t er2(fname,82,0,boo);
-  replacement_t er3(fname,106,0,boo);
+  replacement_t er1({fname,29,0,boo});
+  replacement_t er2({fname,82,0,boo});
+  replacement_t er3({fname,106,0,boo});
   if(exp_reps.add(er1)) { HERE("add er1 replacement failed")};
   if(exp_reps.add(er2)) { HERE("add er2 replacement failed")};
   if(exp_reps.add(er3)) { HERE("add er3 replacement failed")};
@@ -344,8 +369,8 @@ TEST(expand_callsite,case6_method_expands)
   finder.addMatcher(mthd_matcher,&ec);
 
   finder.matchAST(*pctx);
-  EXPECT_EQ(exp_reps.size(),reps.size());
-  EXPECT_EQ(exp_reps,reps);
+  EXPECT_EQ(exp_reps.size(),reps[fname].size());
+  EXPECT_EQ(exp_reps,reps[fname]);
 } // TEST(expand_callsite,expands)
 
 

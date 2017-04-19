@@ -62,7 +62,11 @@ public :
       replacement_t rep = gen_new_signature(func_decl,new_str_,src_manager);
       if(!dry_run_)
       {
-        reps_.insert(rep);
+        // use file name to select correct Replacements
+        auto & reps = find_repls(func_decl,src_manager,rep_map_);
+        if(reps.add(rep)){
+          HERE("add replacement failed");
+        }
       }
     }
     else{
@@ -86,11 +90,11 @@ public :
     \param dry_run: unsure about all this?
      */
   function_signature_expander(
-    replacements_t & reps,
+    replacements_map_t & rep_map,
     vec_str const & targ_fns,
     string_t const & new_param,
     bool const dry_run)
-    : Base(reps,targ_fns,new_param,dry_run)
+    : Base(rep_map,targ_fns,new_param,dry_run)
   {} // ctor
 }; // function_signature_expander
 

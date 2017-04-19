@@ -66,28 +66,37 @@ public:
     return ms;
   }
 
-  function_replacement_generator(replacements_t & reps,
+  function_replacement_generator(replacements_map_t & rep_map,
                                  vec_str const & fn_targets,
                                  str_t_cr new_str,
                                  bool const dry_run)
-      : reps_(reps), fn_targets_(fn_targets), new_str_(new_str), dry_run_(dry_run)
+      : rep_map_(rep_map), fn_targets_(fn_targets), new_str_(new_str), dry_run_(dry_run)
   {}
 
-  function_replacement_generator(replacements_t & reps,
+  function_replacement_generator(replacements_map_t & rep_map_,
                                  vec_str const & fn_targets,
                                  vec_str const & mthd_targets,
                                  str_t_cr new_str,
                                  bool const dry_run)
-      : reps_(reps), fn_targets_(fn_targets), mthd_targets_(mthd_targets), new_str_(new_str), dry_run_(dry_run)
+      : rep_map_(rep_map_),
+        fn_targets_(fn_targets),
+        mthd_targets_(mthd_targets),
+        new_str_(new_str),
+        dry_run_(dry_run)
   {}
 
   virtual ~function_replacement_generator() {}
 
-  replacements_t const & get_replacements() const { return reps_;}
+  replacements_t const & get_replacements(string_t const & fname) const
+  {
+    return rep_map_[fname];
+  }
+
+  replacements_map_t const & get_replacements_map() const { return rep_map_;}
 
   // state
 protected:
-  replacements_t & reps_;
+  replacements_map_t & rep_map_;
   vec_str const fn_targets_; //!< function targets
   vec_str const mthd_targets_; //!< method targets
   str_t_cr new_str_;
