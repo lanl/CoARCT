@@ -18,15 +18,17 @@ Our hope is that CoARCT will help demystify the Clang AST tools to users. If the
 1. CMake version 3+ (https://cmake.org/download/)
 2. Clang and LLVM libraries and headers (http://releases.llvm.org/download.html)
 3. libtinfo
+4. Boost (currently using 1.61, just needs boost/type_index in one spot)
 4. Google test (https://github.com/google/googletest)
 
-Works with Clang 4.0.0 (also Clang 3.9, 3.8).
+Works with Clang 4.0.0 (also 3.9, 3.8).
 
 ## Build
 
 1. Define these environment variables
     ```
     GTEST_DIR: Top level directory of google test installation
+    BOOST_DIR: Top level of Boost (#include "boost/type_index.hpp" needs to work)
     TINFO_LIB_DIR: points to where libtinfo.a is installed.
     LLVM_LIB_DIR: points to where LLVM libraries are installed (e.g. ${HOME}/llvm/clang+llvm-4.0.0-x86_64-apple-darwin/lib)
     CLANG_LIB_DIR: points to where Clang libraries are installed. (e.g. ${HOME}/llvm/clang+llvm-4.0.0-x86_64-apple-darwin/lib)
@@ -53,7 +55,7 @@ Works with Clang 4.0.0 (also Clang 3.9, 3.8).
     ```
     /home/CoARCT/build-clang-4.0.0 $ ./test/corct-unittests
     ...
-    [==========] 71 tests from 15 test cases ran. (157 ms total)
-    [  PASSED  ] 71 tests.
+    [==========] 72 tests from 15 test cases ran. (157 ms total)
+    [  PASSED  ] 72 tests.
     ```
 Los Alamos National Security, LLC (LANS) owns the copyright to CoARCT, which it identifies internally as LA-CC-17-039. See the LICENSE file for license information.
