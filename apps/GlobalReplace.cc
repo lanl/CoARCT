@@ -135,8 +135,9 @@ int
 main(int argc, const char ** argv)
 {
   using corct::split;
+  using corct::replacements_map_t;
   CommonOptionsParser opt_prs(argc, argv, CompilationOpts, addl_help);
-  RefactoringTool Tool(opt_prs.getCompilations(), opt_prs.getSourcePathList());
+  RefactoringTool tool(opt_prs.getCompilations(), opt_prs.getSourcePathList());
 
   announce_dry(dry_run);
   list_compilations(opt_prs);
@@ -148,16 +149,18 @@ main(int argc, const char ** argv)
     return -1;
   }
 
+  replacements_map_t & rep_map = tool.getReplacements();
+
   corct::global_variable_replacer v_replacer(
-      &Tool.getReplacements(), old_var_strings, new_var_strings, dry_run);
+      rep_map, old_var_strings, new_var_strings, dry_run);
 
   // sort out target functions
   vec_str targ_fns(split(target_func_string, ','));
 
   corct::function_signature_expander f_expander(
-      Tool.getReplacements(), targ_fns, new_func_param_string, dry_run);
+      rep_map, targ_fns, new_func_param_string, dry_run);
 
-  corct::expand_callsite s_expander(Tool.getReplacements(), targ_fns,
+  corct::expand_callsite s_expander(rep_map, targ_fns,
                                     new_func_arg_string, dry_run);
 
   clang::ast_matchers::MatchFinder finder;
@@ -184,11 +187,14 @@ main(int argc, const char ** argv)
     }
   }
 
-  Tool.runAndSave(newFrontendActionFactory(&finder).get());
+  tool.runAndSave(newFrontendActionFactory(&finder).get());
 
   llvm::outs() << "Replacements collected: \n";
-  for(auto & r : Tool.getReplacements()) {
-    llvm::outs() << r.toString() << "\n";
+  for(auto & p : tool.getReplacements()) {
+    llvm::outs() << "file: " << p.first << ":\n";
+    for(auto & r : p.second){
+      llvm::outs() << r.toString() << "\n";
+    }
   }
   return 0;
 }  // main
