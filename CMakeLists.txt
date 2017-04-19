@@ -46,6 +46,7 @@ APPEND_CLANG_LIB(LLVMProfileData)
 APPEND_CLANG_LIB(LLVMOption)
 APPEND_CLANG_LIB(LLVMSupport)
 APPEND_CLANG_LIB(LLVMCore)
+APPEND_CLANG_LIB(LLVMDemangle)
 
 # derived from looking at clang++ -v
 
