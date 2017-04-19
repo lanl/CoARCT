@@ -204,11 +204,12 @@ string_t const boo = "boo";
 string_t const new_arg = "boo";
 
 using EC = expand_callsite;
-using replacements_t = EC::Base::replacements_t;
-using reps_it = replacements_t::iterator;
+using reps_it = replacements_t::const_iterator;
 
 template <typename Tester>
-bool run_case_ec(string_t const & code, Tester & t, replacements_t const & reps_exp){
+bool
+run_case_ec(string_t const & code, Tester & t, replacements_t const & reps_exp)
+{
   ASTUPtr ast; ASTContext * pctx; TranslationUnitDecl * decl;
   std::tie(ast, pctx, decl) = prep_code(code);
   auto ms(t.fn_matchers());
@@ -236,11 +237,14 @@ bool run_case_ec(string_t const & code, Tester & t, replacements_t const & reps_
 TEST(expand_callsite,case1_expands)
 {
   string_t const code = "void f(int){return;} void g(){int i(42);f(i); return;}";
-  expand_callsite::Base::replacements_t reps; // in 3.9, this is std::set
+  replacements_t reps; // in 3.9, this is std::set
   vec_str targs = {"f"};
   expand_callsite ec(reps,targs,new_arg,false);
-  replacements_t exp_r = {{fname,43u,0u,cboo}};
-  run_case_ec<EC>(code,ec,exp_r);
+  replacements_t exp_reps;
+  if(exp_reps.add({fname,43u,0u,cboo})){
+    HERE("add replacement failed");
+  }
+  run_case_ec<EC>(code,ec,exp_reps);
 }
 
 // case 2: no parameters in function
@@ -260,7 +264,10 @@ TEST(expand_callsite,case2_expands)
   // finder.matchAST(*pctx);
   // EXPECT_EQ(1u,reps.size());
   // replacements_t const & rep1(*reps.begin());
-  replacements_t exp_reps = {{fname,29u,0u,boo}};
+  replacements_t exp_reps;
+  if(exp_reps.add({fname,29u,0u,boo})){
+    HERE("add replacement failed");
+  }
   run_case_ec(code,ec,exp_reps);
   // EXPECT_EQ("input.cc",rep1.getFilePath());
   // EXPECT_EQ(29u,rep1.getOffset());
@@ -271,30 +278,39 @@ TEST(expand_callsite,case2_expands)
 TEST(expand_callsite,case3_expands)
 {
   string_t const code = "void f(int i = 42){return;} void g(){f(); return;}";
-  expand_callsite::Base::replacements_t reps; // in 3.9, this is std::set
+  replacements_t reps; // in 3.9, this is std::set
   vec_str targs = {"f"};
   expand_callsite ec(reps,targs,new_arg,false);
-  replacements_t exp_reps = {{fname,38u,0u,boo}};
+  replacements_t exp_reps;
+  if(exp_reps.add({fname,38u,0u,boo})){
+    HERE("add replacement failed");
+  }
   run_case_ec(code,ec,exp_reps);
 } // TEST(expand_callsite,expands)
 // case 4: has a defaulted parameter in first spot (overridden in call)
 TEST(expand_callsite,case4_expands)
 {
   string_t const code = "void f(int i = 42){return;} void g(){int i(43);f(i); return;}";
-  expand_callsite::Base::replacements_t reps; // in 3.9, this is std::set
+  replacements_t reps; // in 3.9, this is std::set
   vec_str targs = {"f"};
   expand_callsite ec(reps,targs,new_arg,false);
-  replacements_t exp_reps = {{fname,48u,0u,boo}};
+  replacements_t exp_reps;
+  if(exp_reps.add({fname,48u,0u,boo})){
+    HERE("add replacement failed");
+  }
   run_case_ec(code,ec,exp_reps);
 } // TEST(expand_callsite,expands)
 // case 5: defaulted parameter after first spot (not overridden in call)
 TEST(expand_callsite,case5_expands)
 {
   string_t const code = "void f(double d, int i = 42){return;} void g(){f(3.14159); return;}";
-  expand_callsite::Base::replacements_t reps; // in 3.9, this is std::set
+  replacements_t reps; // in 3.9, this is std::set
   vec_str targs = {"f"};
   expand_callsite ec(reps,targs,new_arg,false);
-  replacements_t exp_reps = {{fname,56u,0u,cboo}};
+  replacements_t exp_reps;
+  if(exp_reps.add({fname,56u,0u,cboo})){
+    HERE("add replacement failed");
+  }
   run_case_ec(code,ec,exp_reps);
 } // TEST(expand_callsite,expands)
 /* This test checks both function and methods matching using the
@@ -303,13 +319,16 @@ TEST(expand_callsite,case6_method_expands)
 {
   string_t const code =
     "void f(){return;} void g(){f(); return;} struct S{  void h(){return;}  void i(){g();}};void k(S & s){ s.h(); return;}";
-  EC::Base::replacements_t reps; // in 3.9, this is std::set
+  replacements_t reps; // in 3.9, this is std::set
   vec_str ftargs = {"f","g","h"};
+  expand_callsite ec(reps,ftargs,new_arg,false);
+  replacements_t exp_reps;
   replacement_t er1(fname,29,0,boo);
   replacement_t er2(fname,82,0,boo);
   replacement_t er3(fname,106,0,boo);
-  expand_callsite ec(reps,ftargs,new_arg,false);
-  EC::Base::replacements_t exp_reps = {er1,er2,er3};
+  if(exp_reps.add(er1)) { HERE("add er1 replacement failed")};
+  if(exp_reps.add(er2)) { HERE("add er2 replacement failed")};
+  if(exp_reps.add(er3)) { HERE("add er3 replacement failed")};
 
   ASTUPtr ast; ASTContext * pctx; TranslationUnitDecl * decl;
   std::tie(ast, pctx, decl) = prep_code(code);

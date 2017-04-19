@@ -33,7 +33,6 @@ public:
   // types and constants
   using matcher_t = typename traits_t::matcher_t;
   using matchers_t = std::vector<matcher_t>;
-  using replacements_t = clang::tooling::Replacements;
 
   // interface
   /** \brief Callback when a matcher finds a match. */

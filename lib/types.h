@@ -17,6 +17,7 @@ class SourceManager;
 
 namespace tooling
 {
+class Replacements;
 class Replacement;
 }  // tooling::
 }  // clang::
@@ -27,6 +28,7 @@ using callback_t = clang::ast_matchers::MatchFinder::MatchCallback;
 using finder_t = clang::ast_matchers::MatchFinder;
 using result_t = clang::ast_matchers::MatchFinder::MatchResult;
 using replacement_t = clang::tooling::Replacement;
+using replacements_t = clang::tooling::Replacements;
 using string_t = std::string;
 using str_t_cr = string_t const &;
 using vec_str = std::vector<string_t>;
