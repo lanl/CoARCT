@@ -9,6 +9,7 @@
 
 #include <string>
 #include <vector>
+#include <set>
 
 // forward declarations
 namespace clang
@@ -28,6 +29,8 @@ namespace corct
 using string_t = std::string;
 using str_t_cr = string_t const &;
 using vec_str = std::vector<string_t>;
+using set_str = std::set<string_t>;
+
 // clang:: aliases
 using callback_t = clang::ast_matchers::MatchFinder::MatchCallback;
 using finder_t = clang::ast_matchers::MatchFinder;
