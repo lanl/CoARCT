@@ -84,18 +84,7 @@ target_link_libraries(global-detect
   ${TINFO_LIB}
   z
  )
-##
-##add_executable(global-replace
-##  GlobalReplace.cc
-##  )
-##target_link_libraries(global-replace
-##  corct
-##  ${CLANG_LIBRARIES}
-##  ${LLVM_LIBRARIES}
-##  ${TINFO_LIB}
-##  z
-## )
-##
+
 ##add_executable(loop-convert
 ##  LoopConvert.cpp
 ##  )
