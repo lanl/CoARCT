@@ -9,7 +9,8 @@ It includes library code and command line drivers that go beyond some of the (e
 * Detecting which functions use which fields of a struct: this data can be used to analyze how to break up large structs;
 * Finding code associated with a classic C-style linked list;
 * Identifying struct fields defined with typedefs, reporting underlying types (apps/TypedefFinder.cc).
-More explanatory blog posts at Various Burglarious https://variousburglarious.com/2017/01/18/getting-started-with-clang-refactoring-tools/
+
+Explanatory blog posts can be found at Various Burglarious https://variousburglarious.com/2017/01/18/getting-started-with-clang-refactoring-tools/
 
 It also demonstrates a few useful things that were not immediately clear from the tutorials and examples I learned from, such as unit testing matchers and callbacks, and building out of the Clang/LLVM tree.
 
