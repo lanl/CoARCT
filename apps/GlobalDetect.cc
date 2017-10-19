@@ -7,14 +7,15 @@
 #include "clang/Tooling/Tooling.h"
 #include "llvm/Support/CommandLine.h"
 #include <iostream>
+#include "summarize_command_line.h"
 
 using namespace clang::tooling;
 using namespace llvm;
 using namespace clang::ast_matchers;
 
-static cl::extrahelp MoreHelp(
-    "\nReport all functions that use global variable, or all sites at which "
-    "global variables are used");
+const char * addl_help =
+    "Report all functions that use global variable, or all sites at which "
+    "global variables are used";
 
 // command line options:
 static llvm::cl::OptionCategory GDOpts("global-detect options");
@@ -32,13 +33,26 @@ static cl::opt<bool> report_functions(
     cl::cat(GDOpts),
     cl::init(false));
 
+static cl::opt<bool> export_opts(
+  "xp",
+  cl::desc("export command line options"),
+  cl::value_desc("bool"),
+  cl::cat(GDOpts),
+  cl::init(false)
+  );
+
 int
 main(int argc, const char ** argv)
 {
   using namespace corct;
-  CommonOptionsParser OptionsParser(argc, argv, GDOpts);
+  CommonOptionsParser OptionsParser(argc, argv, GDOpts,addl_help);
   ClangTool Tool(OptionsParser.getCompilations(),
                  OptionsParser.getSourcePathList());
+
+  if(export_opts){
+    summarize_command_line("global-detect",addl_help);
+    return 0;
+  }
 
   Global_Printer printer(std::cout);
   StatementMatcher global_var_matcher =
