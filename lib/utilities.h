@@ -26,6 +26,17 @@ inline void here_func(int line,
 namespace corct
 {
 
+/**\brief Get the Replacements object associated with a node on which we can
+ * call getSourceRange(). */
+template <class T>
+replacements_t &
+find_repls(T * node, sm_ref_t src_manager, replacements_map_t & rep_map)
+{
+  string_t fname(
+      src_manager.getFilename(node->getSourceRange().getBegin()));
+  return rep_map[fname];
+} // find_repls
+
 inline string_t
 add_tab(string_t const s)
 {

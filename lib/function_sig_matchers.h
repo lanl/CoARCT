@@ -37,7 +37,10 @@ param_matcher()
   std::stringstream pstr;
   pstr << "parm" << n;
   std::stringstream tstr;
-  bool const is_const(std::is_const<std::remove_reference_t<T>>::value);
+  bool const is_const(
+    std::is_reference<T>::value ?
+      std::is_const<std::remove_reference_t<T>>::value :
+      std::is_const<T>::value);
   bool const is_volatile(std::is_volatile<std::remove_reference_t<T>>::value);
   bool const is_lvalue_reference(std::is_lvalue_reference<T>::value);
   // bool const is_rvalue_reference(std::is_rvalue_reference<T>::value);
@@ -45,6 +48,7 @@ param_matcher()
   if(is_const) tstr << "const ";
   if(is_volatile) tstr << "volatile ";
   tstr << type_as_string<T>();
+  printf("%s:%i typestring: %s\n",__FUNCTION__,__LINE__,tstr.str().c_str());
   // clang-format off
   auto qual_t_match =
     qualType(
@@ -152,7 +156,7 @@ struct Param_Traits<R (*)(Args...)> {
 
   using vec_type_traits = std::vector<type_traits>;
 
-  // static
+  static
   vec_type_traits param_type_traits()
   {
     vec_type_traits tis = {

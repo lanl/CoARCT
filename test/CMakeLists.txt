@@ -16,13 +16,6 @@ include(${GTEST_ROOT}/cmake/internal_utils.cmake)
 
 config_compiler_and_linker()  # Defined in internal_utils.cmake
 
-# add compile flags for CORCT tests if running cmake directly on testG directory
-if (NOT DEFINED CORCT_COMPILE_FLAGS)
-	set(CORCT_COMPILE_FLAGS "-std=c++14 -g")
-	# append CMAKE_CXX_FLAGS w/ above variable
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CORCT_COMPILE_FLAGS}")
-endif()
-
 include_directories(
 	${CMAKE_CURRENT_LIST_DIR}/../lib
 	${GTEST_ROOT}

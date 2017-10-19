@@ -24,6 +24,7 @@
 #include "llvm/Support/CommandLine.h"
 #include <iostream>
 #include <vector>
+#include "summarize_command_line.h"
 
 using namespace clang::tooling;
 using namespace llvm;
@@ -34,13 +35,15 @@ const char * addl_help =
     "Replace global variable references with locals, or thread new local "
     "variables through call chains";
 
-static llvm::cl::OptionCategory XpndOpts("Expanding function signatures");
+// static llvm::cl::OptionCategory XpndOpts("Expanding function signatures");
+
+static llvm::cl::OptionCategory CompilationOpts("Global Replace options:");
 
 static llvm::cl::opt<bool> expand_func(
     "Xpnd",
     llvm::cl::desc("insert new parameter NP to target function tf, new arg "
                    "(NA) to calls to tf"),
-    llvm::cl::cat(XpndOpts),
+    llvm::cl::cat(CompilationOpts),
     llvm::cl::init(false));
 
 static cl::opt<std::string> new_func_param_string(
@@ -48,23 +51,23 @@ static cl::opt<std::string> new_func_param_string(
     cl::desc("param to add to the global-using functions' signature (with "
              "-xpnd), e.g. -np=\"SimConfig const & sim_config\""),
     cl::value_desc("new-param-string"),
-    cl::cat(XpndOpts));
+    cl::cat(CompilationOpts));
 
 static cl::opt<std::string> new_func_arg_string(
     "na",
     cl::desc("argument to add to the global-using functions' call sites (with "
              "-xpnd), e.g. -na=\"sim_config\""),
     cl::value_desc("new-arg-string"),
-    cl::cat(XpndOpts));
+    cl::cat(CompilationOpts));
 
-static llvm::cl::OptionCategory RrOpts(
-    "Fixing/replacing references to globals");
+// static llvm::cl::OptionCategory RrOpts(
+//     "Fixing/replacing references to globals");
 
 static cl::opt<bool> rep_refs(
     "R",
     cl::desc(
         "replace references to global vars (leave function signatures alone)"),
-    cl::cat(RrOpts),
+    cl::cat(CompilationOpts),
     cl::init(false));
 
 static cl::opt<std::string> old_var_string(
@@ -72,14 +75,14 @@ static cl::opt<std::string> old_var_string(
     cl::desc("global variable(s) to replace, comma separated (with -R), e.g. "
              "-old=\"NR,NB\""),
     cl::value_desc("old-var-string"),
-    cl::cat(RrOpts));
+    cl::cat(CompilationOpts));
 
 static cl::opt<std::string> new_var_string(
     "lvar",
     cl::desc("each global variable's replacement, comma separated, resp. to "
              "old-var-string; e.g. -new=\"sim_cgf.NR,sim_cfg.NB\""),
     cl::value_desc("new-var-string"),
-    cl::cat(RrOpts));
+    cl::cat(CompilationOpts));
 
 // CommonOptionsParser declares HelpMessage with a description of the common
 // command-line options related to the compilation database and input files.
@@ -87,24 +90,35 @@ static cl::opt<std::string> new_var_string(
 static cl::extrahelp CommonHelp(CommonOptionsParser::HelpMessage);
 
 // A help message for this specific tool can be added afterwards.
-static cl::extrahelp MoreHelp("\nMore help text...\n");
+static cl::extrahelp MoreHelp(
+  "Replace global variables by inserting local variables\n"
+  "into call chains. Both expands function signatures in declarations\n"
+  "and epxands callsites. References to global variable names are\n"
+  "replaced with references to the local variable names."
+  );
 
 // some command line options:
-static llvm::cl::OptionCategory GROpts("Common options for global-replace");
+// static llvm::cl::OptionCategory GROpts("Common options for global-replace");
 
 static cl::opt<std::string> target_func_string(
     "tf",
     cl::desc("target function(s) to modify, separated by commas if nec. E.g. "
              "-tf=\"foo,bar,baz\""),
     cl::value_desc("target-function-string"),
-    cl::cat(GROpts));
+    cl::cat(CompilationOpts));
 
 static cl::opt<bool> dry_run("d",
                              cl::desc("dry run"),
-                             cl::cat(GROpts),
+                             cl::cat(CompilationOpts),
                              cl::init(false));
 
-static llvm::cl::OptionCategory CompilationOpts("General compiler options:");
+static cl::opt<bool> export_opts(
+  "xp",
+  cl::desc("export command line options"),
+  cl::value_desc("bool"),
+  cl::cat(CompilationOpts),
+  cl::init(false)
+  );
 
 void
 announce_dry(bool const dry_run_)
@@ -135,8 +149,13 @@ int
 main(int argc, const char ** argv)
 {
   using corct::split;
+  using corct::replacements_map_t;
   CommonOptionsParser opt_prs(argc, argv, CompilationOpts, addl_help);
-  RefactoringTool Tool(opt_prs.getCompilations(), opt_prs.getSourcePathList());
+  if(export_opts){
+    corct::summarize_command_line("global-replace",addl_help);
+    return 0;
+  }
+  RefactoringTool tool(opt_prs.getCompilations(), opt_prs.getSourcePathList());
 
   announce_dry(dry_run);
   list_compilations(opt_prs);
@@ -148,16 +167,18 @@ main(int argc, const char ** argv)
     return -1;
   }
 
+  replacements_map_t & rep_map = tool.getReplacements();
+
   corct::global_variable_replacer v_replacer(
-      &Tool.getReplacements(), old_var_strings, new_var_strings, dry_run);
+      rep_map, old_var_strings, new_var_strings, dry_run);
 
   // sort out target functions
   vec_str targ_fns(split(target_func_string, ','));
 
   corct::function_signature_expander f_expander(
-      Tool.getReplacements(), targ_fns, new_func_param_string, dry_run);
+      rep_map, targ_fns, new_func_param_string, dry_run);
 
-  corct::expand_callsite s_expander(Tool.getReplacements(), targ_fns,
+  corct::expand_callsite s_expander(rep_map, targ_fns,
                                     new_func_arg_string, dry_run);
 
   clang::ast_matchers::MatchFinder finder;
@@ -184,11 +205,14 @@ main(int argc, const char ** argv)
     }
   }
 
-  Tool.runAndSave(newFrontendActionFactory(&finder).get());
+  tool.runAndSave(newFrontendActionFactory(&finder).get());
 
   llvm::outs() << "Replacements collected: \n";
-  for(auto & r : Tool.getReplacements()) {
-    llvm::outs() << r.toString() << "\n";
+  for(auto & p : tool.getReplacements()) {
+    llvm::outs() << "file: " << p.first << ":\n";
+    for(auto & r : p.second){
+      llvm::outs() << r.toString() << "\n";
+    }
   }
   return 0;
 }  // main

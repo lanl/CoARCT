@@ -97,7 +97,7 @@ public:
   static const string_t fn_bind_name_;
   static const string_t cs_bind_name_;
 
-  void run(result_t const & result) override
+  virtual void run(result_t const & result) override
   {
     using namespace clang;
     CallExpr * call_site =
@@ -120,7 +120,10 @@ public:
           std::cout << "Suggested replacement: " << rep.toString() << "\n";
         }
         if(!dry_run_) {
-          reps_.insert(rep);
+          auto & reps = find_repls(func_decl,src_manager,rep_map_);
+          if(reps.add(rep)){
+            HERE("add replacement failed");
+          }
         }
       }  // if callee_name in targets
     }
@@ -141,7 +144,7 @@ public:
     return mk_mthd_call_matcher(cs_bind_name_,fn_bind_name_, t);
   }
 
-  expand_callsite(Base::replacements_t & reps,
+  expand_callsite(replacements_map_t & reps,
                   vec_str const & targets,
                   str_t_cr new_arg,
                   bool const dry_run,

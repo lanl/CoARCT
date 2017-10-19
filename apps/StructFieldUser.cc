@@ -8,6 +8,7 @@
 #include "make_replacement.h"
 #include "utilities.h"
 #include "struct_field_user.h"
+#include "summarize_command_line.h"
 
 #include "clang/Frontend/FrontendActions.h"
 #include "clang/Tooling/CommonOptionsParser.h"
@@ -30,6 +31,14 @@ static cl::opt<std::string> target_struct_string(
     cl::value_desc("target-struct-string"),
     cl::cat(SFUOpts));
 
+static cl::opt<bool> export_opts(
+  "xp",
+  cl::desc("export command line options"),
+  cl::value_desc("bool"),
+  cl::cat(SFUOpts),
+  cl::init(false)
+  );
+
 /** Print out in various possibly useful ways. */
 template <typename MapOMapOSet>
 void
@@ -40,6 +49,10 @@ main(int argc, const char ** argv)
 {
   using namespace corct;
   CommonOptionsParser opt_prs(argc, argv, SFUOpts, addl_help);
+  if(export_opts){
+    summarize_command_line("struct-field-use",addl_help);
+    return 0;
+  }
   RefactoringTool Tool(opt_prs.getCompilations(), opt_prs.getSourcePathList());
   vec_str targ_fns(split(target_struct_string, ','));
   struct_field_user s_finder(targ_fns);
