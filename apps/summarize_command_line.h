@@ -12,7 +12,8 @@
 namespace corct{
 
 /**\brief Print out useful command line parameters to a JSON file. */
-void summarize_command_line(corct::str_t_cr /*command_name*/);
+void
+summarize_command_line(corct::str_t_cr command_name, corct::str_t_cr overview);
 
 } // corct::
 #endif // include guard
