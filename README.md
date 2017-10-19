@@ -60,4 +60,11 @@ Works with Clang 4.0.0 (also 3.9, 3.8).
     [==========] 72 tests from 15 test cases ran. (157 ms total)
     [  PASSED  ] 72 tests.
     ```
+
+### Building on Ubuntu
+
+Prajjwald reported some solutions to problems with building on Ubuntu. Please see [issue #1](https://github.com/lanl/CoARCT/issues/1).
+
+## Copyright
+
 Los Alamos National Security, LLC (LANS) owns the copyright to CoARCT, which it identifies internally as LA-CC-17-039. See the LICENSE file for license information.
