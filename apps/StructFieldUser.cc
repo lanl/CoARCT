@@ -50,7 +50,7 @@ main(int argc, const char ** argv)
   using namespace corct;
   CommonOptionsParser opt_prs(argc, argv, SFUOpts, addl_help);
   if(export_opts){
-    summarize_command_line("struct-field-use");
+    summarize_command_line("struct-field-use",addl_help);
     return 0;
   }
   RefactoringTool Tool(opt_prs.getCompilations(), opt_prs.getSourcePathList());
