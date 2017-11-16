@@ -2,6 +2,18 @@ include_directories ("${PROJECT_SOURCE_DIR}/lib")
 
 add_library(corct-support summarize_command_line.cc)
 
+add_executable(template-vars-report
+  TemplateVarFinder.cc
+  )
+target_link_libraries(template-vars-report
+  corct
+  ${CLANG_LIBRARIES}
+  ${LLVM_LIBRARIES}
+  ${TINFO_LIB}
+  z
+ )
+
+
 add_executable(temp-type-report
   TemplateType.cc
   )
