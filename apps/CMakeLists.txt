@@ -13,22 +13,21 @@ target_link_libraries(template-vars-report
   z
  )
 
+# add_executable(temp-type-report
+#   TemplateType.cc
+#   )
+# target_link_libraries(temp-type-report
+#   corct
+#   ${CLANG_LIBRARIES}
+#   ${LLVM_LIBRARIES}
+#   ${TINFO_LIB}
+#   z
+#  )
 
-add_executable(temp-type-report
-  TemplateType.cc
+add_executable(function-printer
+  FunctionPrinter.cc
   )
-target_link_libraries(temp-type-report
-  corct
-  ${CLANG_LIBRARIES}
-  ${LLVM_LIBRARIES}
-  ${TINFO_LIB}
-  z
- )
-
-add_executable(function-mover
-  FunctionMover.cc
-  )
-target_link_libraries(function-mover
+target_link_libraries(function-printer
   corct
   ${CLANG_LIBRARIES}
   ${LLVM_LIBRARIES}
