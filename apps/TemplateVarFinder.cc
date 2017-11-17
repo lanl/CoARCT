@@ -65,9 +65,6 @@ void seek_and_remove(corct::string_t & s, corct::string_t const & substr);
  * to a stringstream. */
 void process_type_set(type_set_t const & ts, std::ostream & s);
 
-corct::string_t const clang_inc_dir1(CLANG_INC_DIR1);
-corct::string_t const clang_inc_dir2(CLANG_INC_DIR2);
-
 int
 main(int argc, const char ** argv)
 {
@@ -77,10 +74,8 @@ main(int argc, const char ** argv)
   CommonOptionsParser opt_prs(argc, argv, TVFOpts, addl_help);
   RefactoringTool tool(opt_prs.getCompilations(), opt_prs.getSourcePathList());
   // Alert the compiler instance to std lib header locations
-  string_t const my_inc_dir1 = "-I" + clang_inc_dir1;
-  string_t my_inc_dir2 = "-I" + clang_inc_dir2;
-  ArgumentsAdjuster ardj1 = getInsertArgumentAdjuster(my_inc_dir1.c_str());
-  ArgumentsAdjuster ardj2 = getInsertArgumentAdjuster(my_inc_dir2.c_str());
+  ArgumentsAdjuster ardj1 = getInsertArgumentAdjuster(clang_inc_dir1.c_str());
+  ArgumentsAdjuster ardj2 = getInsertArgumentAdjuster(clang_inc_dir2.c_str());
   tool.appendArgumentsAdjuster(ardj1);
   tool.appendArgumentsAdjuster(ardj2);
   // examine command line arguments
