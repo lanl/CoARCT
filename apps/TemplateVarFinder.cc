@@ -21,9 +21,11 @@
 #include "llvm/Support/CommandLine.h"
 #include <iostream>
 #include <set>
+#include <sstream>
 
 using namespace llvm;
 
+// Command line support
 static llvm::cl::OptionCategory TVFOpts(
     "Common options for template-var-report");
 
@@ -45,17 +47,67 @@ static cl::opt<std::string> namespace_name(
     cl::cat(TVFOpts),
     cl::init(""));
 
-static cl::opt<std::string> input_traits_name(
-    "nn",
-    cl::desc("Optional namespace to limit search e.g.\"std\" to search for "
-             "\"std::vector\""),
-    cl::value_desc("namespace-name"),
-    cl::cat(TVFOpts),
-    cl::init(""));
-
 using type_set_t = std::set<corct::string_t>;
 using map_args_t = corct::template_var_reporter::map_args_t;
 using vec_strs_t = corct::template_var_reporter::vec_strs_t;
+
+// Functions that process the results
+/**\brief distill the results into a set*/
+type_set_t collate_types(map_args_t const & args);
+
+/** \brief Remove 'class ', 'struct ', '__1::', and ' ' */
+void fix_class(corct::string_t & s);
+
+/**\brief Remove substring from s. */
+void seek_and_remove(corct::string_t & s, corct::string_t const & substr);
+
+/**\brief process the set of types into result, in this case a tuple written
+ * to a stringstream. */
+void process_type_set(type_set_t const & ts, std::ostream & s);
+
+corct::string_t const clang_inc_dir1(CLANG_INC_DIR1);
+corct::string_t const clang_inc_dir2(CLANG_INC_DIR2);
+
+int
+main(int argc, const char ** argv)
+{
+  using namespace corct;
+  using namespace clang::tooling;
+  using tvr_t = template_var_reporter;
+  CommonOptionsParser opt_prs(argc, argv, TVFOpts, addl_help);
+  RefactoringTool tool(opt_prs.getCompilations(), opt_prs.getSourcePathList());
+  // Alert the compiler instance to std lib header locations
+  string_t const my_inc_dir1 = "-I" + clang_inc_dir1;
+  string_t my_inc_dir2 = "-I" + clang_inc_dir2;
+  ArgumentsAdjuster ardj1 = getInsertArgumentAdjuster(my_inc_dir1.c_str());
+  ArgumentsAdjuster ardj2 = getInsertArgumentAdjuster(my_inc_dir2.c_str());
+  tool.appendArgumentsAdjuster(ardj1);
+  tool.appendArgumentsAdjuster(ardj2);
+  // examine command line arguments
+  if(template_name.empty()) {
+    printf("%s:%i Must specify a template to search for!\n", __FUNCTION__,
+           __LINE__);
+    return -1;
+  }
+  // Configure the callback object, matchers, finder
+  tvr_t tr(template_name);
+  if(!namespace_name.empty()) {
+    tr.namespace_name_ = namespace_name;
+  }
+  finder_t finder;
+  tvr_t::matchers_t ms(tr.matchers());
+  for(auto & m : ms) {
+    finder.addMatcher(m, &tr);
+  }
+  // run the tool
+  tool.run(newFrontendActionFactory(&finder).get());
+  // process the results
+  type_set_t t(collate_types(tr.args_));
+  std::stringstream s;
+  process_type_set(t,s);
+  std::cout << s.str();
+  return 0;
+}  // main
 
 type_set_t
 collate_types(map_args_t const & args)
@@ -71,9 +123,18 @@ collate_types(map_args_t const & args)
 }  // collate_types
 
 void
-fix_class(corct::string_t & s);
+fix_class(corct::string_t & s)
+{
+  corct::string_t struct_str("struct ");
+  corct::string_t class_str("class ");
+  corct::string_t ns_str("__1::");
+  seek_and_remove(s, struct_str);
+  seek_and_remove(s, class_str);
+  seek_and_remove(s, ns_str);
+  seek_and_remove(s, " ");
+  return;
+} // fix_class
 
-/**\brief Remove substring from s. */
 void
 seek_and_remove(corct::string_t & s, corct::string_t const & substr)
 {
@@ -85,82 +146,22 @@ seek_and_remove(corct::string_t & s, corct::string_t const & substr)
   return;
 }
 
-/** \brief Remove 'class ', 'struct ', '__1::', and ' ' */
 void
-fix_class(corct::string_t & s)
+process_type_set(type_set_t const & ts, std::ostream &s)
 {
-  corct::string_t struct_str("struct ");
-  corct::string_t class_str("class ");
-  corct::string_t ns_str("__1::");
-  seek_and_remove(s, struct_str);
-  seek_and_remove(s, class_str);
-  seek_and_remove(s, ns_str);
-  seek_and_remove(s, " ");
-  return;
-}
-
-void
-process_type_set(type_set_t const & ts)
-{
-  std::cout << "using " < < < < " = std::tuple<\n";
+  s << "using types = std::tuple<\n";
   size_t n_ts(ts.size());
   size_t i(0);
   for(auto & t1 : ts) {
     std::string t(t1);
     fix_class(t);
-    std::cout << "\t" << t;
+    s << "\t" << t;
     if(i++ < (n_ts - 1)) {
-      std::cout << ",\n";
+      s << ",\n";
     }
   }
-  std::cout << ">;\n";
+  s << ">;\n";
   return;
 }  // process_type_set
-
-corct::string_t clang_inc_dir1(CLANG_INC_DIR1);
-corct::string_t clang_inc_dir2(CLANG_INC_DIR2);
-
-int
-main(int argc, const char ** argv)
-{
-  using namespace corct;
-  using namespace clang::tooling;
-  using tvr_t = template_var_reporter;
-  CommonOptionsParser opt_prs(argc, argv, TVFOpts, addl_help);
-  RefactoringTool tool(opt_prs.getCompilations(), opt_prs.getSourcePathList());
-
-  string_t const my_inc_dir1 = "-I" + clang_inc_dir1;
-  // "-I/Users/tkelley/wnld/llvm/clang+llvm-4.0.0-x86_64-apple-darwin/include/"
-  // "c++/v1";
-  string_t my_inc_dir2 = "-I" + clang_inc_dir2;
-  // "-I/Users/tkelley/wnld/llvm/clang+llvm-4.0.0-x86_64-apple-darwin/bin/../"
-  // "lib/clang/4.0.0/include";
-  printf("%s:%i my_inc_dir1: %s\n", __FUNCTION__, __LINE__,
-         my_inc_dir1.c_str());
-  ArgumentsAdjuster ardj1 = getInsertArgumentAdjuster(my_inc_dir1.c_str());
-  ArgumentsAdjuster ardj2 = getInsertArgumentAdjuster(my_inc_dir2.c_str());
-  tool.appendArgumentsAdjuster(ardj1);
-  tool.appendArgumentsAdjuster(ardj2);
-
-  if(template_name.empty()) {
-    printf("%s:%i Must specify a template to search for!\n", __FUNCTION__,
-           __LINE__);
-    return -1;
-  }
-  tvr_t tr(template_name);
-  if(!namespace_name.empty()) {
-    tr.namespace_name_ = namespace_name;
-  }
-  finder_t finder;
-  tvr_t::matchers_t ms(tr.matchers());
-  for(auto & m : ms) {
-    finder.addMatcher(m, &tr);
-  }
-  tool.run(newFrontendActionFactory(&finder).get());
-
-  type_set_t t(collate_types(tr.args_));
-  process_type_set(t);
-  return 0;
-}  // main
 
 // End of file
