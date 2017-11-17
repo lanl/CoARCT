@@ -5,8 +5,22 @@ cmake_minimum_required(VERSION 3.3)
 project(CoARCT LANGUAGES CXX)
 
 # global C++ properties
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
+# Guess include paths for the standard library
+get_filename_component(CLANG_BIN_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
+set(CLANG_BASE ${CLANG_BIN_DIR}/..)
+set(CLANG_CMAKE_DIR ${CLANG_BASE}/lib/cmake/clang)
+set(LLVM_CMAKE_DIR ${CLANG_BASE}lib/cmake/llvm)
+include("${CLANG_CMAKE_DIR}/ClangConfig.cmake")
+include("${LLVM_CMAKE_DIR}/LLVMConfig.cmake")
+
+set(CLANG_INCLUDE_DIR1 ${CLANG_BASE}/include/c++/v1)
+set(CLANG_INCLUDE_DIR2 ${CLANG_BASE}/lib/clang/4.0.0/include)
+message(STATUS "CLANG_INCLUDE_DIR1: " ${CLANG_INCLUDE_DIR1})
+add_definitions(-DCLANG_INC_DIR1="${CLANG_INCLUDE_DIR1}")
+add_definitions(-DCLANG_INC_DIR2="${CLANG_INCLUDE_DIR2}")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
 # 1.  ------------ Clang/LLVM configurata  ------------
 
