@@ -7,6 +7,7 @@
 #define PREP_CODE_H
 
 #include "types.h"
+#include "utilities.h"
 #include "clang/Frontend/ASTUnit.h"
 #include "clang/Tooling/Tooling.h" //  //buildASTFromCode
 
@@ -19,7 +20,9 @@ using ASTUPtr = std::unique_ptr<clang::ASTUnit>;
 inline auto
 prep_code(corct::str_t_cr code)
 {
-  ASTUPtr ast(clang::tooling::buildASTFromCode(code));
+  corct::vec_str args = {"-std=c++14", corct::clang_inc_dir1,
+                         corct::clang_inc_dir2};
+  ASTUPtr ast(clang::tooling::buildASTFromCodeWithArgs(code,args));
   clang::ASTContext * pctx = &(ast->getASTContext());
   clang::TranslationUnitDecl * decl = pctx->getTranslationUnitDecl();
   return std::make_tuple(std::move(ast), pctx, decl);
