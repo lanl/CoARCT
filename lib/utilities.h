@@ -25,7 +25,13 @@ inline void here_func(int line,
 
 namespace corct
 {
-
+/**\brief Include directories for standard headers */
+namespace{
+string_t const clang_inc_dir1_base(CLANG_INC_DIR1);
+string_t const clang_inc_dir2_base(CLANG_INC_DIR2);
+string_t const clang_inc_dir1("-I" + clang_inc_dir1_base);
+string_t const clang_inc_dir2("-I" + clang_inc_dir2_base);
+}
 /**\brief Get the Replacements object associated with a node on which we can
  * call getSourceRange(). */
 template <class T>
