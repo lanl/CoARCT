@@ -3,7 +3,7 @@ language: cpp
 compiler: clang-4.0
 
 sudo: required
-dist: trusty
+dist: xenial
 
 addons:
   apt:
