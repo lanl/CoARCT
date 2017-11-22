@@ -14,7 +14,7 @@ addons:
 before_install:
   - sudo apt-get -qq update
   - sudo apt-cache search boost
-  - sudo apt-get install -y libboost1.61-dev
+  - sudo apt-get install -y libboost1.58-dev
   - sudo wget https://github.com/google/googletest/archive/release-1.7.0.tar.gz
   - sudo tar xf release-1.7.0.tar.gz
   - cd googletest-release-1.7.0
