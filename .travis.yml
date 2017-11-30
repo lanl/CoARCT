@@ -17,6 +17,7 @@ before_install:
   - which -a cmake
   - sudo apt-get install -y clang-4.0 libclang-common-4.0-dev libclang-4.0-dev
   - which -a clang++
+  - echo ${PATH}
   - sudo apt-get install -y llvm-4.0 llvm-4.0-dev
   - sudo apt-get install -y libboost1.58-dev
   - sudo wget https://github.com/google/googletest/archive/release-1.7.0.tar.gz
