@@ -1,6 +1,6 @@
 language: cpp
 
-compiler: clang
+# compiler: clang
 
 sudo: required
 dist: xenial
