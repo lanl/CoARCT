@@ -22,6 +22,7 @@ before_install:
   - sudo apt-get install -y libboost1.58-dev
   - sudo wget https://github.com/google/googletest/archive/release-1.7.0.tar.gz
   - sudo tar xf release-1.7.0.tar.gz
+  - sudo ls
   - sudo -i cd release-1.7.0
   - sudo -i cmake -DBUILD_SHARED_LIBS=ON .
   - sudo make
