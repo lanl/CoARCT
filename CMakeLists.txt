@@ -6,7 +6,7 @@ project(CoARCT LANGUAGES CXX)
 
 # global C++ properties
 
-# Guess include paths for the standard library
+# Guess cmake paths for Clang and LLVM
 get_filename_component(CLANG_BIN_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
 set(CLANG_BASE ${CLANG_BIN_DIR}/..)
 set(CLANG_CMAKE_DIR ${CLANG_BASE}/lib/cmake/clang)
@@ -14,6 +14,9 @@ set(LLVM_CMAKE_DIR ${CLANG_BASE}lib/cmake/llvm)
 include("${CLANG_CMAKE_DIR}/ClangConfig.cmake")
 include("${LLVM_CMAKE_DIR}/LLVMConfig.cmake")
 
+# Guess include paths for the standard C++ library.
+# These paths are used from CoARCT tests and applications to configure the
+# compilers instantiated in those programs.
 set(CLANG_INCLUDE_DIR1 ${CLANG_BASE}/include/c++/v1)
 set(CLANG_INCLUDE_DIR2 ${CLANG_BASE}/lib/clang/4.0.0/include)
 message(STATUS "CLANG_INCLUDE_DIR1: " ${CLANG_INCLUDE_DIR1})
@@ -23,60 +26,20 @@ add_definitions(-DCLANG_INC_DIR2="${CLANG_INCLUDE_DIR2}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
 # 1.  ------------ Clang/LLVM configurata  ------------
-
-# This builds up the CLANG_LIBRARIES flag which can be used in various places.
-MACRO(APPEND_CLANG_LIB _libname_)
-find_library(CLANG_${_libname_}_LIB ${_libname_} PATHS $ENV{LLVM_LIB_DIR} $ENV{CLANG_LIB_DIR})
-if (CLANG_${_libname_}_LIB)
-   set(CLANG_LIBRARIES ${CLANG_LIBRARIES} ${CLANG_${_libname_}_LIB})
-endif()
-ENDMACRO()
-
-# This set of libs may vary with LLVM/Clang version
-
-APPEND_CLANG_LIB(clangAST)
-APPEND_CLANG_LIB(clangAnalysis)
-APPEND_CLANG_LIB(clangBasic)
-APPEND_CLANG_LIB(clangDriver)
-APPEND_CLANG_LIB(clangFormat)
-APPEND_CLANG_LIB(clangFrontend)
-APPEND_CLANG_LIB(clangFrontendTool)
-APPEND_CLANG_LIB(clangLex)
-APPEND_CLANG_LIB(clangParse)
-APPEND_CLANG_LIB(clangSema)
-APPEND_CLANG_LIB(clangEdit)
-APPEND_CLANG_LIB(clangASTMatchers)
-APPEND_CLANG_LIB(clangRewrite)
-APPEND_CLANG_LIB(clangRewriteFrontend)
-APPEND_CLANG_LIB(clangStaticAnalyzerFrontend)
-APPEND_CLANG_LIB(clangStaticAnalyzerCheckers)
-APPEND_CLANG_LIB(clangStaticAnalyzerCore)
-APPEND_CLANG_LIB(clangSerialization)
-APPEND_CLANG_LIB(clangToolingCore)
-APPEND_CLANG_LIB(clangTooling)
-
-APPEND_CLANG_LIB(LLVMAnalysis)
-APPEND_CLANG_LIB(LLVMMCParser)
-APPEND_CLANG_LIB(LLVMMC)
-APPEND_CLANG_LIB(LLVMBitReader)
-APPEND_CLANG_LIB(LLVMProfileData)
-APPEND_CLANG_LIB(LLVMOption)
-APPEND_CLANG_LIB(LLVMSupport)
-APPEND_CLANG_LIB(LLVMCore)
-APPEND_CLANG_LIB(LLVMDemangle)
+set(CLANG_LIBRARIES clangTooling)
 
 # derived from looking at clang++ -v
-
-set(LocalLibClang_DEFINITIONS -fPIC -fvisibility-inlines-hidden -Wall -W -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wmissing-field-initializers -pedantic -Wno-long-long -Wcovered-switch-default -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Werror=date-time -fno-exceptions -fno-rtti -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS)
+# To do: get from llvm-config
+set(LocalLibClang_DEFINITIONS -fPIC -fvisibility-inlines-hidden -Wall -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wmissing-field-initializers -pedantic -Wno-long-long -Wcovered-switch-default -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Werror=date-time -fno-exceptions -fno-rtti -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS)
 add_definitions(${LocalLibClang_DEFINITIONS})
 
-
-include_directories($ENV{LibClang_INCLUDE_DIR})
+# defined in ClangConfig.cmake
+include_directories(${CLANG_INCLUDE_DIRS})
 
 set(LLVM_LDFLAGS "-Wl,-search_paths_first -Wl,-headerpad_max_install_names")
 set(CMAKE_EXE_LINKER_FLAGS  ${CMAKE_EXE_LINKER_FLAGS} ${LLVM_LDFLAGS})
 
-# term info
+# terminal info
 message(STATUS "TINFO_LIB_DIR: " $ENV{TINFO_LIB_DIR})
 find_library(TINFO_LIB tinfo PATHS $ENV{TINFO_LIB_DIR})
 if(${TINFO_LIB-NOTFOUND})
