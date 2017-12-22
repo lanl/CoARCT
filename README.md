@@ -25,11 +25,16 @@ Our hope is that CoARCT will help demystify the Clang AST tools to developers. I
 
 Default branch is Clang 5.0 (older branches: 4.0, 3.9, 3.8).
 
+## Known issue: futimens on OSX
+
+Building CoARCT failed on OSX with pre-built binaries from llvm.org: the function `futimens` was undefined. Workaround: build Clang and LLVM from source as described at http://clang.llvm.org/get_started.html.
+
 ## Build
 
 1. Make sure clang++ is in your path
 1. Define these environment variables
     ```
+    CXX: Your clang++ version 5.0.x
     GTEST_DIR: Top level directory of google test installation
     BOOST_DIR: Top level of Boost (#include "boost/type_index.hpp" needs to work)
     TINFO_LIB_DIR: points to where libtinfo.a is installed.
