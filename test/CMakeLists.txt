@@ -25,7 +25,6 @@ include_directories(
 # build gtest
 cxx_library(gtest "${cxx_strict}" ${GTEST_ROOT}/src/gtest-all.cc)
 cxx_library(gtest_main "${cxx_strict}" ${GTEST_ROOT}/src/gtest_main.cc)
-target_link_libraries(gtest_main gtest corct)
 
 # build tests
 #---------------------------------------------------------
@@ -36,6 +35,6 @@ file(GLOB CORCT_UNITTESTS
 
 add_executable(corct_unittests ${CORCT_UNITTESTS} )
 
-target_link_libraries(corct_unittests gtest_main ${CLANG_LIBRARIES} ${TINFO_LIBS} z)
+target_link_libraries(corct_unittests gtest_main gtest corct ${CLANG_LIBRARIES} ${TINFO_LIBS} z)
 
 # End of file
