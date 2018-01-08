@@ -26,7 +26,7 @@ add_definitions(-DCLANG_INC_DIR2="${CLANG_INCLUDE_DIR2}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 
 # 1.  ------------ Clang/LLVM configurata  ------------
-set(CLANG_LIBRARIES clangTooling)
+set(CLANG_LIBRARIES clangTooling clangASTMatchers)
 
 # derived from looking at clang++ -v
 # To do: get from llvm-config
