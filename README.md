@@ -55,8 +55,8 @@ Default branch is Clang 5.0 (older branches: 4.0, 3.9, 3.8).
     ```
     /home/CoARCT/build-clang-5.0.0 $ ./test/corct-unittests
     ...
-    [==========] 76 tests from 14 test cases ran. (157 ms total)
-    [  PASSED  ] 76 tests.
+    [==========] 60 tests from 13 test cases ran. (157 ms total)
+    [  PASSED  ] 60 tests.
     ```
 
 ## Changes for Clang 5.0
