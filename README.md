@@ -1,6 +1,8 @@
 # CoARCT
 Code Analysis and Refactoring with Clang Tools
 
+(Note Clang-5.0 branch now available.)
+
 CoARCT (pronounced like the word "corked") is a small set of tools built on Clang's LibTooling. CoARCT demonstrates some more sustained examples of refactoring and analyzing code with AST Matchers and the clang Refactoring Tool.
 
 It includes library code and command line drivers that go beyond some of the (excellent!) tutorials that are available. The CoARCT examples are drawn from refactoring legacy codes:
@@ -23,7 +25,7 @@ Our hope is that CoARCT will help demystify the Clang AST tools to developers. I
 4. Boost (currently using 1.61, just needs boost/type_index in one spot)
 4. Google test (https://github.com/google/googletest)
 
-Works with Clang 4.0.0 (also 3.9, 3.8).
+Works with Clang 4.0 (3.9, 3.8). NEW: 5.0 (see clang-5.0 branch.)
 
 ## Build
 
@@ -57,8 +59,8 @@ Works with Clang 4.0.0 (also 3.9, 3.8).
     ```
     /home/CoARCT/build-clang-4.0.0 $ ./test/corct-unittests
     ...
-    [==========] 72 tests from 15 test cases ran. (157 ms total)
-    [  PASSED  ] 72 tests.
+    [==========] 76 tests from 14 test cases ran. (157 ms total)
+    [  PASSED  ] 76 tests.
     ```
 
 ### Building on Ubuntu
