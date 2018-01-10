@@ -29,8 +29,6 @@ cxx_library(gtest_main "${cxx_strict}" ${GTEST_ROOT}/src/gtest_main.cc)
 # build tests
 #---------------------------------------------------------
 # build corct_unittest1 from sources shown
-#file(GLOB CORCT_UNITTESTS
-#  ${CMAKE_CURRENT_SOURCE_DIR}/lib/*.cc
 set( CORCT_UNITTESTS
   lib/callsite_expander_test.cc
   lib/clang_utilities_test.cc

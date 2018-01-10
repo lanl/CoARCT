@@ -59,6 +59,10 @@ Default branch is Clang 5.0 (older branches: 4.0, 3.9, 3.8).
     [  PASSED  ] 76 tests.
     ```
 
+## Changes for Clang 5.0
+
+Minor tweaks. Hopefully CMake configuration is improved. Also added ability to configure compiler instances in unit tests; this should permit more complex test inputs.
+
 ## Known issues
 
 ### futimens on OSX
@@ -79,6 +83,8 @@ Building CoARCT on Linux failed with errors about `no member is_final in namespa
 ### Building on Ubuntu
 
 Prajjwald reported some solutions to problems with building on Ubuntu. Please see [issue #1](https://github.com/lanl/CoARCT/issues/1).
+
+These issues may be mitigated in the clang-5.0 branch.
 
 ## Copyright
 
