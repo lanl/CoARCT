@@ -19,7 +19,9 @@ struct functor{
 
 TEST(function_sig_matcher,type_as_string){
   EXPECT_EQ("double",corct::type_as_string<double>());
-  EXPECT_EQ("functor",corct::type_as_string<functor>());
+  /* The second is because of Boost 1.59 on Linux inserting a space */
+  EXPECT_TRUE("functor" == corct::type_as_string<functor>() ||
+              " functor" == corct::type_as_string<functor>());
 }
 
 TEST(function_sig_matcher,param_matcher_reference){
