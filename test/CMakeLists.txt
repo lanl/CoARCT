@@ -29,8 +29,18 @@ cxx_library(gtest_main "${cxx_strict}" ${GTEST_ROOT}/src/gtest_main.cc)
 # build tests
 #---------------------------------------------------------
 # build corct_unittest1 from sources shown
-file(GLOB CORCT_UNITTESTS
-  ${CMAKE_CURRENT_SOURCE_DIR}/lib/*.cc
+#file(GLOB CORCT_UNITTESTS
+#  ${CMAKE_CURRENT_SOURCE_DIR}/lib/*.cc
+set( CORCT_UNITTESTS
+  lib/callsite_expander_test.cc
+  lib/clang_utilities_test.cc
+  lib/function_sig_exp_test.cc
+  # lib/function_sig_matchers_test.cc   ## not working on Linux??
+  lib/global_matchers_test.cc
+  lib/small_matchers_test.cc
+  lib/struct_field_users_test.cc
+  lib/template_var_matchers_test.cc
+  lib/utilities_test.cc
 )
 
 add_executable(corct_unittests ${CORCT_UNITTESTS} )

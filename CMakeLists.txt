@@ -36,9 +36,6 @@ add_definitions(${LocalLibClang_DEFINITIONS})
 # defined in ClangConfig.cmake
 include_directories(${CLANG_INCLUDE_DIRS})
 
-set(LLVM_LDFLAGS "-Wl,-search_paths_first -Wl,-headerpad_max_install_names")
-set(CMAKE_EXE_LINKER_FLAGS  ${CMAKE_EXE_LINKER_FLAGS} ${LLVM_LDFLAGS})
-
 # terminal info
 message(STATUS "TINFO_LIB_DIR: " $ENV{TINFO_LIB_DIR})
 find_library(TINFO_LIB tinfo PATHS $ENV{TINFO_LIB_DIR})

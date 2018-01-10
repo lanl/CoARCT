@@ -25,10 +25,6 @@ Our hope is that CoARCT will help demystify the Clang AST tools to developers. I
 
 Default branch is Clang 5.0 (older branches: 4.0, 3.9, 3.8).
 
-## Known issue: futimens on OSX
-
-Building CoARCT failed on OSX with pre-built binaries from llvm.org: the function `futimens` was undefined. Workaround: build Clang and LLVM from source as described at http://clang.llvm.org/get_started.html.
-
 ## Build
 
 1. Make sure clang++ is in your path
@@ -61,6 +57,23 @@ Building CoARCT failed on OSX with pre-built binaries from llvm.org: the functio
     ...
     [==========] 76 tests from 14 test cases ran. (157 ms total)
     [  PASSED  ] 76 tests.
+    ```
+
+## Known issues
+
+### futimens on OSX
+
+Building CoARCT failed on OSX with pre-built binaries from llvm.org: the function `futimens` was undefined. Workaround: build Clang and LLVM from source as described at http://clang.llvm.org/get_started.html.
+
+### No std::is_final
+
+Building CoARCT on Linux failed with errors about `no member is_final in namespace std`. Diagnosis: That installation of Clang seems to be finding headers with an older GCC (4.8.5). Workarounds
+
+1. set (or append) `--gcc-toolchain=/path/to/newer/gcc` to the `CXXFLAGS` environment variable when running CMake.
+
+1. The above solution did not work on one system. In that case, overriding cxx-isystem was necessary. Pass:
+    ```
+    -cxx-isystem /path/to/newer/gcc/include/c++/version -cxx-isystem /path/to/newer/gcc/include/c++/<version>/x86_64-pc-linux-gnu
     ```
 
 ### Building on Ubuntu
