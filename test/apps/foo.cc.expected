@@ -1,0 +1,13 @@
+/* Test file for function-mover.
+ * To use, copy this to foo.cc, then run "../../build/apps/function-mover -p ."
+ * After, lines 7-10 should be removed (the closing bracket on 10 will be
+ * removed, but not the newline.)
+ */
+#include <iostream>
+
+
+
+double moo(){
+  std::cout << "moo!!\n";
+  return 2.0;
+}
