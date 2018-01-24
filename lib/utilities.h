@@ -27,8 +27,16 @@ namespace corct
 {
 /**\brief Include directories for standard headers */
 namespace{
+#ifdef CLANG_INC_DIR1
 string_t const clang_inc_dir1_base(CLANG_INC_DIR1);
+#else
+string_t const clang_inc_dir1_base;
+#endif
+#ifdef CLANG_INC_DIR2
 string_t const clang_inc_dir2_base(CLANG_INC_DIR2);
+#else
+string_t const clang_inc_dir2_base;
+#endif
 string_t const clang_inc_dir1("-I" + clang_inc_dir1_base);
 string_t const clang_inc_dir2("-I" + clang_inc_dir2_base);
 }
