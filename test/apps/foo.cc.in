@@ -1,7 +1,7 @@
 /* Test file for function-mover.
  * To use, copy this to foo.cc, then run "../../build/apps/function-mover -p . foo.cc"
  * After, lines 7-10 should be removed (the closing bracket on 10 will be
- * removed, but not the newline.) See foo.cc.out.
+ * removed, but not the newline.) See foo.cc.expected.
  *
  * To run properly, you will likely need to create a compile_database.json.
  * It will need to look like this:

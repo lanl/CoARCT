@@ -11,6 +11,9 @@ set(APPS_LIBRARIES
   c
 )
 
+add_executable(function-mover FunctionMover.cc )
+target_link_libraries(function-mover ${APPS_LIBRARIES} )
+
 add_executable(template-vars-report TemplateVarFinder.cc )
 target_link_libraries(template-vars-report ${APPS_LIBRARIES} )
 
