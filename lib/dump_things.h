@@ -46,6 +46,18 @@ dumpSourceRange(clang::SourceRange r,
                 clang::SourceManager const * SM,
                 string_t const tabs = "");
 
+/** \brief Dump full SourceRange to stdout.
+ *\param R: source range
+ *\param SM: SourceManager
+ *\param tabs: current indentation
+ *
+ * Prints the full source information<file name:line lll:col cc, line ll:col cc>
+ */
+void
+dumpFullSourceRange(clang::SourceRange r,
+                clang::SourceManager const * SM,
+                string_t const tabs = "");
+
 /**\brief Dump SourceRange to a string.
 \param r: source range
 \param SM: Source Manager */

@@ -98,7 +98,28 @@ dumpSourceRange(clang::SourceRange R,
     HERE("Invalid SourceManager, cannot dump SourceRange\n");
     return;
   }
-  std::cout << tabs << " <";
+  std::cout << tabs << "<";
+  dumpLocation(R.getBegin(), sm);
+  if(R.getBegin() != R.getEnd()) {
+    std::cout << ", ";
+    dumpLocation(R.getEnd(), sm);
+  }
+  std::cout << ">";
+  return;
+}  // dumpSourceRange
+
+void
+dumpFullSourceRange(clang::SourceRange R,
+                clang::SourceManager const * const sm,
+                string_t const tabs)
+{
+  last_fname = "";
+  last_lineno = 0xFFFFFFF;
+  if(!sm) {
+    HERE("Invalid SourceManager, cannot dump SourceRange\n");
+    return;
+  }
+  std::cout << tabs << "<";
   dumpLocation(R.getBegin(), sm);
   if(R.getBegin() != R.getEnd()) {
     std::cout << ", ";
