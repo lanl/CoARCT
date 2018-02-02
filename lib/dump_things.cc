@@ -145,6 +145,25 @@ sourceRangeAsString(clang::SourceRange r, clang::SourceManager const * sm)
   return s.str();
 }  // sourceRangeAsString
 
+// dumpSourceRange, but to a string
+string_t
+fullSourceRangeAsString(clang::SourceRange r, clang::SourceManager const * sm)
+{
+  last_fname = "";
+  last_lineno = 0xFFFFFFF;
+  if(!sm) {
+    return "";
+  }
+  std::stringstream s;
+  s << "<" << locationAsString(r.getBegin(), sm);
+  last_lineno = 0xFFFFFFF;
+  // if(r.getBegin() != r.getEnd()) {
+    s << ", " << locationAsString(r.getEnd(), sm);
+  // }
+  s << ">";
+  return s.str();
+}  // sourceRangeAsString
+
 // from clang's ASTDumper:
 void
 dumpDecl(clang::Decl const * const D,

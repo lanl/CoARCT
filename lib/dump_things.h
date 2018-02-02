@@ -64,6 +64,15 @@ dumpFullSourceRange(clang::SourceRange r,
 string_t
 sourceRangeAsString(clang::SourceRange r, clang::SourceManager const * sm);
 
+/**\brief Dump SourceRange to a string.
+ *\param r: source range
+ *\param SM: Source Manager
+ *
+ *Prints the full source info <file name:line lll:col cc, line ll:col cc>
+ */
+string_t
+fullSourceRangeAsString(clang::SourceRange r, clang::SourceManager const * sm);
+
 /**\brief Dump SourceLocation to a string.
 \param loc: source location
 \param SM: Source Manager */
