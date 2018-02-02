@@ -31,7 +31,10 @@ cxx_library(gtest_main "${cxx_strict}" ${GTEST_ROOT}/src/gtest_main.cc)
 # build corct_unittest1 from sources shown
 set( CORCT_UNITTESTS
   lib/callsite_expander_test.cc
+  lib/callsite_lister_test.cc
   lib/clang_utilities_test.cc
+  lib/function_common_test.cc
+  lib/function_def_lister_test.cc
   lib/function_sig_exp_test.cc
   # lib/function_sig_matchers_test.cc   ## not working on Linux??
   lib/global_matchers_test.cc
