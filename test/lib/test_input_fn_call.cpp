@@ -31,7 +31,7 @@ void m(S * ps){ ps->h();}
 struct S{  void h(){return;}  void i(){return;}};void m(S * ps){ ps->h();}
 */
 
-void n(S s){ s->i();}
+void n(S s){ s.i();}
 /*
 struct S{  void h(){return;}  void i(){return;}};void n(S s){ s->i();}
 */
