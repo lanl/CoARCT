@@ -2,8 +2,7 @@
 // Oct 06, 2016
 // (c) Copyright 2016 LANSLLC, all rights reserved
 
-#ifndef UTILITIES_H
-#define UTILITIES_H
+#pragma once
 
 #include "clang/ASTMatchers/ASTMatchers.h"
 #include "types.h"
@@ -260,6 +259,5 @@ compare_vars(clang::VarDecl const * const v1,
 }  // compare_vars
 
 }  // corct::
-#endif  // include guard
 
 // End of file
