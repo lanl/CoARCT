@@ -5,6 +5,7 @@
 #ifndef CALLSITE_EXPANDER_H
 #define CALLSITE_EXPANDER_H
 
+#include "callsite_common.h"
 #include "function_repl_gen.h"
 #include "make_replacement.h"
 #include "signature_insert.h"
@@ -18,52 +19,6 @@
 #include <iostream>
 
 namespace corct {
-
-
-// clang-format off
-/** Match a call to function with specified name, bound in "function". Pretty
- sure this won't pick up a function pointer (TODO need to check that).
-*/
-auto mk_fn_call_matcher(
-  std::string const & cs_bind_name,
-  std::string const & fn_bind_name,
-  std::string const & targ_name)
-{
-  using namespace clang::ast_matchers;
-  return callExpr(
-    unless(isExpansionInSystemHeader()),
-    hasDescendant(
-      declRefExpr(
-        to(
-          functionDecl(
-            hasName(targ_name)
-          ).bind(fn_bind_name)
-        )
-      )
-    )//.bind("recDecl")
-  ).bind(cs_bind_name);
-} // mk_fn_call_matcher
-
-/** Match a call to bound member function with specified name, with
-node bound to 'fn_bind_name'. This will work with with object,
-reference, or pointer to object.
-*/
-auto mk_mthd_call_matcher(
-  std::string const & cs_bind_name,
-  std::string const & fn_bind_name,
-  std::string const & targ_name)
-{
-  using namespace clang::ast_matchers;
-  return cxxMemberCallExpr(
-    unless(isExpansionInSystemHeader()),
-    callee(
-      cxxMethodDecl(
-        hasName(targ_name)
-      ).bind(fn_bind_name) // cxxMethodDecl
-    ) // callee
-  ).bind(cs_bind_name);
-} // mk_mthd_call_matcher
-// clang-format on
 
 struct expand_callsite_traits {
   using matcher_t = clang::ast_matchers::StatementMatcher;
