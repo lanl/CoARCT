@@ -11,52 +11,37 @@ set(APPS_LIBRARIES
   c
 )
 
-add_executable(function-mover FunctionMover.cc )
-target_link_libraries(function-mover ${APPS_LIBRARIES} )
+macro(add_coarct_exe app_name app_src)
+  add_executable(${app_name} ${app_src} )
+  target_link_libraries(${app_name} ${APPS_LIBRARIES} )
+endmacro()
 
-add_executable(template-vars-report TemplateVarFinder.cc )
-target_link_libraries(template-vars-report ${APPS_LIBRARIES} )
+add_coarct_exe(callsite-lister CallsiteLister.cc)
 
-add_executable(temp-type-report TemplateType.cc )
-target_link_libraries(temp-type-report ${APPS_LIBRARIES} )
+add_coarct_exe(function-lister FuncLister.cc)
 
-add_executable(function-printer FunctionPrinter.cc )
-target_link_libraries(function-printer ${APPS_LIBRARIES} )
+add_coarct_exe(function-mover FunctionMover.cc )
 
-add_executable(typedef-report TypedefFinder.cc )
-target_link_libraries(typedef-report ${APPS_LIBRARIES} )
+add_coarct_exe(template-vars-report TemplateVarFinder.cc )
 
-add_executable(global-replace GlobalReplace.cc )
-target_link_libraries(global-replace ${APPS_LIBRARIES} )
+add_coarct_exe(temp-type-report TemplateType.cc )
 
-add_executable(struct-field-use StructFieldUser.cc )
-target_link_libraries(struct-field-use ${APPS_LIBRARIES} )
+add_coarct_exe(function-printer FunctionPrinter.cc )
 
-add_executable(func-decl-lister-rav FuncListerRAV.cc )
-target_link_libraries(func-decl-lister-rav ${APPS_LIBRARIES} )
+add_coarct_exe(typedef-report TypedefFinder.cc )
 
-add_executable(func-decl-lister-am FuncListerAM.cc )
-target_link_libraries(func-decl-lister-am ${APPS_LIBRARIES} )
+add_coarct_exe(global-replace GlobalReplace.cc )
 
-# add_executable(while-loop-detect WhileLoopFinder.cc )
-##target_link_libraries(while-loop-detect ${APPS_LIBRARIES} )
-###  corct
-###  ${CLANG_LIBRARIES}
-###  ${LLVM_LIBRARIES}
-###  ${TINFO_LIB}
-###  z
-### )
-#
-add_executable(global-detect GlobalDetect.cc )
-target_link_libraries(global-detect ${APPS_LIBRARIES} )
+add_coarct_exe(struct-field-use StructFieldUser.cc )
 
-###add_executable(loop-convert
-###  LoopConvert.cpp
-###  )
-##target_link_libraries(loop-convert # ${APPS_LIBRARIES} )
-###  ${CLANG_LIBRARIES}
-###  ${LLVM_LIBRARIES}
-###  ${TINFO_LIB}
-###  z
-### )
-###
+add_coarct_exe(func-decl-lister-rav FuncListerRAV.cc )
+
+add_coarct_exe(func-decl-lister-am FuncListerAM.cc )
+
+add_coarct_exe(global-detect GlobalDetect.cc )
+
+# add_coarct_exe(while-loop-detect WhileLoopFinder.cc )
+
+# add_coarct_exe(loop-convert LoopConvert.cpp
+
+# End of file
