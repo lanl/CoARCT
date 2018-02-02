@@ -3,7 +3,9 @@
 // (c) Copyright 2017 LANSLLC, all rights reserved
 
 /* Uses RecrusiveASTVisitor to list all the functions in a translation unit,
- * skipping the ones that are defined in headers. */
+ * skipping the ones that are defined in headers. Compare with FuncListerAM,
+ * which uses AST Matchers to do the same thing.
+ */
 
 #include "clang/AST/ASTConsumer.h"
 #include "clang/AST/RecursiveASTVisitor.h"

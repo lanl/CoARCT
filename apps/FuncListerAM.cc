@@ -4,7 +4,7 @@
 
 /* Uses AST Matcher to list all the functions in a translation unit,
  * skipping the ones that are defined in headers. Compare with FuncListerRAV,
- * which uses RecursiveASTVisitor. */
+ * which uses RecursiveASTVisitor to do the same thing. */
 
 #include "clang/ASTMatchers/ASTMatchFinder.h"
 #include "clang/ASTMatchers/ASTMatchers.h"
