@@ -4,6 +4,7 @@
 #pragma once
 
 #include "dump_things.h"
+#include "function_common.h"
 #include "types.h"
 #include "utilities.h"
 
@@ -31,12 +32,9 @@ struct FunctionDefLister : public callback_t {
     FunctionDecl const * fdecl = result.Nodes.getNodeAs<FunctionDecl>(bd_name_);
     if(fdecl) {
       m_num_funcs++;
-      std::cout << "Function '" << (fdecl->getNameAsString())
-                << "' defined at:\n";
       SourceManager & sm(result.Context->getSourceManager());
-      SourceRange decl_range(fdecl->getSourceRange());
-      corct::dumpFullSourceRange(decl_range, &sm);
-      std::cout << "\n-=--=--=--=--=--=-\n";
+      print_function_decl_details(fdecl,sm,std::cout);
+      std::cout << "-=--=--=--=--=--=-\n";
     }
     else {
       corct::check_ptr(fdecl, "fdecl");
