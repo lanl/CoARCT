@@ -21,6 +21,28 @@
 
 namespace corct {
 
+/* Note on matching template variables: in Clang 5, the code was three matchers
+ * simpler:
+ *
+    varDecl(
+      hasDeclaration(
+        classTemplateSpecializationDecl(
+           matchesName(template_name)
+        ).bind("mtvm_classDecl") // classTemplateSpecializationDecl
+      ) // hasType
+    ).bind("mtvm_varDecl"); // varDecl
+ *
+ * Under Clang 5, this matched down to the desugared type. So if you had a case
+ * like this:
+     template <class T> class Aardvarks{};
+     using Cardvarks = Aardvarks<int>;
+     Cardvarks a;
+ * it would match a. This changed in Clang 6. A comment appears in the
+ * documentation for hasDeclaration that makes it clear that hasType will match
+ * the sugared type. I've followed that comment to preserve the behavior of
+ * templ_var_matcher: thus the hasUnqualifiedDesugaredType and its helpers.
+ */
+
 // clang-format off
 clang::ast_matchers::DeclarationMatcher
 mk_templ_var_matcher(str_t_cr template_name){
