@@ -28,9 +28,15 @@ mk_templ_var_matcher(str_t_cr template_name){
   return
     varDecl(
       hasType(
-        classTemplateSpecializationDecl(
-           matchesName(template_name)
-        ).bind("mtvm_classDecl") // classTemplateSpecializationDecl
+        hasUnqualifiedDesugaredType(
+          recordType(
+            hasDeclaration(
+              classTemplateSpecializationDecl(
+                 matchesName(template_name)
+              ).bind("mtvm_classDecl") // classTemplateSpecializationDecl
+            ) // hasDeclaration
+          ) // recordType
+        ) // hasUnqualifiedDesugaredType
       ) // hasType
     ).bind("mtvm_varDecl"); // varDecl
 } // mk_templ_var_matcher
@@ -42,14 +48,20 @@ mk_templ_var_matcher(str_t_cr template_name, str_t_cr namespace_name)
   return
     varDecl(
       hasType(
-        classTemplateSpecializationDecl(
-          matchesName(template_name)
-         ,hasDeclContext(
-            namespaceDecl(
-              hasName(namespace_name)
-            ) // namespaceDecl
-          ) // hasDeclContext
-        ).bind("mtvm_classDecl") // classTemplateSpecializationDecl
+        hasUnqualifiedDesugaredType(
+          recordType(
+            hasDeclaration(
+              classTemplateSpecializationDecl(
+                matchesName(template_name)
+               ,hasDeclContext(
+                  namespaceDecl(
+                    hasName(namespace_name)
+                  ) // namespaceDecl
+                ) // hasDeclContext
+              ).bind("mtvm_classDecl") // classTemplateSpecializationDecl
+            ) // hasDeclaration
+          ) // recordType
+        ) // hasUnqualifiedDesugaredType
       ) // hasType
     ).bind("mtvm_varDecl"); // varDecl
 } // mk_templ_var_matcher
