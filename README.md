@@ -20,19 +20,19 @@ Our hope is that CoARCT will help demystify the Clang AST tools to developers. I
 
 ## Prerequisites:
 1. CMake version 3+ (https://cmake.org/download/)
-2. Clang and LLVM 5.0 libraries and headers (http://releases.llvm.org/download.html)
+2. Clang and LLVM 6.0 libraries and headers (http://releases.llvm.org/download.html)
 3. libtinfo
 4. Boost (currently using 1.61, just needs boost/type_index in one spot)
 4. Google test (currently using 1.7.0 https://github.com/google/googletest)
 
-Default branch is Clang 5.0 (older branches: 4.0, 3.9, 3.8).
+Default branch is Clang 6.0 (older branches: 5.0, 4.0, 3.9, 3.8).
 
 ## Build
 
 1. Make sure clang++ is in your path
 1. Define these environment variables
     ```
-    CXX: Your clang++ version 5.0.x
+    CXX: Your clang++ version 6.0.x
     GTEST_DIR: Top level directory of google test installation
     BOOST_DIR: Top level of Boost (#include "boost/type_index.hpp" needs to work)
     TINFO_LIB_DIR: points to where libtinfo.a is installed.
@@ -41,25 +41,29 @@ Default branch is Clang 5.0 (older branches: 4.0, 3.9, 3.8).
 3. Create a build directory
 
     ```
-    /home/CoARCT $ mkdir build-clang-5.0.0
-    /home/CoARCT $ cd build-clang-5.0.0
+    /home/CoARCT $ mkdir build-clang-6.0.0
+    /home/CoARCT $ cd build-clang-6.0.0
     ```
 
 4. Run cmake, make
 
     ```
-    /home/CoARCT/build-clang-5.0.0 $ cmake ..
-    /home/CoARCT/build-clang-5.0.0 $ make
+    /home/CoARCT/build-clang-6.0.0 $ cmake ..
+    /home/CoARCT/build-clang-6.0.0 $ make
     ```
 
 5. Run the unit tests
 
     ```
-    /home/CoARCT/build-clang-5.0.0 $ ./test/corct-unittests
+    /home/CoARCT/build-clang-6.0.0 $ ./test/corct-unittests
     ...
     [==========] 60 tests from 13 test cases ran. (157 ms total)
     [  PASSED  ] 60 tests.
     ```
+
+## Changes for Clang 6.0
+
+Added logic to match desugared types in template variable matcher. This doesn't affect anything in Clang 5, and it keeps the Clang 6 behavior the same as before (i.e. it still "sees through" type aliases).
 
 ## Changes for Clang 5.0
 
