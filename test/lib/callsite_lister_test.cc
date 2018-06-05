@@ -36,7 +36,6 @@ run_case(str_t_cr code, Tester & tst)
 
 TEST(callsite_matcher,case1_BasicHit){
   string_t code =
-      "#include <iostream>\n"
       "void h(){return;}\n"
       "\n"
       "void i(){return h();}\n"
