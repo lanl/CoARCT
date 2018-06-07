@@ -3,7 +3,7 @@ Code Analysis and Refactoring with Clang Tools
 
 CoARCT (pronounced like the word "corked") is a small set of tools built on Clang's LibTooling. CoARCT demonstrates some more sustained examples of refactoring and analyzing code with AST Matchers and the clang Refactoring Tool. The goal is not to supply tools, but rather to show how one can create one's own tools.
 
-It includes library code and command line drivers that go beyond some of the (excellent!) tutorials that are available. The CoARCT examples are drawn from refactoring legacy codes:
+It includes library code and command line drivers that go beyond some of the (excellent! but short) tutorials that are available. The CoARCT examples are drawn from refactoring legacy codes:
 * Reporting which functions use which global variables;
 * Replacing global variables with local variables, including threading variables through a call chain;
 * Detecting which functions use which fields of a struct: this data can be used to analyze how to break up large structs;
@@ -57,8 +57,8 @@ Default branch is Clang 6.0 (older branches: 5.0, 4.0, 3.9, 3.8).
     ```
     /home/CoARCT/build-clang-6.0.0 $ ./test/corct-unittests
     ...
-    [==========] 60 tests from 13 test cases ran. (157 ms total)
-    [  PASSED  ] 60 tests.
+    [==========] 63 tests from 16 test cases ran. (553 ms total)
+    [  PASSED  ] 63 tests.
     ```
 
 ## Changes for Clang 6.0
