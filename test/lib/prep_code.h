@@ -22,7 +22,7 @@ using ASTUPtr = std::unique_ptr<clang::ASTUnit>;
 inline auto
 prep_code(corct::str_t_cr code)
 {
-  corct::vec_str args = {"-std=c++14",corct::clang_inc_dir1,
+  corct::vec_str args = {"-std=c++14", "-nostdinc++", corct::clang_inc_dir1,
                          corct::clang_inc_dir2};
   ASTUPtr ast(clang::tooling::buildASTFromCodeWithArgs(code,args));
   clang::ASTContext * pctx = &(ast->getASTContext());
