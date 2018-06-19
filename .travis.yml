@@ -1,20 +1,12 @@
 language: cpp
 
-compiler: clang-4.0
+sudo: required
 
-addons:
-  apt:
-    packages:
-      - cmake
-      - clang-4.0
+services:
+  -docker
 
 before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y libboost1.61-dev
-  - sudo wget https://github.com/google/googletest/archive/release-1.7.0.tar.gz
-  - sudo tar xf release-1.7.0.tar.gz
-  - cd googletest-release-1.7.0
-  - sudo cmake -DBUILD_SHARED_LIBS=ON .
+  - docker pull tkzdockerid/coarct-testenv:clang-6-1
   - sudo make
   - sudo cp -a include/gtest /usr/include
   - sudo cp -a libgtest_main.so libgtest.so /usr/lib/
@@ -23,18 +15,11 @@ before_install:
   - sudo apt-get install -y clang-4.0 libclang-common-4.0-dev libclang-4.0-dev
   - sudo apt-get install -y llvm-4.0 llvm-4.0-dev
 
-env:
-  GTEST_DIR=/usr
-  BOOST_DIR=/usr/include
-  TINFO_LIB_DIR
-
-branches:
-  only:
-    - clang-4.0
-
-install:
-  - mkdir build-clang-4.0
-  - cd build-clang-4.0
+script:
+  - git clone https://github.com/lanl/CoARCT.git -b clang-6.0 coarct
+  - cd coarct
+  - mkdir build
+  - cd build
   - cmake ..
-  - make -j 4
+  - make VERBOSE=on -j 4 2>&1 | tee make.out
   - ./test/corct_unittests
