@@ -1,4 +1,7 @@
 # CoARCT
+
+[![Build Status](https://travis-ci.org/lanl/CoARCT.svg?branch=clang-6.0)](https://travis-ci.org/lanl/CoARCT)
+
 Code Analysis and Refactoring with Clang Tools
 
 CoARCT (pronounced like the word "corked") is a small set of tools built on Clang's LibTooling. CoARCT demonstrates some more sustained examples of refactoring and analyzing code with AST Matchers and the clang Refactoring Tool. The goal is not to supply tools, but rather to show how one can create one's own tools.
