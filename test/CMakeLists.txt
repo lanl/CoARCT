@@ -1,4 +1,4 @@
-
+# CMakeLists.txt for unit tests
 if (NOT DEFINED GTEST_ROOT)
 	if (DEFINED ENV{GTEST_DIR})
 		set(GTEST_ROOT $ENV{GTEST_DIR})
