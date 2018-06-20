@@ -38,11 +38,18 @@ set(CLANG_LIBRARIES clangTooling clangASTMatchers)
 
 # derived from looking at clang++ -v
 # To do: get from llvm-config
-set(LocalLibClang_DEFINITIONS -fPIC -fvisibility-inlines-hidden -Wall -Wno-unused-parameter -Wwrite-strings -Wcast-qual -Wmissing-field-initializers -pedantic -Wno-long-long -Wcovered-switch-default -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Werror=date-time -fno-exceptions -fno-rtti -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS)
+set(LocalLibClang_DEFINITIONS -fPIC -fvisibility-inlines-hidden
+  -Wall -Wno-unused-parameter -Wwrite-strings
+  -Wcast-qual -Wmissing-field-initializers
+  -pedantic -Wno-long-long -Wcovered-switch-default
+  -Wnon-virtual-dtor -Wdelete-non-virtual-dtor
+  -Werror=date-time -fno-exceptions -fno-rtti
+  -D__STDC_CONSTANT_MACROS -D__STDC_FORMAT_MACROS -D__STDC_LIMIT_MACROS)
 add_definitions(${LocalLibClang_DEFINITIONS})
 
 # defined in ClangConfig.cmake
 include_directories(${CLANG_INCLUDE_DIRS})
+include_directories(${LLVM_INCLUDE_DIRS})
 
 # terminal info
 message(STATUS "TINFO_LIB_DIR: " $ENV{TINFO_LIB_DIR})
