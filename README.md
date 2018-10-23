@@ -28,7 +28,7 @@ Our hope is that CoARCT will help demystify the Clang AST tools to developers. I
 4. Boost (currently using 1.61, just needs boost/type_index in one spot)
 4. Google test (currently using 1.7.0 https://github.com/google/googletest)
 
-Default branch is Clang 7.0 (older branches: 5.0, 4.0, 3.9, 3.8).
+Default branch is Clang 7.0 (older branches: 6.0, 5.0, 4.0, 3.9, 3.8).
 
 ## Build
 
