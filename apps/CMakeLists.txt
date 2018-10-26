@@ -40,6 +40,8 @@ add_coarct_exe(func-decl-lister-am FuncListerAM.cc )
 
 add_coarct_exe(global-detect GlobalDetect.cc )
 
+add_coarct_exe(list-member-calls ListCXXMemberCalls.cc )
+
 # add_coarct_exe(while-loop-detect WhileLoopFinder.cc )
 
 # add_coarct_exe(loop-convert LoopConvert.cpp
