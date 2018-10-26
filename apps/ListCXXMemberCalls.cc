@@ -22,8 +22,24 @@ using namespace clang::ast_matchers;
 auto
 mk_call_expr_matcher(std::string const & ns_name)
 {
-  return cxxMemberCallExpr(hasAncestor(namespaceDecl(hasName(ns_name))))
-      .bind("call");
+  /* There is more than one way to write an AST matcher. Here are three looks
+   * at accomplishing (or trying to accomplish) the same goal. */
+
+  /* First: the easy way of writing this matcher. It might be inefficient in a
+   * large project, if it matched many call expressions, only to reject
+   * them because the enclosing namespace was wrong. But it is correct. */
+  // return cxxMemberCallExpr(hasAncestor(namespaceDecl(hasName(ns_name))))
+  //     .bind("call");
+
+  /* Second: try to match first on namespace, then on call expr. But i't
+   * work as wanted--it will stop after the first match! */
+  // return namespaceDecl(hasName(ns_name),
+  //                      hasDescendant(cxxMemberCallExpr().bind("call")));
+
+  /* Third: match first on namespace, then use forEachDescendant to match all
+   * the callexpr's. */
+  return namespaceDecl(hasName(ns_name),
+                       forEachDescendant(cxxMemberCallExpr().bind("call")));
 }
 
 /* CallPrinter::run() will be called when a match is found */
