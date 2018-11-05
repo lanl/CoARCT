@@ -2,8 +2,12 @@ void f(){
   return;
 }
 
+int global_i = 0;
+
 void g(){
   f();
+  global_i = 42;
+  global_i = 44;
   return;
 }
 
