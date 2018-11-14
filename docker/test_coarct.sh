@@ -1,6 +1,6 @@
 #!/bin/sh
 
- git clone https://github.com/lanl/CoARCT.git -b clang-6.0 coarct
+ git clone https://github.com/lanl/CoARCT.git -b clang-7.0 coarct
  cd coarct
  mkdir build
  cd build
