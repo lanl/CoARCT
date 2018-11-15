@@ -1,4 +1,9 @@
-# Use an official Python runtime as a parent image
+# Note: this Docker image currently uses a pre-built clang + llvm binary,
+# as we were getting a segfault with the ones installed via apt.
+# In order to use this, copy the tarball clang+llvm-7.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
+# into this docker build directory; this script will copy it into the image.
+
+# Use a basic Ubuntu image as parent
 FROM ubuntu:cosmic
 
 # Set the working directory to /app
@@ -11,11 +16,10 @@ ADD . /app
 RUN apt-get update && apt-get -y install cmake git lib32tinfo-dev \
   libboost-all-dev googletest librandom123-dev vim xz-utils
 
-# Using pre-built binary, as getting segfault with the one installed via apt.
-# untar the pre-built binary clang
+# Untar the pre-built binary clang
 RUN tar xvf clang+llvm-7.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
 
-# Define environment variable
+# Define environment variables
 ENV RANDOM123_DIR /usr
 ENV CC clang-7
 ENV CXX clang++
