@@ -42,8 +42,8 @@ Replacement gen_new_call(
   // Big assumption here: this means that there are defaulted
   // arguments. Not sure that's always true. If not, the else
   // branch below may be borken.
-  SourceLocation call_start = call_expr -> getLocStart();
-  SourceLocation call_end = call_expr -> getLocEnd();
+  SourceLocation call_start = call_expr -> getBeginLoc();
+  SourceLocation call_end = call_expr -> getEndLoc();
   if(verbose){
     std::cout << "call start: ";
     corct::dumpLocation(call_start,&sm);

@@ -38,7 +38,7 @@ public:
     clang::SourceManager & sm(ast_ctx_->getSourceManager());
     // cf cfe-3.9.0.src/include/clang/ASTMatchers/ASTMatcher.h:209-214
     bool const inMainFile(
-        sm.isInMainFile(sm.getExpansionLoc(fdecl->getLocStart())));
+        sm.isInMainFile(sm.getExpansionLoc(fdecl->getBeginLoc())));
     if(inMainFile) {
       num_funcs++;
       print_func(fdecl);

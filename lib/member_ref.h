@@ -70,7 +70,7 @@ public:
     std::cout << tabs_ << "mk_repl: proposed replacement = '" << repl_str.str()
               << "'\n";
     return replace_source_range_naive(
-        sm, {mexpr->getLocStart(), mexpr->getLocEnd()}, repl_str.str());
+        sm, {mexpr->getBeginLoc(), mexpr->getEndLoc()}, repl_str.str());
   }  // mk_repl
 
   void run(const result_t & result) override
@@ -82,7 +82,7 @@ public:
     if(mexpr) {
       std::cout << tabs_ << "member_ref_replacer: found a match\n";
       tabs_ = add_tab(tabs_);
-      dumpSourceRange({mexpr->getLocStart(), mexpr->getLocEnd()}, &sm, tabs_);
+      dumpSourceRange({mexpr->getBeginLoc(), mexpr->getEndLoc()}, &sm, tabs_);
       std::cout << std::endl;
       repls_.push_back(mk_repl(mexpr, sm));
       tabs_ = remove_tab(tabs_);
