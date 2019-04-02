@@ -1,6 +1,6 @@
 # CoARCT
 
-[![Build Status](https://travis-ci.org/lanl/CoARCT.svg?branch=clang-7.0)](https://travis-ci.org/lanl/CoARCT)
+[![Build Status](https://travis-ci.org/lanl/CoARCT.svg?branch=clang-8.0)](https://travis-ci.org/lanl/CoARCT)
 
 Code Analysis and Refactoring with Clang Tools
 
@@ -23,19 +23,19 @@ Our hope is that CoARCT will help demystify the Clang AST tools to developers. I
 
 ## Prerequisites:
 1. CMake version 3+ (https://cmake.org/download/)
-2. Clang and LLVM 7.0 libraries and headers (http://releases.llvm.org/download.html)
+2. Clang and LLVM 8.0 libraries and headers (http://releases.llvm.org/download.html)
 3. libtinfo
 4. Boost (currently using 1.61, just needs boost/type_index in one spot)
 4. Google test (currently using 1.7.0 https://github.com/google/googletest)
 
-Default branch is Clang 7.0 (older branches: 6.0, 5.0, 4.0, 3.9, 3.8).
+Default branch is Clang 8.0 (older branches: 7.0, 6.0, 5.0, 4.0, 3.9, 3.8).
 
 ## Build
 
 1. Make sure clang++ is in your path
 1. Define these environment variables
     ```
-    CXX: Your clang++ version 7.0.x
+    CXX: Your clang++ version 8.0.x
     GTEST_DIR: Top level directory of google test installation
     BOOST_DIR: Top level of Boost (#include "boost/type_index.hpp" needs to work)
     TINFO_LIB_DIR: points to where libtinfo.a is installed.
@@ -44,25 +44,29 @@ Default branch is Clang 7.0 (older branches: 6.0, 5.0, 4.0, 3.9, 3.8).
 3. Create a build directory
 
     ```
-    /home/CoARCT $ mkdir build-clang-7.0.0
-    /home/CoARCT $ cd build-clang-7.0.0
+    /home/CoARCT $ mkdir build-clang-8.0.0
+    /home/CoARCT $ cd build-clang-8.0.0
     ```
 
 4. Run cmake, make
 
     ```
-    /home/CoARCT/build-clang-7.0.0 $ cmake ..
-    /home/CoARCT/build-clang-7.0.0 $ make
+    /home/CoARCT/build-clang-8.0.0 $ cmake ..
+    /home/CoARCT/build-clang-8.0.0 $ make
     ```
 
 5. Run the unit tests
 
     ```
-    /home/CoARCT/build-clang-7.0.0 $ ./test/corct-unittests
+    /home/CoARCT/build-clang-8.0.0 $ ./test/corct-unittests
     ...
     [==========] 63 tests from 16 test cases ran. (553 ms total)
     [  PASSED  ] 63 tests.
     ```
+
+## Changes for Clang 8.0
+
+Renamed ```getLoc(Start|End)``` to ```get(Start|End)Loc```, following Clang API change. Version bumps for Docker/Travis.
 
 ## Changes for Clang 7.0
 
