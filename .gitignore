@@ -2,6 +2,9 @@
 build*
 tools/data-use/score/dist
 
+# Sublime project files
+*sublime-project
+*sublime-workspace
 
 # Compiled Object files
 *.slo
