@@ -1,7 +1,6 @@
 // callsite_lister.h
 // Jan 25, 2018
 
-
 #pragma once
 
 #include "callsite_common.h"
@@ -9,7 +8,7 @@
 #include "types.h"
 #include "utilities.h"
 
-namespace corct{
+namespace corct {
 
 // helper
 void
@@ -18,7 +17,6 @@ print_call_details(clang::FunctionDecl const * callee,
                    clang::CallExpr const * callsite,
                    clang::SourceManager & sm,
                    std::ostream & o);
-
 
 /**\class callsite_lister. This will identify all functions in which a callsite
  * is present.
@@ -31,29 +29,31 @@ print_call_details(clang::FunctionDecl const * callee,
  * range will be printed.
  */
 struct callsite_lister : public callback_t {
-
   using matcher_t = clang::ast_matchers::DeclarationMatcher;
   using matchers_t = std::vector<matcher_t>;
 
-  matchers_t matchers(){
+  matchers_t matchers()
+  {
     using namespace clang::ast_matchers;
     matchers_t ms;
-    if(m_targets.empty()){
-      auto callsite_m(mk_callsite_matcher(cs_bd_name,mt_bd_name,fn_bd_name));
+    if(m_targets.empty()) {
+      auto callsite_m(mk_callsite_matcher(cs_bd_name, mt_bd_name, fn_bd_name));
       auto m = functionDecl(hasDescendant(callsite_m)).bind(caller_bd_name);
-      ms.push_back( m );
+      ms.push_back(m);
     }
-    else{
+    else {
       for(auto & t : m_targets) {
-      auto callsite_m(mk_callsite_matcher(cs_bd_name,mt_bd_name,fn_bd_name,t));
-      auto m = functionDecl(hasDescendant(callsite_m)).bind(caller_bd_name);
-        ms.push_back( m );
+        auto callsite_m(
+            mk_callsite_matcher(cs_bd_name, mt_bd_name, fn_bd_name, t));
+        auto m = functionDecl(hasDescendant(callsite_m)).bind(caller_bd_name);
+        ms.push_back(m);
       }
     }
     return ms;
-  } // matchers
+  }  // matchers
 
-  void run(result_t const & result) override {
+  void run(result_t const & result) override
+  {
     using namespace clang;
     FunctionDecl const * fdecl =
         result.Nodes.getNodeAs<FunctionDecl>(fn_bd_name);
@@ -61,25 +61,24 @@ struct callsite_lister : public callback_t {
         result.Nodes.getNodeAs<FunctionDecl>(caller_bd_name);
     CXXMethodDecl const * mdecl =
         result.Nodes.getNodeAs<CXXMethodDecl>(mt_bd_name);
-    CallExpr const * csite =
-        result.Nodes.getNodeAs<CallExpr>(cs_bd_name);
+    CallExpr const * csite = result.Nodes.getNodeAs<CallExpr>(cs_bd_name);
     SourceManager & sm(result.Context->getSourceManager());
-    if(csite && fdecl && caller){
-      print_call_details(fdecl,caller,csite,sm,std::cout);
+    if(csite && fdecl && caller) {
+      print_call_details(fdecl, caller, csite, sm, std::cout);
       m_num_calls++;
     }
-    else if(csite && mdecl && caller){
-      print_call_details(mdecl,caller,csite,sm,std::cout);
+    else if(csite && mdecl && caller) {
+      print_call_details(mdecl, caller, csite, sm, std::cout);
       m_num_calls++;
     }
-    else{
-      check_ptr(csite,"csite");
-      check_ptr(fdecl,"fdecl");
-      check_ptr(mdecl,"mdecl");
-      check_ptr(caller,"caller");
+    else {
+      check_ptr(csite, "csite");
+      check_ptr(fdecl, "fdecl");
+      check_ptr(mdecl, "mdecl");
+      check_ptr(caller, "caller");
     }
     return;
-  } // run
+  }  // run
 
   explicit callsite_lister(vec_str const & targets) : m_targets(targets) {}
 
@@ -91,8 +90,7 @@ private:
   static string_t const mt_bd_name;
   static string_t const fn_bd_name;
   static string_t const caller_bd_name;
-}; // callsite_lister
-
+};  // callsite_lister
 
 /**\class callsite_lister: Count sites where functions or methods are called.
  * If a target set is defined, only calls to functions with names in that set
@@ -100,44 +98,43 @@ private:
  * This demonstrates and tests the matchers in callsite_common
  */
 struct callsite_counter : public callback_t {
-
   using matcher_t = clang::ast_matchers::StatementMatcher;
   using matchers_t = std::vector<matcher_t>;
 
-  matchers_t matchers(){
+  matchers_t matchers()
+  {
     matchers_t ms;
-    if(m_targets.empty()){
-      ms.push_back(mk_callsite_matcher(cs_bd_name,mt_bd_name,fn_bd_name));
+    if(m_targets.empty()) {
+      ms.push_back(mk_callsite_matcher(cs_bd_name, mt_bd_name, fn_bd_name));
     }
-    else{
+    else {
       for(auto & t : m_targets) {
-        ms.push_back(mk_callsite_matcher(cs_bd_name,mt_bd_name,fn_bd_name,t));
+        ms.push_back(
+            mk_callsite_matcher(cs_bd_name, mt_bd_name, fn_bd_name, t));
       }
     }
     return ms;
-  } // matchers
+  }  // matchers
 
-  void run(result_t const & result) override {
+  void run(result_t const & result) override
+  {
     using namespace clang;
     FunctionDecl const * fdecl =
         result.Nodes.getNodeAs<FunctionDecl>(fn_bd_name);
     CXXMethodDecl const * mdecl =
         result.Nodes.getNodeAs<CXXMethodDecl>(mt_bd_name);
-    CallExpr const * csite =
-        result.Nodes.getNodeAs<CallExpr>(cs_bd_name);
-    if(csite && mdecl){
+    CallExpr const * csite = result.Nodes.getNodeAs<CallExpr>(cs_bd_name);
+    if(csite && mdecl) { m_num_calls++; }
+    else if(csite && fdecl) {
       m_num_calls++;
     }
-    else if(csite && fdecl){
-      m_num_calls++;
-    }
-    else{
-      check_ptr(csite,"csite");
-      check_ptr(fdecl,"fdecl");
-      check_ptr(mdecl,"mdecl");
+    else {
+      check_ptr(csite, "csite");
+      check_ptr(fdecl, "fdecl");
+      check_ptr(mdecl, "mdecl");
     }
     return;
-  } // run
+  }  // run
 
   explicit callsite_counter(vec_str const & targets) : m_targets(targets) {}
 
@@ -148,8 +145,8 @@ private:
   string_t const cs_bd_name = "callsite";
   string_t const mt_bd_name = "m_decl";
   string_t const fn_bd_name = "f_decl";
-}; // callsite_lister
+};  // callsite_lister
 
-} // corct::
+}  // namespace corct
 
 // End of file

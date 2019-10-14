@@ -22,7 +22,8 @@ using namespace llvm;
 using clang::SourceLocation;
 using clang::SourceManager;
 
-void check_invalid(bool &invalid, const char*filename, int line);
+void
+check_invalid(bool & invalid, const char * filename, int line);
 
 SourceLocation
 end_of_the_end(SourceLocation const & start_of_end, SourceManager & sm)
@@ -53,16 +54,16 @@ struct Function_Printer
     FunctionDecl * f_decl = const_cast<FunctionDecl *>(
         result.Nodes.getNodeAs<FunctionDecl>(fd_bd_name_));
     if(f_decl) {
-      SourceManager &sm(result.Context->getSourceManager());
+      SourceManager & sm(result.Context->getSourceManager());
       SourceRange decl_range(f_decl->getSourceRange());
       SourceLocation decl_begin(decl_range.getBegin());
-      SourceLocation decl_end_end( end_of_the_end( decl_range.getEnd(),sm));
-      const char * buff_begin( sm.getCharacterData(decl_begin));
-      const char * buff_end( sm.getCharacterData(decl_end_end));
-      std::string const func_string(buff_begin,buff_end);
+      SourceLocation decl_end_end(end_of_the_end(decl_range.getEnd(), sm));
+      const char * buff_begin(sm.getCharacterData(decl_begin));
+      const char * buff_end(sm.getCharacterData(decl_end_end));
+      std::string const func_string(buff_begin, buff_end);
       std::cout << "Captured function " << f_decl->getNameAsString()
-        << " declaration:\n'''\n" << func_string << "\n'''\n";
-
+                << " declaration:\n'''\n"
+                << func_string << "\n'''\n";
     }
     else {
       corct::check_ptr(f_decl, "f_decl");
@@ -95,12 +96,13 @@ main(int argc, const char ** argv)
   return 0;
 }  // main
 
-void check_invalid(bool &invalid, const char*filename, int line){
-  if(invalid){
-    printf("%s:%i getCharacterData returned invalid\n",filename,line);
+void
+check_invalid(bool & invalid, const char * filename, int line)
+{
+  if(invalid) {
+    printf("%s:%i getCharacterData returned invalid\n", filename, line);
   }
   invalid = false;
 }
-
 
 // End of file

@@ -49,9 +49,7 @@ public:
   matchers_t fn_matchers() const
   {
     matchers_t ms;
-    for(auto const & t : fn_targets_) {
-      ms.push_back(mk_fn_matcher(t));
-    }
+    for(auto const & t : fn_targets_) { ms.push_back(mk_fn_matcher(t)); }
     return ms;
   }
 
@@ -60,9 +58,7 @@ public:
   matchers_t mthd_matchers() const
   {
     matchers_t ms;
-    for(auto const & t : mthd_targets_) {
-      ms.push_back(mk_mthd_matcher(t));
-    }
+    for(auto const & t : mthd_targets_) { ms.push_back(mk_mthd_matcher(t)); }
     return ms;
   }
 
@@ -70,8 +66,12 @@ public:
                                  vec_str const & fn_targets,
                                  str_t_cr new_str,
                                  bool const dry_run)
-      : rep_map_(rep_map), fn_targets_(fn_targets), new_str_(new_str), dry_run_(dry_run)
-  {}
+      : rep_map_(rep_map),
+        fn_targets_(fn_targets),
+        new_str_(new_str),
+        dry_run_(dry_run)
+  {
+  }
 
   function_replacement_generator(replacements_map_t & rep_map_,
                                  vec_str const & fn_targets,
@@ -83,7 +83,8 @@ public:
         mthd_targets_(mthd_targets),
         new_str_(new_str),
         dry_run_(dry_run)
-  {}
+  {
+  }
 
   virtual ~function_replacement_generator() {}
 
@@ -92,18 +93,18 @@ public:
     return rep_map_[fname];
   }
 
-  replacements_map_t const & get_replacements_map() const { return rep_map_;}
+  replacements_map_t const & get_replacements_map() const { return rep_map_; }
 
   // state
 protected:
   replacements_map_t & rep_map_;
-  vec_str const fn_targets_; //!< function targets
-  vec_str const mthd_targets_; //!< method targets
+  vec_str const fn_targets_;    //!< function targets
+  vec_str const mthd_targets_;  //!< method targets
   str_t_cr new_str_;
   bool const dry_run_;
 };  // replacement_generator
 
-}  // corct
+}  // namespace corct
 
-#endif // include guard
+#endif  // include guard
 // End of file

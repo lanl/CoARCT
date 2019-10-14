@@ -2,13 +2,12 @@
 // Nov 15, 2017
 // (c) Copyright 2017 LANSLLC, all rights reserved
 
-
 #pragma once
 
 #include "prep_code.h"
 #include "types.h"
 
-namespace corct_test{
+namespace corct_test {
 
 /** \brief Run a test case,
 
@@ -18,9 +17,12 @@ namespace corct_test{
 \return number of matches found */
 template <typename Tester>
 inline uint32_t
-count_matches(corct::str_t_cr code, Tester & tst){
+count_matches(corct::str_t_cr code, Tester & tst)
+{
   using namespace clang;
-  ASTUPtr ast; ASTContext* pctx; TranslationUnitDecl* decl;
+  ASTUPtr ast;
+  ASTContext * pctx;
+  TranslationUnitDecl * decl;
   std::tie(ast, pctx, decl) = prep_code(code);
   // decl->dump(); // uncomment for debugging
   auto m(tst.matcher());
@@ -30,6 +32,6 @@ count_matches(corct::str_t_cr code, Tester & tst){
   return tst.matched_;
 }
 
-} // corct_test
+}  // namespace corct_test
 
 // End of file

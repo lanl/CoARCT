@@ -2,10 +2,9 @@
 // Feb 02, 2018
 // (c) Copyright 2018 LANSLLC, all rights reserved
 
-
 #include "callsite_lister.h"
 
-namespace corct{
+namespace corct {
 
 const string_t callsite_lister::cs_bd_name = "callsite";
 const string_t callsite_lister::mt_bd_name = "m_decl";
@@ -30,7 +29,7 @@ print_call_details(clang::FunctionDecl const * callee,
     << tabs << "isTemplateInstantiation: " << callee->isTemplateInstantiation()
     << "\n";
 
-    ;
+  ;
   // caller information
   o << tabs << "caller:" << caller->getNameAsString() << "\n"
     << tabs << "caller source range: "
@@ -39,8 +38,6 @@ print_call_details(clang::FunctionDecl const * callee,
   return;
 }  // print_short_function_decl_details
 
-
-
-} // corct::
+}  // namespace corct
 
 // End of file

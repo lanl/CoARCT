@@ -11,20 +11,20 @@
 #include "make_replacement.h"
 #include "utilities.h"
 
+#include "clang/AST/ASTContext.h"
+#include "clang/AST/Type.h"
+#include "clang/ASTMatchers/ASTMatchFinder.h"
+#include "clang/ASTMatchers/ASTMatchers.h"
 #include "clang/Basic/LangOptions.h"
 #include "clang/Frontend/FrontendActions.h"
 #include "clang/Tooling/CommonOptionsParser.h"
 #include "clang/Tooling/Core/Replacement.h"
 #include "clang/Tooling/Refactoring.h"
 #include "clang/Tooling/Tooling.h"
-#include "clang/AST/ASTContext.h"
-#include "clang/AST/Type.h"
-#include "clang/ASTMatchers/ASTMatchFinder.h"
-#include "clang/ASTMatchers/ASTMatchers.h"
 #include "llvm/Support/CommandLine.h"
+#include "summarize_command_line.h"
 #include <iostream>
 #include <vector>
-#include "summarize_command_line.h"
 
 using namespace clang::tooling;
 using namespace llvm;
@@ -91,11 +91,10 @@ static cl::extrahelp CommonHelp(CommonOptionsParser::HelpMessage);
 
 // A help message for this specific tool can be added afterwards.
 static cl::extrahelp MoreHelp(
-  "Replace global variables by inserting local variables\n"
-  "into call chains. Both expands function signatures in declarations\n"
-  "and epxands callsites. References to global variable names are\n"
-  "replaced with references to the local variable names."
-  );
+    "Replace global variables by inserting local variables\n"
+    "into call chains. Both expands function signatures in declarations\n"
+    "and epxands callsites. References to global variable names are\n"
+    "replaced with references to the local variable names.");
 
 // some command line options:
 // static llvm::cl::OptionCategory GROpts("Common options for global-replace");
@@ -112,20 +111,16 @@ static cl::opt<bool> dry_run("d",
                              cl::cat(CompilationOpts),
                              cl::init(false));
 
-static cl::opt<bool> export_opts(
-  "xp",
-  cl::desc("export command line options"),
-  cl::value_desc("bool"),
-  cl::cat(CompilationOpts),
-  cl::init(false)
-  );
+static cl::opt<bool> export_opts("xp",
+                                 cl::desc("export command line options"),
+                                 cl::value_desc("bool"),
+                                 cl::cat(CompilationOpts),
+                                 cl::init(false));
 
 void
 announce_dry(bool const dry_run_)
 {
-  if(dry_run_) {
-    std::cout << "This is a dry run\n";
-  }
+  if(dry_run_) { std::cout << "This is a dry run\n"; }
   else {
     std::cout << "This is not a dry run\n";
   }
@@ -148,11 +143,11 @@ list_compilations(CommonOptionsParser & opt_prs)
 int
 main(int argc, const char ** argv)
 {
-  using corct::split;
   using corct::replacements_map_t;
+  using corct::split;
   CommonOptionsParser opt_prs(argc, argv, CompilationOpts, addl_help);
-  if(export_opts){
-    corct::summarize_command_line("global-replace",addl_help);
+  if(export_opts) {
+    corct::summarize_command_line("global-replace", addl_help);
     return 0;
   }
   RefactoringTool tool(opt_prs.getCompilations(), opt_prs.getSourcePathList());
@@ -169,17 +164,17 @@ main(int argc, const char ** argv)
 
   replacements_map_t & rep_map = tool.getReplacements();
 
-  corct::global_variable_replacer v_replacer(
-      rep_map, old_var_strings, new_var_strings, dry_run);
+  corct::global_variable_replacer v_replacer(rep_map, old_var_strings,
+                                             new_var_strings, dry_run);
 
   // sort out target functions
   vec_str targ_fns(split(target_func_string, ','));
 
-  corct::function_signature_expander f_expander(
-      rep_map, targ_fns, new_func_param_string, dry_run);
+  corct::function_signature_expander f_expander(rep_map, targ_fns,
+                                                new_func_param_string, dry_run);
 
-  corct::expand_callsite s_expander(rep_map, targ_fns,
-                                    new_func_arg_string, dry_run);
+  corct::expand_callsite s_expander(rep_map, targ_fns, new_func_arg_string,
+                                    dry_run);
 
   clang::ast_matchers::MatchFinder finder;
 
@@ -193,9 +188,7 @@ main(int argc, const char ** argv)
             << " matchers\n";
 
   if(rep_refs) {
-    for(auto & m : global_ref_matchers) {
-      finder.addMatcher(m, &v_replacer);
-    }
+    for(auto & m : global_ref_matchers) { finder.addMatcher(m, &v_replacer); }
   }
   else if(expand_func) {
     std::cout << "Expanding functions\n";
@@ -210,9 +203,7 @@ main(int argc, const char ** argv)
   llvm::outs() << "Replacements collected: \n";
   for(auto & p : tool.getReplacements()) {
     llvm::outs() << "file: " << p.first << ":\n";
-    for(auto & r : p.second){
-      llvm::outs() << r.toString() << "\n";
-    }
+    for(auto & r : p.second) { llvm::outs() << r.toString() << "\n"; }
   }
   return 0;
 }  // main

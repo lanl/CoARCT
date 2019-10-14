@@ -156,6 +156,6 @@ struct template_var_reporter : public callback_t {
   string_t namespace_name_;
 };  // template_var_reporter
 
-}  // corct::
+}  // namespace corct
 
 // End of file

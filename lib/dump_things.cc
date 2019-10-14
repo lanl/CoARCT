@@ -8,16 +8,16 @@
 #include <iostream>
 #include <sstream>
 
-namespace corct
-{
-namespace
-{
+namespace corct {
+namespace {
 /* These maintain state across calls to dump */
 string_t last_fname = "";
 uint32_t last_lineno = 0xFFFFFFF;
-}  // anonymous::
+}  // namespace
 
-void clearLocation(){
+void
+clearLocation()
+{
   last_fname = "";
   last_lineno = 0xFFFFFFFl;
   return;
@@ -47,10 +47,12 @@ dumpLocation(clang::SourceLocation loc,
     std::cout << tabs << fname << ':' << lineno << ':' << colno;
     last_fname = fname;
     last_lineno = lineno;
-  } else if(lineno != last_lineno) {
+  }
+  else if(lineno != last_lineno) {
     std::cout << tabs << "line" << ':' << lineno << ':' << colno;
     last_lineno = lineno;
-  } else {
+  }
+  else {
     std::cout << tabs << "col" << ':' << colno;
   }
   return;
@@ -80,10 +82,12 @@ locationAsString(clang::SourceLocation loc,
     s << fname << ':' << lineno << ':' << colno;
     last_fname = fname;
     last_lineno = lineno;
-  } else if(lineno != last_lineno) {
+  }
+  else if(lineno != last_lineno) {
     s << "line" << ':' << lineno << ':' << colno;
     last_lineno = lineno;
-  } else {
+  }
+  else {
     s << "col" << ':' << colno;
   }
   return s.str();
@@ -110,8 +114,8 @@ dumpSourceRange(clang::SourceRange R,
 
 void
 dumpFullSourceRange(clang::SourceRange R,
-                clang::SourceManager const * const sm,
-                string_t const tabs)
+                    clang::SourceManager const * const sm,
+                    string_t const tabs)
 {
   last_fname = "";
   last_lineno = 0xFFFFFFF;
@@ -133,9 +137,7 @@ dumpFullSourceRange(clang::SourceRange R,
 string_t
 sourceRangeAsString(clang::SourceRange r, clang::SourceManager const * sm)
 {
-  if(!sm) {
-    return "";
-  }
+  if(!sm) { return ""; }
   std::stringstream s;
   s << "<" << locationAsString(r.getBegin(), sm);
   if(r.getBegin() != r.getEnd()) {
@@ -151,14 +153,12 @@ fullSourceRangeAsString(clang::SourceRange r, clang::SourceManager const * sm)
 {
   last_fname = "";
   last_lineno = 0xFFFFFFF;
-  if(!sm) {
-    return "";
-  }
+  if(!sm) { return ""; }
   std::stringstream s;
   s << "<" << locationAsString(r.getBegin(), sm);
   last_lineno = 0xFFFFFFF;
   // if(r.getBegin() != r.getEnd()) {
-    s << ", " << locationAsString(r.getEnd(), sm);
+  s << ", " << locationAsString(r.getEnd(), sm);
   // }
   s << ">";
   return s.str();
@@ -170,12 +170,12 @@ dumpDecl(clang::Decl const * const D,
          clang::SourceManager const * const sm,
          string_t const tabs)
 {
-  using clang::Decl;
-  using clang::NamedDecl;
-  using clang::Module;
   using clang::cast;
+  using clang::Decl;
   using clang::dyn_cast;
   using clang::FunctionDecl;
+  using clang::Module;
+  using clang::NamedDecl;
   // dumpChild([=] {
   if(!D) {
     // ColorScope Color(*this, NullColor);
@@ -217,6 +217,6 @@ dumpDecl(clang::Decl const * const D,
   return;
 }  // dumpDecl
 
-}  // corct::
+}  // namespace corct
 
 // End of file

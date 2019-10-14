@@ -3,8 +3,8 @@
 // (c) Copyright 2017 LANSLLC, all rights reserved
 
 #include "function_signature_expander.h"
-#include "prep_code.h"
 #include "gtest/gtest.h"
+#include "prep_code.h"
 
 using namespace corct;
 using namespace clang;
@@ -21,77 +21,81 @@ template <typename Tester>
 bool
 run_case_fse(string_t const & code, Tester & t, replacements_t const & reps_exp)
 {
-  ASTUPtr ast; ASTContext * pctx; TranslationUnitDecl * decl;
+  ASTUPtr ast;
+  ASTContext * pctx;
+  TranslationUnitDecl * decl;
   std::tie(ast, pctx, decl) = prep_code(code);
   auto ms(t.fn_matchers());
   finder_t finder;
-  for(auto & m: ms){
-    finder.addMatcher(m, &t);
-  }
+  for(auto & m : ms) { finder.addMatcher(m, &t); }
   finder.matchAST(*pctx);
   replacements_t const & reps(t.get_replacements(fname));
   bool const size_ok(reps_exp.size() == reps.size());
-  EXPECT_EQ(reps_exp.size(),reps.size());
+  EXPECT_EQ(reps_exp.size(), reps.size());
   bool const reps_match = reps_exp == reps;
-  if(!reps_match){
+  if(!reps_match) {
     std::cout << "reps disagree:\n";
     replacements_t::const_iterator ri = reps.begin(), ei = reps_exp.begin();
-    for(; ri != reps.end() && ei != reps_exp.end(); ++ri, ++ei){
-      std::cout << "expected: " << ei->toString() << ", actual: "
-        << ri->toString()<< "\n";
+    for(; ri != reps.end() && ei != reps_exp.end(); ++ri, ++ei) {
+      std::cout << "expected: " << ei->toString()
+                << ", actual: " << ri->toString() << "\n";
     }
   }
-  EXPECT_EQ(reps_exp,reps);
+  EXPECT_EQ(reps_exp, reps);
   return size_ok && reps_match;
-} // run_case_ec
+}  // run_case_ec
 
-
-TEST(function_sig_exp,instantiate){
+TEST(function_sig_exp, instantiate)
+{
   replacements_map_t reps;
-  vec_str ftargs = {"f","g"};
+  vec_str ftargs = {"f", "g"};
   bool const dry_run(false);
-  FSE(reps,ftargs,new_param,dry_run);
+  FSE(reps, ftargs, new_param, dry_run);
   EXPECT_TRUE(true);
-} // instantiate
+}  // instantiate
 // Case 1: functions with 0/1 parameters, no defaults
-TEST(function_sig_exp,expands_case1){
+TEST(function_sig_exp, expands_case1)
+{
   string_t const code =
-    "void f(int){return;} void g(){int i(42);f(i); return;}";
+      "void f(int){return;} void g(){int i(42);f(i); return;}";
   replacements_map_t reps;
-  vec_str ftargs = {"f","g"};
+  vec_str ftargs = {"f", "g"};
   bool const dry_run(false);
-  FSE fse(reps,ftargs,new_param,dry_run);
+  FSE fse(reps, ftargs, new_param, dry_run);
   replacements_t exp_repls;
-  if(exp_repls.add({fname,10u,0u,cnp})) {HERE("add replacement failed");}
-  if(exp_repls.add({fname,28u,0u,new_param})) {HERE("add replacement failed");}
-  run_case_fse(code,fse,exp_repls);
+  if(exp_repls.add({fname, 10u, 0u, cnp})) { HERE("add replacement failed"); }
+  if(exp_repls.add({fname, 28u, 0u, new_param})) {
+    HERE("add replacement failed");
+  }
+  run_case_fse(code, fse, exp_repls);
 }
 // Case 2: no matches
-TEST(function_sig_exp,expands_case2){
+TEST(function_sig_exp, expands_case2)
+{
   string_t const code =
-    "void f(int){return;} void g(){int i(42);f(i); return;}";
+      "void f(int){return;} void g(){int i(42);f(i); return;}";
   replacements_map_t reps;
-  vec_str ftargs = {"p","q"};
+  vec_str ftargs = {"p", "q"};
   bool const dry_run(false);
-  FSE fse(reps,ftargs,new_param,dry_run);
+  FSE fse(reps, ftargs, new_param, dry_run);
   replacements_t exp_repls;
-  run_case_fse(code,fse,exp_repls);
+  run_case_fse(code, fse, exp_repls);
 }
 /* Case 3: functions with some defaults
     p(int i = 42) --> p(int np, int i = 42)
     q(int foo, double pi = 3.2) --> q(int foo, int np, double pi = 3.2)
 */
-TEST(function_sig_exp,expands_case3){
-  string_t const code =
-    "void p(int i=42); void q(int foo, double pi = 3.2);";
+TEST(function_sig_exp, expands_case3)
+{
+  string_t const code = "void p(int i=42); void q(int foo, double pi = 3.2);";
   replacements_map_t reps;
-  vec_str ftargs = {"p","q"};
+  vec_str ftargs = {"p", "q"};
   bool const dry_run(false);
-  FSE fse(reps,ftargs,new_param,dry_run);
+  FSE fse(reps, ftargs, new_param, dry_run);
   replacements_t exp_repls;
-  if(exp_repls.add({fname,7u,0u,npc})) {HERE("add replacement failed");}
-  if(exp_repls.add({fname,34u,0u,npc})) {HERE("add replacement failed");}
-  run_case_fse(code,fse,exp_repls);
+  if(exp_repls.add({fname, 7u, 0u, npc})) { HERE("add replacement failed"); }
+  if(exp_repls.add({fname, 34u, 0u, npc})) { HERE("add replacement failed"); }
+  run_case_fse(code, fse, exp_repls);
 }
 
 // End of file

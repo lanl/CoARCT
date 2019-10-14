@@ -37,10 +37,9 @@ param_matcher()
   std::stringstream pstr;
   pstr << "parm" << n;
   std::stringstream tstr;
-  bool const is_const(
-    std::is_reference<T>::value ?
-      std::is_const<std::remove_reference_t<T>>::value :
-      std::is_const<T>::value);
+  bool const is_const(std::is_reference<T>::value
+                          ? std::is_const<std::remove_reference_t<T>>::value
+                          : std::is_const<T>::value);
   bool const is_volatile(std::is_volatile<std::remove_reference_t<T>>::value);
   bool const is_lvalue_reference(std::is_lvalue_reference<T>::value);
   // bool const is_rvalue_reference(std::is_rvalue_reference<T>::value);
@@ -48,7 +47,7 @@ param_matcher()
   if(is_const) tstr << "const ";
   if(is_volatile) tstr << "volatile ";
   tstr << type_as_string<T>();
-  printf("%s:%i typestring: %s\n",__FUNCTION__,__LINE__,tstr.str().c_str());
+  printf("%s:%i typestring: %s\n", __FUNCTION__, __LINE__, tstr.str().c_str());
   // clang-format off
   auto qual_t_match =
     qualType(
@@ -73,29 +72,31 @@ param_matcher()
 // clang-format on
 
 template <class... Ts, size_t... Us>
-auto
-allOf_params_impl(std::index_sequence<Us...>)
+auto allOf_params_impl(std::index_sequence<Us...>)
 {
   return clang::ast_matchers::allOf(param_matcher<Us, Ts>()...);
 }
 
 template <class T, size_t s>
-auto
-allOf_params_impl(std::index_sequence<s>)
+auto allOf_params_impl(std::index_sequence<s>)
 {
   return param_matcher<s, T>();
 }
 
 template <class Ret_T>
-auto ret_type_matcher(){
+auto
+ret_type_matcher()
+{
   using namespace clang::ast_matchers;
   return returns(asString(type_as_string<Ret_T>()));
 }
 
-template <class C> struct Function_Sig {};
+template <class C>
+struct Function_Sig {
+};
 
 template <typename Ret_T>
-struct Function_Sig<Ret_T(*)()>{
+struct Function_Sig<Ret_T (*)()> {
   static auto func_sig_matcher()
   {
     using namespace clang::ast_matchers;
@@ -131,7 +132,8 @@ struct Function_Sig<Ret_T (*)(Args...)> {
 };  // Function_Sig
 
 template <class C>
-struct Param_Traits{};
+struct Param_Traits {
+};
 
 template <class R, class... Args>
 struct Param_Traits<R (*)(Args...)> {
@@ -152,12 +154,11 @@ struct Param_Traits<R (*)(Args...)> {
         << "; rvalue_reference: " << is_rvalue_reference_ << "}";
       return s.str();
     }
-  }; // struct type_traits
+  };  // struct type_traits
 
   using vec_type_traits = std::vector<type_traits>;
 
-  static
-  vec_type_traits param_type_traits()
+  static vec_type_traits param_type_traits()
   {
     vec_type_traits tis = {
         {std::is_const<std::remove_reference_t<Args>>::value,
@@ -167,7 +168,7 @@ struct Param_Traits<R (*)(Args...)> {
   }  // param_type_traits
 };
 
-}  // corct::
+}  // namespace corct
 
 #endif  // include guard
 

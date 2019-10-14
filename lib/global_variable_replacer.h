@@ -72,27 +72,23 @@ public:
         result.Nodes.getNodeAs<DeclRefExpr>(gref_bind_name);
     if(g_var) {
       string_t const gvar_name = g_var->getNameInfo().getAsString();
-      if(!in_vec(old_globals_, gvar_name)) {
-        return;
-      }
+      if(!in_vec(old_globals_, gvar_name)) { return; }
       uint32_t idx = 0;
       while(gvar_name != old_globals_[idx]) idx++;
 
       clang::tooling::Replacement rep = replace_source_range(
           src_manager, g_var->getSourceRange(), new_vars_[idx]);
       if(!dry_run_) {
-        auto & reps = find_repls(g_var,src_manager,rep_map_);
-        if(reps.add(rep)){
-          HERE("add replacement failed");
-        }
+        auto & reps = find_repls(g_var, src_manager, rep_map_);
+        if(reps.add(rep)) { HERE("add replacement failed"); }
       }
       else {
         llvm::outs() << "global_var_replacer: replacement " << rep.toString()
                      << "\n";
       }
     }
-    else{
-      check_ptr(g_var,"g_var");
+    else {
+      check_ptr(g_var, "g_var");
     }
     return;
   }  // global_replacer::run
@@ -116,7 +112,7 @@ private:
 
 const string_t global_variable_replacer::gref_bind_name = "globalReference";
 
-}  // corct::
+}  // namespace corct
 
 #endif  // include guard
 

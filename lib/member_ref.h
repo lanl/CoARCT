@@ -2,7 +2,6 @@
 // Dec 06, 2016
 // (c) Copyright 2016 LANSLLC, all rights reserved
 
-
 #ifndef MEMBER_REF_H
 #define MEMBER_REF_H
 
@@ -11,14 +10,13 @@
 #include "types.h"
 #include "utilities.h"
 
-#include "clang/ASTMatchers/ASTMatchers.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
+#include "clang/ASTMatchers/ASTMatchers.h"
 #include "clang/Tooling/Core/Replacement.h"
 #include <iostream>
 #include <vector>
 
-namespace corct
-{
+namespace corct {
 auto
 mk_member_ref_arrow(string_t const & type_name, string_t const & var_name)
 {
@@ -109,7 +107,8 @@ public:
         old_var_name_(old_var_name),
         tabs_(tabs),
         repls_(repls)
-  {}
+  {
+  }
 
   // state
   string_t const type_name_;
@@ -121,7 +120,7 @@ public:
   vec_repl & repls_;
 };  // member_ref_replacer
 
-}  // corct::
+}  // namespace corct
 
 #endif  // include guard
 

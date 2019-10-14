@@ -192,9 +192,7 @@ TEST(template_var_matchers, template_var_reporter)
     std::tie(ast, pctx, decl) = prep_code(code);
     template_var_reporter::matchers_t ms(repo.matchers());
     corct::finder_t finder;
-    for(auto m : ms) {
-      finder.addMatcher(m, &repo);
-    }
+    for(auto m : ms) { finder.addMatcher(m, &repo); }
     finder.matchAST(*pctx);
     auto & args(repo.args_);
     EXPECT_EQ(args.size(), 5);
@@ -227,9 +225,7 @@ TEST(template_var_matchers, template_var_reporter)
     std::tie(ast, pctx, decl) = prep_code(code);
     template_var_reporter::matchers_t ms(repo.matchers());
     corct::finder_t finder;
-    for(auto m : ms) {
-      finder.addMatcher(m, &repo);
-    }
+    for(auto m : ms) { finder.addMatcher(m, &repo); }
     finder.matchAST(*pctx);
     auto & args(repo.args_);
     EXPECT_EQ(args.size(), 1);

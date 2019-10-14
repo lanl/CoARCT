@@ -13,19 +13,20 @@
 
 #define print_bool(b) (b ? "true" : "false")
 
-inline void here_func(int line,
-                      const char* func_name,
-                      const char* message,
-                      std::ostream& o = std::cout){
+inline void
+here_func(int line,
+          const char * func_name,
+          const char * message,
+          std::ostream & o = std::cout)
+{
   o << func_name << ":" << line << ": " << message << "\n";
   return;
 }
 #define HERE(message) here_func(__LINE__, __FUNCTION__, message);
 
-namespace corct
-{
+namespace corct {
 /**\brief Include directories for standard headers */
-namespace{
+namespace {
 #ifdef CLANG_INC_DIR1
 string_t const clang_inc_dir1_base(CLANG_INC_DIR1);
 #else
@@ -38,17 +39,16 @@ string_t const clang_inc_dir2_base;
 #endif
 string_t const clang_inc_dir1("-I" + clang_inc_dir1_base);
 string_t const clang_inc_dir2("-I" + clang_inc_dir2_base);
-}
+}  // namespace
 /**\brief Get the Replacements object associated with a node on which we can
  * call getSourceRange(). */
 template <class T>
 replacements_t &
 find_repls(T * node, sm_ref_t src_manager, replacements_map_t & rep_map)
 {
-  string_t fname(
-      src_manager.getFilename(node->getSourceRange().getBegin()));
+  string_t fname(src_manager.getFilename(node->getSourceRange().getBegin()));
   return rep_map[fname];
-} // find_repls
+}  // find_repls
 
 inline string_t
 add_tab(string_t const s)
@@ -56,14 +56,18 @@ add_tab(string_t const s)
   return s + '\t';
 }
 
-inline string_t remove_tab(string_t const s){
+inline string_t
+remove_tab(string_t const s)
+{
   size_t sz = s.find_last_of('\t');
   return s.substr(0, sz);
 }
 
 /** \brief is value val in vector v? */
 template <typename vec_t, typename val_t = typename vec_t::value_type>
-inline bool in_vec(vec_t const& v, val_t const& val){
+inline bool
+in_vec(vec_t const & v, val_t const & val)
+{
   return std::find(v.begin(), v.end(), val) != v.end();
 }
 
@@ -74,9 +78,7 @@ split(std::string const & s, char const delim)
   std::vector<std::string> tokens;
   std::istringstream ss(s);
   std::string token;
-  while(std::getline(ss, token, delim)) {
-    tokens.push_back(token);
-  }
+  while(std::getline(ss, token, delim)) { tokens.push_back(token); }
   return tokens;
 }  // split
 
@@ -87,12 +89,12 @@ split(std::string const & s, char const delim)
   \return none */
 template <typename T>
 inline void
-check_ptr(T * p, string_t const name, string_t const tabs = "",
-  std::ostream & s = std::cout)
+check_ptr(T * p,
+          string_t const name,
+          string_t const tabs = "",
+          std::ostream & s = std::cout)
 {
-  if(!p) {
-    s << tabs << "Invalid pointer " << name << "\n";
-  }
+  if(!p) { s << tabs << "Invalid pointer " << name << "\n"; }
 }
 
 /** \brief Strip off initial 'struct ' and possible trailing ' *'
@@ -116,9 +118,7 @@ get_struct_name(clang::MemberExpr const & membr)
   string_t core_name =
       (sz_struct != string_t::npos) ? b_name.substr(7, b_name.size()) : b_name;
   size_t const sz_star = core_name.find(" *");
-  if(sz_star != string_t::npos) {
-    core_name = core_name.substr(0, sz_star);
-  }
+  if(sz_star != string_t::npos) { core_name = core_name.substr(0, sz_star); }
   return core_name;
 }
 
@@ -127,20 +127,16 @@ get_struct_name(clang::MemberExpr const & membr)
 inline string_t
 infer_indent_level(clang::SourceLocation & loc, clang::SourceManager const & sm)
 {
-  using clang::SourceLocation;
   using clang::PresumedLoc;
+  using clang::SourceLocation;
   std::stringstream tabs;
   SourceLocation spellingLoc = sm.getSpellingLoc(loc);
   PresumedLoc ploc = sm.getPresumedLoc(spellingLoc);
-  if(ploc.isInvalid()) {
-    HERE("<invalid sloc>\n\n");
-  }
+  if(ploc.isInvalid()) { HERE("<invalid sloc>\n\n"); }
   else {
     uint32_t const col = ploc.getColumn();
     if(col > 0) {
-      for(uint32_t i = 0; i < (col - 1); ++i) {
-        tabs << " ";
-      }
+      for(uint32_t i = 0; i < (col - 1); ++i) { tabs << " "; }
     }
   }
   return tabs.str();
@@ -169,10 +165,9 @@ is_on_lhs(clang::MemberExpr const * membr, clang::ASTContext & ctx)
     if(bop) {
       if(bop->isAssignmentOp()) {
         Expr const * e((Expr *)membr);
-        if(bop->getLHS() == e) {
-          on_lhs = true;
-        }
-      } else if(bop->isCompoundAssignmentOp()) {
+        if(bop->getLHS() == e) { on_lhs = true; }
+      }
+      else if(bop->isCompoundAssignmentOp()) {
         std::cout << "\t LOOK OUT!! Overlooked composite assignment!\n";
       }
     }  // if(bop)
@@ -205,10 +200,9 @@ is_ancestor_of(clang::BinaryOperator const * e1,
   for(auto p : parents) {
     BinaryOperator const * p_as_nt1 = p.template get<BinaryOperator>();
     if(p_as_nt1) {
-      if(p_as_nt1 == e1) {
-        is_parent = true;
-      }
-    } else {
+      if(p_as_nt1 == e1) { is_parent = true; }
+    }
+    else {
       return is_ancestor_of(e1, p, ctx, verbose);
     }
   }
@@ -227,9 +221,7 @@ is_part_of_assignment(clang::MemberExpr const * membr, clang::ASTContext & ctx)
   bool bop_parent(false);
   for(auto p : parents) {
     BinaryOperator const * bop = p.get<BinaryOperator>();
-    if(bop) {
-      bop_parent = true;
-    }  // if(bop)
+    if(bop) { bop_parent = true; }  // if(bop)
   }
   return bop_parent;
 }  // is_on_lhs
@@ -258,6 +250,6 @@ compare_vars(clang::VarDecl const * const v1,
   return same;
 }  // compare_vars
 
-}  // corct::
+}  // namespace corct
 
 // End of file

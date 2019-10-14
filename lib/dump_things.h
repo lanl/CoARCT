@@ -9,8 +9,7 @@
 #include "clang/AST/Type.h"
 #include "types.h"
 
-namespace corct
-{
+namespace corct {
 /* These functions closely follow the Clang 3.9.0 ASTDumper class. They match
 the
 style of output used elsewhere in Clang AST: the filename or line nubmer
@@ -55,8 +54,8 @@ dumpSourceRange(clang::SourceRange r,
  */
 void
 dumpFullSourceRange(clang::SourceRange r,
-                clang::SourceManager const * SM,
-                string_t const tabs = "");
+                    clang::SourceManager const * SM,
+                    string_t const tabs = "");
 
 /**\brief Dump SourceRange to a string.
 \param r: source range
@@ -82,7 +81,7 @@ locationAsString(clang::SourceLocation loc, clang::SourceManager const * SM);
 void
 clearLocation();
 
-}  // corct::
+}  // namespace corct
 #endif  // include guard
 
 // End of file

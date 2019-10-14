@@ -26,7 +26,7 @@ include("${LLVM_CMAKE_DIR}/LLVMConfig.cmake")
 # These paths are used from CoARCT tests and applications to configure the
 # compilers instantiated in those programs.
 set(CLANG_INCLUDE_DIR1 ${CLANG_BASE}/include/c++/v1)
-set(CLANG_INCLUDE_DIR2 ${CLANG_BASE}/lib/clang/6.0.0/include)
+set(CLANG_INCLUDE_DIR2 ${CLANG_BASE}/lib/clang/9.0.0/include)
 message(STATUS "CLANG_INCLUDE_DIR1: " ${CLANG_INCLUDE_DIR1})
 add_definitions(-DCLANG_INC_DIR1="${CLANG_INCLUDE_DIR1}")
 add_definitions(-DCLANG_INC_DIR2="${CLANG_INCLUDE_DIR2}")

@@ -37,8 +37,8 @@ struct Typedef_Reporter
     // clang-format on
   }  // matcher
 
-  virtual
-  void run(corct::result_t const & result) override {
+  virtual void run(corct::result_t const & result) override
+  {
     using namespace clang;
     FieldDecl * f_decl =
         const_cast<FieldDecl *>(result.Nodes.getNodeAs<FieldDecl>(fd_bd_name_));
@@ -53,8 +53,8 @@ struct Typedef_Reporter
       // std::string const ty_name = qt.getAsString();
       std::string ut_name = ut.getAsString();
       std::string tnd_name = tnd->getNameAsString();
-      std::cout << "Struct '" << struct_name << "' declares field '"
-                << fld_name << " with typedef name = '" << tnd_name << "'"
+      std::cout << "Struct '" << struct_name << "' declares field '" << fld_name
+                << " with typedef name = '" << tnd_name << "'"
                 << ", underlying type = '" << ut_name << "'" << std::endl;
     }
     else {
@@ -63,7 +63,7 @@ struct Typedef_Reporter
     }
     return;
   }  // run
-};  // struct Typedef_Reporter
+};   // struct Typedef_Reporter
 
 static llvm::cl::OptionCategory TROpts("Common options for typedef-report");
 

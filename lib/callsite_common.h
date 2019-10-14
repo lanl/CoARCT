@@ -7,7 +7,7 @@
 
 #include "clang/ASTMatchers/ASTMatchers.h"
 
-namespace corct{
+namespace corct {
 
 // clang-format off
 /** Match a call to function with specified name, bound in "function". Pretty
@@ -162,6 +162,6 @@ auto mk_callsite_matcher(
 
 // clang-format on
 
-} // corct::
+}  // namespace corct
 
 // End of file

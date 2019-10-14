@@ -19,7 +19,8 @@
 uint32_t num_funcs = 0;
 uint32_t num_skipped_funcs = 0;
 
-void print_func(clang::FunctionDecl * fdecl)
+void
+print_func(clang::FunctionDecl * fdecl)
 {
   std::cout << "Function '" << (fdecl->getNameAsString()) << "' defined\n";
   fdecl->dump();
@@ -31,7 +32,9 @@ public:
   clang::ASTContext * ast_ctx_;
 
   explicit FunctionLister(clang::CompilerInstance * ci)
-      : ast_ctx_(&(ci->getASTContext() ) ) {}
+      : ast_ctx_(&(ci->getASTContext()))
+  {
+  }
 
   bool VisitFunctionDecl(clang::FunctionDecl * fdecl)
   {
@@ -60,6 +63,7 @@ public:
   }
 
   explicit FunctionListerConsumer(clang::CompilerInstance * ci) : lister_(ci) {}
+
 private:
   FunctionLister lister_;
 };  // FunctionListerConsumer

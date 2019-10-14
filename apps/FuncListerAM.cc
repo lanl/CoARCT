@@ -52,8 +52,8 @@ struct FuncPrinter : public MatchFinder::MatchCallback {
 };  // FuncPrinter
 
 /* The RAV approach also makes a note when the analysis skips a function
-* (because it's not part of the main file). Here is an AST Matcher way of
-* accomplishing the same thing. */
+ * (because it's not part of the main file). Here is an AST Matcher way of
+ * accomplishing the same thing. */
 auto
 mk_fn_skipper_matcher()
 {

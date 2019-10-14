@@ -1,43 +1,50 @@
+// clang-format off
 // utilities_test.cc
 // Oct 13, 2016
 // (c) Copyright 2016 LANSLLC, all rights reserved
 
-#include "types.h"
 #include "utilities.h"
 #include "gtest/gtest.h"
+#include "types.h"
 #include <iostream>
 #include <sstream>
 
 namespace corct {
-void calls_here()  // DO NOT MOVE THIS EVER!! (or fix the line # in the test.)
+void
+calls_here()  // DO NOT MOVE THIS EVER!! (or fix the line # in the test.)
 {
   HERE("hola, testy amigos!");
   return;
 }
+// clang-format off
 
-TEST(utilities, here) {
+TEST(utilities, here)
+{
   std::stringstream s;
-  std::streambuf* orig_buf = std::cout.rdbuf(s.rdbuf());
+  std::streambuf * orig_buf = std::cout.rdbuf(s.rdbuf());
   calls_here();
   // restore cout
   std::cout.rdbuf(orig_buf);
-  string_t exp_str = "calls_here:14: hola, testy amigos!\n";
+  string_t exp_str = "calls_here:16: hola, testy amigos!\n";
   EXPECT_EQ(exp_str, s.str());
 }  // TEST(utilities, here)
 
-TEST(utilities, add_tab) {
+TEST(utilities, add_tab)
+{
   string_t const s1("ooga");
   string_t const s2 = add_tab(s1);
   EXPECT_TRUE(s2 == (s1 + '\t'));
 }
 
-TEST(utilities, remove_tab) {
+TEST(utilities, remove_tab)
+{
   string_t const s1("ooga\t");
   string_t const s2 = remove_tab(s1);
   EXPECT_TRUE(s2 == "ooga");
 }
 
-TEST(utilities, in_vec) {
+TEST(utilities, in_vec)
+{
   using corct::in_vec;
   {
     using vec_t = std::vector<int>;
@@ -53,7 +60,8 @@ TEST(utilities, in_vec) {
   }
 }  // TEST(utilities,in_vec)
 
-TEST(utilities, split) {
+TEST(utilities, split)
+{
   string_t s = "foo,bar,bumz,bibz";
   vec_str ss = split(s, ',');
   vec_str ss_exp = {"foo", "bar", "bumz", "bibz"};
@@ -61,17 +69,17 @@ TEST(utilities, split) {
   EXPECT_TRUE(ok);
 }
 
-TEST(utilities, check_ptr) {
+TEST(utilities, check_ptr)
+{
   std::stringstream s;
-  std::streambuf* orig_buf = std::cout.rdbuf(s.rdbuf());
-  check_ptr<double>(nullptr,"bob","  ");
+  std::streambuf * orig_buf = std::cout.rdbuf(s.rdbuf());
+  check_ptr<double>(nullptr, "bob", "  ");
   // restore cout
   std::cout.rdbuf(orig_buf);
   string_t exp_str = "  Invalid pointer bob\n";
   EXPECT_EQ(exp_str, s.str());
 }  // TEST(utilities, check_ptr)
 
-
-} // corct::
+}  // namespace corct
 
 // End of file

@@ -6,12 +6,12 @@
  * information
  .*/
 
-#include "function_definition_lister.h"
 #include "clang/ASTMatchers/ASTMatchFinder.h"
 #include "clang/ASTMatchers/ASTMatchers.h"
 #include "clang/Tooling/ArgumentsAdjusters.h"
 #include "clang/Tooling/CommonOptionsParser.h"
 #include "clang/Tooling/Tooling.h"
+#include "function_definition_lister.h"
 #include "llvm/Support/CommandLine.h"
 #include <iostream>
 
@@ -22,11 +22,10 @@ using namespace clang::ast_matchers;
 static llvm::cl::OptionCategory flt_cat("func-decl-list-am options");
 
 static llvm::cl::opt<bool> verbose_compiler(
-  "vc",
-  llvm::cl::desc("pass -v to compiler instance (default false)"),
-  llvm::cl::cat(flt_cat),
-  llvm::cl::init(false)
-  );
+    "vc",
+    llvm::cl::desc("pass -v to compiler instance (default false)"),
+    llvm::cl::cat(flt_cat),
+    llvm::cl::init(false));
 
 const char * addl_help =
     "List all functions that are defined in this translation unit, excluding "
@@ -45,7 +44,7 @@ main(int argc, const char ** argv)
       getInsertArgumentAdjuster(corct::clang_inc_dir2.c_str());
   tool.appendArgumentsAdjuster(ardj1);
   tool.appendArgumentsAdjuster(ardj2);
-  if(verbose_compiler){
+  if(verbose_compiler) {
     ArgumentsAdjuster ardj3 = getInsertArgumentAdjuster("-v");
     tool.appendArgumentsAdjuster(ardj3);
   }

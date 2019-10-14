@@ -94,7 +94,6 @@ print_templated_kind(clang::FunctionDecl::TemplatedKind const & tk,
       o << tabs << "template kind: DependentFunctionTemplateSpecialization"
         << "\n";
       break;
-    default: o << tabs << "unknown template kind!!\n";
   }
 }  // print_templated_kind
 
@@ -156,9 +155,7 @@ print_function_decl_details(clang::FunctionDecl const * f_decl,
       llvm::dyn_cast<clang::CXXMethodDecl>(f_decl);
   bool is_class_method(nullptr != m_decl);
   o << tabs << "is class method: " << is_class_method << "\n";
-  if(is_class_method) {
-    print_method_decl_details(m_decl, tabs, o);
-  }
+  if(is_class_method) { print_method_decl_details(m_decl, tabs, o); }
   // qualifiers (const, mutable, static, inline ...)
   o << tabs << "inline: " << f_decl->isInlineSpecified() << "\n";
 

@@ -7,19 +7,21 @@
 
 // forward declarations
 #include <iosfwd>
-namespace clang{
-  class QualType;
-  class ParmVarDecl;
-  class FunctionDecl;
-  class SourceManager;
-  class CXXRecordDecl;
-  class CXXMethodDecl;
-}
+namespace clang {
+class QualType;
+class ParmVarDecl;
+class FunctionDecl;
+class SourceManager;
+class CXXRecordDecl;
+class CXXMethodDecl;
+}  // namespace clang
 
-namespace corct{
+namespace corct {
 
 void
-print_type_details(clang::QualType const &qt, string_t &tabs, std::ostream &o);
+print_type_details(clang::QualType const & qt,
+                   string_t & tabs,
+                   std::ostream & o);
 
 /**\brief Write information about a parameter declaration */
 void
@@ -35,20 +37,20 @@ print_templated_kind(clang::FunctionDecl::TemplatedKind const & tk,
 
 void
 print_class_decl_details(clang::CXXRecordDecl const * c_decl,
-                         string_t &tabs,
+                         string_t & tabs,
                          std::ostream & o);
 
 void
 print_method_decl_details(clang::CXXMethodDecl const * m_decl,
-                          string_t &tabs,
+                          string_t & tabs,
                           std::ostream & o);
 
 /**\brief Write out information about a function declaration */
 void
 print_function_decl_details(clang::FunctionDecl const * f_decl,
-                           clang::SourceManager & sm,
-                           std::ostream & o);
+                            clang::SourceManager & sm,
+                            std::ostream & o);
 
-} // corct::
+}  // namespace corct
 
 // End of file

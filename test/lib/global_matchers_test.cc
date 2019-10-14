@@ -3,8 +3,8 @@
 // (c) Copyright 2017 LANSLLC, all rights reserved
 
 #include "global_matchers.h"
-#include "prep_code.h"
 #include "gtest/gtest.h"
+#include "prep_code.h"
 #include <tuple>
 
 using namespace corct;
@@ -50,7 +50,9 @@ template <typename Tester>
 inline uint32_t
 run_case(str_t_cr code, Tester & tst)
 {
-  ASTUPtr ast; ASTContext * pctx; TranslationUnitDecl * decl;
+  ASTUPtr ast;
+  ASTContext * pctx;
+  TranslationUnitDecl * decl;
   std::tie(ast, pctx, decl) = prep_code(code);
   // decl->dump(); // uncomment for debugging
   auto m(tst.matcher());

@@ -5,14 +5,13 @@
 #ifndef SMALL_MATCHERS_H
 #define SMALL_MATCHERS_H
 
+#include "clang/ASTMatchers/ASTMatchers.h"
 #include "dump_things.h"
 #include "types.h"
 #include "utilities.h"
-#include "clang/ASTMatchers/ASTMatchers.h"
 #include <iostream>
 
-namespace corct
-{
+namespace corct {
 /** \brief Match a reference to a pointer, binding variable name bd_var_name
   to the pointer declaration and bd_ref_nm to the reference to the pointer.
 
@@ -22,7 +21,7 @@ inline auto
 mk_ptr_matcher(str_t_cr bd_var_nm, str_t_cr bd_ref_nm, str_t_cr ptr_var_nm = "")
 {
   using namespace clang::ast_matchers;
-// clang-format off
+  // clang-format off
   if(ptr_var_nm == ""){
     return
     declRefExpr(
@@ -46,8 +45,8 @@ mk_ptr_matcher(str_t_cr bd_var_nm, str_t_cr bd_ref_nm, str_t_cr ptr_var_nm = "")
       ).bind(bd_var_nm)) // to
     ).bind(bd_ref_nm); // declRefExpr
   }
-// clang-format on
-} // mk_ptr_matcher
+  // clang-format on
+}  // mk_ptr_matcher
 
 /** \brief "p->next"
 
@@ -62,7 +61,7 @@ match_arrow_next(str_t_cr bd_var_nm,
                  str_t_cr ptr_var_nm = "")
 {
   using namespace clang::ast_matchers;
-// clang-format off
+  // clang-format off
   return
     memberExpr(
       isArrow(),
@@ -74,8 +73,8 @@ match_arrow_next(str_t_cr bd_var_nm,
       )// hasDescendant
     )//memberExpr
   ;
-// clang-format on
-} // match_arrow_next
+  // clang-format on
+}  // match_arrow_next
 
 /**\brief Counts 'public:' declarations in C++ structs and classes,
 accumulates count in map public_count_.
@@ -100,7 +99,7 @@ struct count_public : public callback_t {
     ).bind("asd")
     ;
     // clang-format on
-  } // matcher()
+  }  // matcher()
 
   void run(result_t const & result) override
   {
@@ -112,16 +111,14 @@ struct count_public : public callback_t {
     if(asd && crd) {
       string_t const struct_name = crd->getNameAsString();
       map_it it = public_count_.find(struct_name);
-      if(it != public_count_.end()) {
-        public_count_[struct_name]++;
-      }
+      if(it != public_count_.end()) { public_count_[struct_name]++; }
       else {
         public_count_[struct_name] = 1;
       }
-      if(verbose_){
+      if(verbose_) {
         std::cout << "Found public declaration at "
-          << sourceRangeAsString(asd->getSourceRange(), &src_manager)
-          << " in struct '" << struct_name << "'\n";
+                  << sourceRangeAsString(asd->getSourceRange(), &src_manager)
+                  << " in struct '" << struct_name << "'\n";
       }
     }
     else {
@@ -135,9 +132,8 @@ struct count_public : public callback_t {
   bool verbose_ = false;
 };  // count_public
 
-} // corct::
+}  // namespace corct
 
-#endif // include guard
-
+#endif  // include guard
 
 // End of file

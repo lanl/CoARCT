@@ -2,17 +2,16 @@
 // Jan 06, 2017
 // (c) Copyright 2017 LANSLLC, all rights reserved
 
-
 #ifndef GLOBAL_MATCHERS_H
 #define GLOBAL_MATCHERS_H
 
+#include "clang/Tooling/Tooling.h"
 #include "dump_things.h"
 #include "types.h"
 #include "utilities.h"
-#include "clang/Tooling/Tooling.h"
 #include <iostream>
 
-namespace corct{
+namespace corct {
 // clang-format off
 
 /**\brief Matches references to any global variable within any function.
@@ -119,8 +118,7 @@ auto mk_global_fn_matcher(std::string const & g_var_name = ""){
 
 class Global_Printer : public callback_t {
 public:
-  virtual void
-  run(result_t const & result) override
+  virtual void run(result_t const & result) override
   {
     using namespace clang;
     n_matches_++;
@@ -138,25 +136,21 @@ public:
       s_ << "\n";
     }
     else {
-      check_ptr(func_decl,"func_decl","",s_);
-      check_ptr(g_var,"g_var","",s_);
-      check_ptr(var,"var","",s_);
+      check_ptr(func_decl, "func_decl", "", s_);
+      check_ptr(g_var, "g_var", "", s_);
+      check_ptr(var, "var", "", s_);
     }
     return;
   }  // run
 
-  explicit Global_Printer(std::ostream & s)
-      : s_(s),
-        n_matches_(0)
-  {}
+  explicit Global_Printer(std::ostream & s) : s_(s), n_matches_(0) {}
 
   std::ostream & s_;
   uint32_t n_matches_;
 };  // class Global_Printer
 
-} // corct::
+}  // namespace corct
 
-#endif // include guard
-
+#endif  // include guard
 
 // End of file

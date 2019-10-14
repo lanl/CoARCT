@@ -20,11 +20,10 @@ using namespace clang::ast_matchers;
 static llvm::cl::OptionCategory csl_cat("callsite-list options");
 
 static llvm::cl::opt<bool> verbose_compiler(
-  "vc",
-  llvm::cl::desc("pass -v to compiler instance (default false)"),
-  llvm::cl::cat(csl_cat),
-  llvm::cl::init(false)
-  );
+    "vc",
+    llvm::cl::desc("pass -v to compiler instance (default false)"),
+    llvm::cl::cat(csl_cat),
+    llvm::cl::init(false));
 
 static cl::opt<std::string> target_func_string(
     "tf",
@@ -54,9 +53,7 @@ main(int argc, const char ** argv)
   corct::callsite_lister csl(targ_fns);
   MatchFinder finder;
   auto matchers = csl.matchers();
-  for(auto &m : matchers){
-    finder.addMatcher(m, &csl);
-  }
+  for(auto & m : matchers) { finder.addMatcher(m, &csl); }
   // go!
   int rslt = tool.run(newFrontendActionFactory(&finder).get());
   std::cout << "Reported " << csl.m_num_calls << " calls\n";
@@ -73,11 +70,11 @@ add_include_paths(ClangTool & tool)
       getInsertArgumentAdjuster(corct::clang_inc_dir2.c_str());
   tool.appendArgumentsAdjuster(ardj1);
   tool.appendArgumentsAdjuster(ardj2);
-  if(verbose_compiler){
+  if(verbose_compiler) {
     ArgumentsAdjuster ardj3 = getInsertArgumentAdjuster("-v");
     tool.appendArgumentsAdjuster(ardj3);
   }
   return;
-} // add_include_paths
+}  // add_include_paths
 
 // End of file

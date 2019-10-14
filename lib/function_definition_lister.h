@@ -14,7 +14,6 @@ namespace corct {
  * defined in a translation unit (excluding those defined in a system header.)
  */
 struct FunctionDefLister : public callback_t {
-
   // clang-format off
   auto matcher(){
     using namespace clang::ast_matchers;
@@ -33,7 +32,7 @@ struct FunctionDefLister : public callback_t {
     if(fdecl) {
       m_num_funcs++;
       SourceManager & sm(result.Context->getSourceManager());
-      print_function_decl_details(fdecl,sm,std::cout);
+      print_function_decl_details(fdecl, sm, std::cout);
       std::cout << "-=--=--=--=--=--=-\n";
     }
     else {

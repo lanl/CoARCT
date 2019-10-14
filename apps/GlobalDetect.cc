@@ -2,12 +2,12 @@
 // Oct. 6, 2016
 // (c) Copyright 2016-7 LANSLLC, all rights reserved
 
-#include "global_matchers.h"
 #include "clang/Tooling/CommonOptionsParser.h"
 #include "clang/Tooling/Tooling.h"
+#include "global_matchers.h"
 #include "llvm/Support/CommandLine.h"
-#include <iostream>
 #include "summarize_command_line.h"
+#include <iostream>
 
 using namespace clang::tooling;
 using namespace llvm;
@@ -33,24 +33,22 @@ static cl::opt<bool> report_functions(
     cl::cat(GDOpts),
     cl::init(false));
 
-static cl::opt<bool> export_opts(
-  "xp",
-  cl::desc("export command line options"),
-  cl::value_desc("bool"),
-  cl::cat(GDOpts),
-  cl::init(false)
-  );
+static cl::opt<bool> export_opts("xp",
+                                 cl::desc("export command line options"),
+                                 cl::value_desc("bool"),
+                                 cl::cat(GDOpts),
+                                 cl::init(false));
 
 int
 main(int argc, const char ** argv)
 {
   using namespace corct;
-  CommonOptionsParser OptionsParser(argc, argv, GDOpts,addl_help);
+  CommonOptionsParser OptionsParser(argc, argv, GDOpts, addl_help);
   ClangTool Tool(OptionsParser.getCompilations(),
                  OptionsParser.getSourcePathList());
 
-  if(export_opts){
-    summarize_command_line("global-detect",addl_help);
+  if(export_opts) {
+    summarize_command_line("global-detect", addl_help);
     return 0;
   }
 
@@ -63,13 +61,11 @@ main(int argc, const char ** argv)
                              : mk_global_fn_matcher(old_var_string);
 
   clang::ast_matchers::MatchFinder finder;
-  if(report_functions) {
-    finder.addMatcher(global_func_matcher, &printer);
-  }
+  if(report_functions) { finder.addMatcher(global_func_matcher, &printer); }
   else {
     finder.addMatcher(global_var_matcher, &printer);
   }
   return Tool.run(newFrontendActionFactory(&finder).get());
-} // main
+}  // main
 
 // End of file

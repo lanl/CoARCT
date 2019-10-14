@@ -41,8 +41,8 @@ struct TemplateType_Reporter
     // clang-format on
   }  // matcher
 
-  virtual
-  void run(corct::result_t const & result) override {
+  virtual void run(corct::result_t const & result) override
+  {
     using namespace clang;
     using corct::check_ptr;
     using CTSD = ClassTemplateSpecializationDecl;
@@ -53,21 +53,21 @@ struct TemplateType_Reporter
         const_cast<VarDecl *>(result.Nodes.getNodeAs<VarDecl>(var_bd_name_));
     if(spec_decl && var_decl) {
       // get the template arguments
-      TemplateArgumentList const &tal(spec_decl->getTemplateArgs());
-      for(unsigned i = 0; i < tal.size(); ++i){
-        TemplateArgument const &ta(tal[i]);
+      TemplateArgumentList const & tal(spec_decl->getTemplateArgs());
+      for(unsigned i = 0; i < tal.size(); ++i) {
+        TemplateArgument const & ta(tal[i]);
         // If this arg is a type arg, get its name
         TemplateArgument::ArgKind k(ta.getKind());
         std::string argName = "";
-        if(k==TemplateArgument::ArgKind::Type){
+        if(k == TemplateArgument::ArgKind::Type) {
           QualType t = ta.getAsType();
           argName = t.getAsString();
         }
         // Could do similar for integral args, etc...
         std::cout << "For variable declared at "
-          << corct::sourceRangeAsString(var_decl->getSourceRange(),&sm) << ":"
-          << spec_decl->getNameAsString()
-          << ": template arg " << (i+1) << ": " << argName << std::endl;
+                  << corct::sourceRangeAsString(var_decl->getSourceRange(), &sm)
+                  << ":" << spec_decl->getNameAsString() << ": template arg "
+                  << (i + 1) << ": " << argName << std::endl;
       }
     }
     else {
@@ -76,11 +76,12 @@ struct TemplateType_Reporter
     }
     return;
   }  // run
-};  // struct Typedef_Reporter
+};   // struct Typedef_Reporter
 
 static llvm::cl::OptionCategory TROpts("Common options for temp-type-report");
 
-const char * addl_help = "Report on variables that are template specializations";
+const char * addl_help =
+    "Report on variables that are template specializations";
 
 int
 main(int argc, const char ** argv)

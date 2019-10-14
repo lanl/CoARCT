@@ -7,24 +7,21 @@
 
 #include "clang/ASTMatchers/ASTMatchFinder.h"
 
+#include <set>
 #include <string>
 #include <vector>
-#include <set>
 
 // forward declarations
-namespace clang
-{
+namespace clang {
 class SourceManager;
 
-namespace tooling
-{
+namespace tooling {
 class Replacements;
 class Replacement;
-}  // tooling::
-}  // clang::
+}  // namespace tooling
+}  // namespace clang
 
-namespace corct
-{
+namespace corct {
 // std:: aliases
 using string_t = std::string;
 using str_t_cr = string_t const &;
@@ -37,13 +34,13 @@ using finder_t = clang::ast_matchers::MatchFinder;
 using result_t = clang::ast_matchers::MatchFinder::MatchResult;
 using replacement_t = clang::tooling::Replacement;
 using replacements_t = clang::tooling::Replacements;
-using replacements_map_t = std::map<string_t,replacements_t>;
+using replacements_map_t = std::map<string_t, replacements_t>;
 using vec_repl = std::vector<replacement_t>;
 using sm_ptr_t = clang::SourceManager *;
 using sm_ref_t = clang::SourceManager &;
 using sm_cref_t = clang::SourceManager const &;
 using sm_cc_ptr_t = clang::SourceManager const * const;
-}  // corct::
+}  // namespace corct
 
 #endif  // include guard
 
