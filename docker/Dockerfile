@@ -1,35 +1,40 @@
-# Note: this Docker image currently uses a pre-built clang + llvm binary,
-# as we were getting a segfault with the ones installed via apt.
-# In order to use this, copy the tarball clang+llvm-9.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
-# into this docker build directory; this script will copy it into the image.
-
 # Use a basic Ubuntu image as parent
-FROM ubuntu:cosmic
+FROM ubuntu:focal
 
 # Set the working directory to /app
 WORKDIR /app
 
+# Avoid chatty apt installs
+ARG DEBIAN_FRONTEND=noninteractive
+
 # Copy the current directory contents into the container at /app
 ADD . /app
 
-# Install any needed packages
-RUN apt-get update && apt-get -y install cmake git libtinfo5 \
-  libboost-all-dev googletest librandom123-dev vim xz-utils
+# Install any needed packages specified in requirements.txt
+RUN apt-get update && apt-get -y install cmake git clang-10 libtinfo5 \
+  librandom123-dev docker.io vim xz-utils
 
-RUN cd /lib/x86_64-linux-gnu && ln -s libtinfo.so.5 libtinfo.so
+RUN tar xvf gtest-master.tbz
 
 # Untar the pre-built binary clang
-RUN tar xvf clang+llvm-9.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
+# RUN tar xvf clang+llvm-9.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
 
 # Define environment variables
 ENV RANDOM123_DIR /usr
-ENV CC clang-8
-ENV CXX clang++
+ENV CC clang-10
+ENV CXX clang++-10
 ENV TINFO_LIB_DIR /usr/lib/x86_64-linux-gnu
 ENV BOOST_DIR /usr/include
-ENV GTEST_DIR /usr/src/googletest/googletest
+ENV GTEST_SRC_DIR /app/master
+ENV GTEST_ROOT /app/master/install
 ENV ECLANG_CMAKE_DIR /app/clang+llvm-9.0.0-x86_64-linux-gnu-ubuntu-16.04/lib/cmake/clang
 ENV ELLVM_CMAKE_DIR /app/clang+llvm-9.0.0-x86_64-linux-gnu-ubuntu-16.04/lib/cmake/llvm
-ENV PATH="/app/clang+llvm-9.0.0-x86_64-linux-gnu-ubuntu-16.04/bin:${PATH}"
+
+FROM tkzdockerid/corct-testenv:clang-10-0-A-base
+# Now build googletest
+# make and go to /app/master/build
+RUN mkdir -p ${GTEST_SRC_DIR}/build && cd ${GTEST_SRC_DIR}/build && \
+  cmake ${GTEST_SRC_DIR} -DCMAKE_INSTALL_PREFIX=$GTEST_ROOT -DCMAKE_BUILD_TYPE=Release && \
+  make -j 4 install 2>&1 | tee make.out
 
 # End of file
