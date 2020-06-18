@@ -1,35 +1,29 @@
 # CMakeLists.txt for unit tests
-if (NOT DEFINED GTEST_ROOT)
-	if (DEFINED ENV{GTEST_DIR})
-		set(GTEST_ROOT $ENV{GTEST_DIR})
-		message(STATUS "GTEST_ROOT is ${GTEST_ROOT}")
+if (NOT DEFINED GTEST_INSTALL_ROOT)
+	if (DEFINED ENV{GTEST_ROOT})
+		set(GTEST_INSTALL_ROOT $ENV{GTEST_ROOT})
+		message(STATUS "GTEST_INSTALL_ROOT is ${GTEST_INSTALL_ROOT}")
 	else()
-	   message(WARNING "Warning: environment variable GTEST_DIR is not defined.")
+	   message(WARNING "Warning: environment variable GTEST_ROOT is not defined.")
 	   message(WARNING "corct Unittests will not be made")
-	   message(WARNING "To make corct_unittests, set GTEST_DIR to top level gtest directory.")
+     message(WARNING "To make corct_unittests, set GTEST_ROOT to top level gtest directory.")
+     message(SEND_ERROR "To skip corct_unittests, set 'build_gtests' to false.")
 	   return()
 	endif()
 endif()
 
+set(GTEST_CMAKE_PATH ${GTEST_INSTALL_ROOT}/lib/cmake)
+message(STATUS "GTEST_CMAKE_PATH: " ${GTEST_CMAKE_PATH})
+
 # Define helper functions and macros used by Google Test.
-include(${GTEST_ROOT}/cmake/internal_utils.cmake)
+# include(${GTEST_ROOT}/cmake/internal_utils.cmake)
+find_package(GTest REQUIRED
+  CONFIG
+  HINTS ${GTEST_CMAKE_PATH}
+  )
 
-config_compiler_and_linker()  # Defined in internal_utils.cmake
-
-include_directories(
-	${CMAKE_CURRENT_LIST_DIR}/../lib
-	${GTEST_ROOT}
-	${GTEST_ROOT}/include
-)
-
-# build gtest
-cxx_library(gtest "${cxx_strict}" ${GTEST_ROOT}/src/gtest-all.cc)
-cxx_library(gtest_main "${cxx_strict}" ${GTEST_ROOT}/src/gtest_main.cc)
-
-# build tests
-#---------------------------------------------------------
-# build corct_unittest1 from sources shown
-set( CORCT_UNITTESTS
+# build from sources shown
+set( CORCT_UNITTEST_SRC
   lib/callsite_expander_test.cc
   lib/callsite_lister_test.cc
   lib/clang_utilities_test.cc
@@ -44,8 +38,22 @@ set( CORCT_UNITTESTS
   lib/utilities_test.cc
 )
 
-add_executable(corct_unittests ${CORCT_UNITTESTS} )
+add_executable(corct_unittests ${CORCT_UNITTEST_SRC} )
 
-target_link_libraries(corct_unittests gtest_main gtest corct ${CLANG_LIBRARIES} ${TINFO_LIBS} z)
+target_include_directories(corct_unittests
+  PUBLIC
+    ${GTEST_INSTALL_ROOT}/include
+  PRIVATE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>/../lib
+  )
+
+target_link_libraries(corct_unittests
+  GTest::gtest
+  GTest::gtest_main
+  corct
+  ${CLANG_LIBRARIES} ${TINFO_LIBS} z)
+
+add_test(NAME "corct_unittests" COMMAND "corct_unittests")
 
 # End of file
