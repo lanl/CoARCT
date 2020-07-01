@@ -11,7 +11,8 @@ ARG DEBIAN_FRONTEND=noninteractive
 ADD . /app
 
 # Install any needed packages specified in requirements.txt
-RUN apt-get update && apt-get -y install cmake git clang-10 libtinfo5 \
+RUN apt-get update && apt-get -y install cmake git libclang-dev libz-dev \
+  clang-10 libtinfo5 \
   librandom123-dev docker.io vim xz-utils
 
 RUN tar xvf gtest-master.tbz
@@ -27,10 +28,10 @@ ENV TINFO_LIB_DIR /usr/lib/x86_64-linux-gnu
 ENV BOOST_DIR /usr/include
 ENV GTEST_SRC_DIR /app/master
 ENV GTEST_ROOT /app/master/install
-ENV ECLANG_CMAKE_DIR /app/clang+llvm-9.0.0-x86_64-linux-gnu-ubuntu-16.04/lib/cmake/clang
-ENV ELLVM_CMAKE_DIR /app/clang+llvm-9.0.0-x86_64-linux-gnu-ubuntu-16.04/lib/cmake/llvm
+ENV ECLANG_CMAKE_DIR /usr/lib/cmake/clang-10
+ENV ELLVM_CMAKE_DIR /usr/lib/llvm-10/share/llvm/
 
-FROM tkzdockerid/corct-testenv:clang-10-0-A-base
+# FROM tkzdockerid/corct-testenv:clang-10-0-A-base
 # Now build googletest
 # make and go to /app/master/build
 RUN mkdir -p ${GTEST_SRC_DIR}/build && cd ${GTEST_SRC_DIR}/build && \

@@ -1,6 +1,6 @@
 #!/bin/sh
-
- git clone https://github.com/lanl/CoARCT.git -b clang-10.0 coarct
+ branch=$1
+ git clone https://github.com/lanl/CoARCT.git -b ${branch} coarct
  cd coarct
  mkdir build
  cd build
