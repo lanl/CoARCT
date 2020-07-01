@@ -2,6 +2,9 @@
 build*
 tools/data-use/score/dist
 
+# Files for staging
+docker/*tbz
+
 # Sublime project files
 *sublime-project
 *sublime-workspace
