@@ -24,6 +24,12 @@ const char * addl_help =
 
 static llvm::cl::OptionCategory SFUOpts("Common options for struct-field-use");
 
+static llvm::cl::opt<bool> verbose_compiler(
+    "vc",
+    llvm::cl::desc("pass -v to compiler instance (default false)"),
+    llvm::cl::cat(SFUOpts),
+    llvm::cl::init(false));
+
 static cl::opt<std::string> target_struct_string(
     "ts",
     cl::desc("target struct(s), separated by commas if nec. E.g. "
@@ -42,6 +48,9 @@ template <typename MapOMapOSet>
 void
 print_fields(MapOMapOSet const & m);
 
+void
+add_include_paths(ClangTool & tool);
+
 int
 main(int argc, const char ** argv)
 {
@@ -52,6 +61,7 @@ main(int argc, const char ** argv)
     return 0;
   }
   RefactoringTool Tool(opt_prs.getCompilations(), opt_prs.getSourcePathList());
+  add_include_paths(Tool);
   vec_str targ_fns(split(target_struct_string, ','));
   struct_field_user s_finder(targ_fns);
   struct_field_user::matchers_t field_matchers = s_finder.matchers();
@@ -64,6 +74,23 @@ main(int argc, const char ** argv)
   print_fields(s_finder.non_lhs_uses_);
   return 0;
 }  // main
+
+void
+add_include_paths(ClangTool & tool)
+{
+  // add header search paths to compiler
+  ArgumentsAdjuster ardj1 =
+      getInsertArgumentAdjuster(corct::clang_inc_dir1.c_str());
+  ArgumentsAdjuster ardj2 =
+      getInsertArgumentAdjuster(corct::clang_inc_dir2.c_str());
+  tool.appendArgumentsAdjuster(ardj1);
+  tool.appendArgumentsAdjuster(ardj2);
+  if(verbose_compiler) {
+    ArgumentsAdjuster ardj3 = getInsertArgumentAdjuster("-v");
+    tool.appendArgumentsAdjuster(ardj3);
+  }
+  return;
+}  // add_include_paths
 
 template <typename MapOMapOSet>
 void
