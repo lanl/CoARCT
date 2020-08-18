@@ -32,7 +32,7 @@ mk_struct_field_matcher(string_t const & sname)
   // clang-format off
   return
     memberExpr(
-      isExpansionInMainFile(),
+      // unless(isExpansionInSystemHeader()),
       anyOf(
         hasObjectExpression(
           hasType(
@@ -57,8 +57,8 @@ mk_struct_field_matcher(string_t const & sname)
 }
 
 /** Each time a target struct has a member accessed, track which function used
-it and whether it's used on the LHS or RHS (really non-LHS) of an expression.
-  */
+ * it and whether it's used on the LHS or RHS (really non-LHS) of an expression.
+ */
 struct struct_field_user : public callback_t {
 public:
   using set_t = std::set<string_t>;
