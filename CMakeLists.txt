@@ -9,6 +9,8 @@ project(CoARCT LANGUAGES CXX)
 # Guess cmake paths for Clang and LLVM
 get_filename_component(CLANG_BIN_DIR ${CMAKE_CXX_COMPILER} DIRECTORY)
 set(CLANG_BASE ${CLANG_BIN_DIR}/..)
+message(STATUS "CLANG_BASE:" ${CLANG_BASE})
+message(STATUS "CMAKE_CXX_COMPILER:" ${CMAKE_CXX_COMPILER})
 if(NOT DEFINED ENV{ECLANG_CMAKE_DIR})
   set(CLANG_CMAKE_DIR ${CLANG_BASE}/lib/cmake/clang)
 else()
