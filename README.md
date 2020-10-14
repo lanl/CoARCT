@@ -15,8 +15,6 @@ It includes library code and command line drivers that go beyond some of the (e
 * Identifying typedef;
 * Identify uses of a class template, such as std::vector<T>.
 
-Explanatory blog posts can be found at Various Burglarious: https://variousburglarious.com/2017/01/18/getting-started-with-clang-refactoring-tools/
-
 It also demonstrates a few useful things that were not immediately clear from the tutorials and examples I learned from, such as unit testing matchers and callbacks, and building out of the Clang/LLVM tree.
 
 Our hope is that CoARCT will help demystify the Clang AST tools to developers. If the CoARCT tools are directly useful in your work, let us know!
