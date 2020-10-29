@@ -1,5 +1,5 @@
 # Use a basic Ubuntu image as parent
-FROM ubuntu:focal
+FROM ubuntu:groovy
 
 # Set the working directory to /app
 WORKDIR /app
@@ -12,24 +12,21 @@ ADD . /app
 
 # Install any needed packages specified in requirements.txt
 RUN apt-get update && apt-get -y install cmake git libclang-dev libz-dev \
-  clang-10 libtinfo5 \
+  clang-11 libtinfo5 \
   librandom123-dev docker.io vim xz-utils
 
 RUN tar xvf gtest-master.tbz
 
-# Untar the pre-built binary clang
-# RUN tar xvf clang+llvm-9.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz
-
 # Define environment variables
 ENV RANDOM123_DIR /usr
-ENV CC clang-10
-ENV CXX clang++-10
+ENV CC clang-11
+ENV CXX clang++-11
 ENV TINFO_LIB_DIR /usr/lib/x86_64-linux-gnu
 ENV BOOST_DIR /usr/include
 ENV GTEST_SRC_DIR /app/master
 ENV GTEST_ROOT /app/master/install
-ENV ECLANG_CMAKE_DIR /usr/lib/cmake/clang-10
-ENV ELLVM_CMAKE_DIR /usr/lib/llvm-10/share/llvm/
+ENV ECLANG_CMAKE_DIR /usr/lib/cmake/clang-11
+ENV ELLVM_CMAKE_DIR /usr/lib/llvm-11/share/llvm/
 
 # FROM tkzdockerid/corct-testenv:clang-10-0-A-base
 # Now build googletest

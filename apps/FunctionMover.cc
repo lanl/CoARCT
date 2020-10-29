@@ -37,6 +37,7 @@ end_of_the_end(SourceLocation const & start_of_end, SourceManager & sm)
 
 struct Function_Mover : public clang::ast_matchers::MatchFinder::MatchCallback {
   using repl_map_t = std::map<std::string, clang::tooling::Replacements>;
+  // using repl_map_t = std::map<llvm::StringRef, clang::tooling::Replacements>;
 
   std::string const fd_bd_name_ = "f_decl";
 
@@ -76,10 +77,11 @@ struct Function_Mover : public clang::ast_matchers::MatchFinder::MatchCallback {
       Replacement repl(sm, decl_begin, decl_length, "");
       // now add to the replacements for the source file in which this
       // declaration was found
-      auto filename = sm.getFilename(decl_begin);
+      auto ref_filename = sm.getFilename(decl_begin);
+      std::string filename{ref_filename.str()};
       if(repls_[filename].add(repl)) {
-        std::cerr << "Failed to enter replacement to map for file "
-                  << filename.str() << "\n";
+        std::cerr << "Failed to enter replacement to map for file " << filename
+                  << "\n";
       }
     }
     else {

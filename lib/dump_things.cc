@@ -203,7 +203,7 @@ dumpDecl(clang::Decl const * const D,
     std::cout << tabs << " in (local) " << M->getFullModuleName();
 
   if(const NamedDecl * ND = dyn_cast<NamedDecl>(D))
-    if(ND->isHidden()) std::cout << tabs << " hidden";
+    if(ND->isUnconditionallyVisible()) std::cout << tabs << " hidden";
   if(D->isImplicit()) std::cout << tabs << " implicit";
   if(D->isUsed())
     std::cout << tabs << " used";

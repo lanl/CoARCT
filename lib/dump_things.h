@@ -7,6 +7,7 @@
 
 #include "clang/AST/AST.h"
 #include "clang/AST/Type.h"
+#include "clang/Basic/Module.h"
 #include "types.h"
 
 namespace corct {

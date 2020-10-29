@@ -9,7 +9,7 @@ compiler:
   - clang
 
 before_install:
-  - docker pull tkzdockerid/corct-testenv:clang-10-0-C
+  - docker pull tkzdockerid/corct-testenv:clang-11-0-A
 
 script:
-  - docker run -it tkzdockerid/corct-testenv:clang-10-0-C /bin/bash test_coarct.sh $TRAVIS_BRANCH
+  - docker run -it tkzdockerid/corct-testenv:clang-11-0-A /bin/bash test_coarct.sh $TRAVIS_BRANCH
